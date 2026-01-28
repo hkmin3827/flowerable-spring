@@ -1,0 +1,51 @@
+package com.flowerable.spring.exception;
+
+import com.flowerable.spring.constant.ErrorCode;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.nio.file.AccessDeniedException;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    static class ErrorResponse {
+        private final int status;
+        private final String code;
+        private final String message;
+
+        public ErrorResponse(ErrorCode errorCode){
+            this.status = errorCode.getStatus().value();
+            this.code = errorCode.name();
+            this.message = errorCode.getMessage();
+        }
+        public int getStatus() {return status;}
+        public String getCode() {return code;}
+        public String getMessage() {return message;}
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex){
+        ErrorCode code = ex.getErrorCode();
+
+        ErrorResponse res = new ErrorResponse(code);
+
+        return  new ResponseEntity<>(res, code.getStatus());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<String> handleMaxSize(MaxUploadSizeExceededException ex){
+        return ResponseEntity
+                .badRequest()
+                .body("파일 용량이 업로드 가능 범위를 초과하였습니다. (최대 10MB)");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex){
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+}
