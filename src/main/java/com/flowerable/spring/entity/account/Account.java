@@ -64,8 +64,12 @@ public class Account {
         this.status = AccountStatus.ACTIVE;
     }
 
-    public static Account createLocal(String email, String password, Role role) {
-        return new Account(email, password, Provider.LOCAL, null, role);
+    public static Account createUserAccount(String email, String password) {
+        return new Account(email, password, Provider.LOCAL, null,  Role.ROLE_USER);
+    }
+
+    public static Account createShopAccount(String email, String password) {
+        return new Account(email, password, Provider.LOCAL, null, Role.ROLE_SHOP);
     }
 
     public static Account createOAuth(Provider provider, String providerId, Role role) {

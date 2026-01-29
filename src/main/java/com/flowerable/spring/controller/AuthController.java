@@ -4,6 +4,8 @@ import com.flowerable.spring.dto.auth.AuthReqDto;
 import com.flowerable.spring.dto.auth.AuthResDto;
 import com.flowerable.spring.security.CustomUserDetails;
 import com.flowerable.spring.service.auth.AuthService;
+import com.flowerable.spring.service.auth.ShopAuthService;
+import com.flowerable.spring.service.auth.UserAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +15,22 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final UserAuthService userAuthService;
+    private final ShopAuthService shopAuthService;
 
-    @PostMapping("/signup")
-    public AuthResDto signup(@RequestBody AuthReqDto.Signup req) {
-        return authService.signup(req);
+    @PostMapping("/users/signup")
+    public AuthResDto userSignup(
+            @RequestBody AuthReqDto.UserSignup dto
+    ) {
+        return userAuthService.signup(dto);
     }
 
+    @PostMapping("/shops/signup")
+    public AuthResDto shopSignup(
+            @RequestBody AuthReqDto.ShopSignup dto
+    ) {
+        return shopAuthService.signup(dto);
+    }
     @PostMapping("/login")
     public AuthResDto login(@RequestBody AuthReqDto.Login req) {
         return authService.login(req);
@@ -29,12 +41,19 @@ public class AuthController {
         return authService.oauth2Login(dto);
     }
 
-    @PostMapping("/{target}/{id}/withdraw")
+    @PostMapping("/withdraw")
     public void withdraw(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody AuthReqDto.Withdraw req
     ) {
         authService.withdraw(userDetails.getId(), userDetails.getRole(), req);
+    }
+
+    @PostMapping("/logout")
+    public void logout(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        authService.logout(userDetails.getId());
     }
 
     @PostMapping("/reissue")

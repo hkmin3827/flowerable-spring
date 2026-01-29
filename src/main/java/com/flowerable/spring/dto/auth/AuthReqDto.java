@@ -7,16 +7,22 @@ import lombok.Setter;
 
 public class AuthReqDto {
     @Getter @Setter
-    public static class Signup{
-        private Role role;
-        private String email;
-        private String password;
-        private String name;
-        private String shopName;
-        private String telnum;
-        private String address;
+    public static class UserSignup {
+        String email;
+        String password;
+        String name;
+        String telnum;
+        String address;
     }
 
+    @Getter @Setter
+    public static class ShopSignup {
+        String email;
+        String password;
+        String shopName;
+        String telnum;
+        String address;
+    }
     @Getter @Setter
     public static class Login{
         private Role loginType;

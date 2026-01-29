@@ -28,9 +28,12 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/auth/**"
+                                "/api/auth/login",
+                                "/api/auth/users/signup",
+                                "/api/auth/shops/signup"
                         ).permitAll()
                         .requestMatchers(
+                                "/api/auth/withdraw",
                                 "/api/users/**",
                                 "/api/shops/**"
                         ).authenticated()

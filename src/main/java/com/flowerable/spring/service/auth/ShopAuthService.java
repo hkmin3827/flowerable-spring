@@ -26,14 +26,13 @@ public class ShopAuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    public AuthResDto signup(AuthReqDto.Signup dto){
+    public AuthResDto signup(AuthReqDto.ShopSignup dto){
         if (accountRepository.existsByEmail(dto.getEmail())) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
         }
-        Account account = Account.createLocal(
+        Account account = Account.createShopAccount(
                 dto.getEmail(),
-                passwordEncoder.encode(dto.getPassword()),
-                Role.ROLE_SHOP
+                passwordEncoder.encode(dto.getPassword())
         );
 
         accountRepository.save(account);

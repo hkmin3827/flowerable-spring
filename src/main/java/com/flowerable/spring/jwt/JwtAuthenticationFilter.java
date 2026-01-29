@@ -31,7 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request){
         String uri = request.getRequestURI();
 
-        return uri.startsWith("/api/auth")
+        return uri.equals("/api/auth/login")
+                || uri.equals("/api/auth/users/signup")
+                || uri.equals("/api/auth/shops/signup")
                 || uri.startsWith("/swagger")
                 || uri.startsWith("/v3/api-docs");
     }
@@ -47,23 +49,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                // 1️⃣ tokenType 검사 (ACCESS만 허용)
                 if (jwtProvider.getTokenType(token) != TokenType.ACCESS) {
                     throw new JwtException("Not access token");
                 }
 
-                // 2️⃣ 블랙리스트 검사 (로그아웃된 토큰)
+                // 블랙리스트 검사 (추후 accessToken 블랙리스트 관리 추가 시 확장 가능, 현재 사용은 X)
                 String jti = jwtProvider.getJti(token);
                 if (refreshTokenService.isAccessTokenBlacklisted(jti)) {
                     throw new JwtException("Blacklisted token");
                 }
 
-                // 3️⃣ Claim 파싱
                 Long accountId = jwtProvider.getId(token);
                 Role role = jwtProvider.getRole(token);
 
-
-                // 4️⃣ CustomUserDetails 기반 Authentication 생성
                 UsernamePasswordAuthenticationToken authentication =
                         createAuthentication(accountId, role, req);
 
@@ -81,7 +79,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
 
         filterChain.doFilter(req, res);
 

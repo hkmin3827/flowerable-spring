@@ -50,6 +50,10 @@ dependencies {
 	implementation("com.google.genai:google-genai:1.8.0")
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// WebSocket for real-time notifications
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 }
 
 tasks.named('test') {

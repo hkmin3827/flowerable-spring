@@ -1,0 +1,25 @@
+package com.flowerable.spring.dto.shopflower;
+
+import com.flowerable.spring.constant.Color;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Getter
+@NoArgsConstructor
+public class ShopFlowerRegReq {
+
+    @NotNull
+    private Long flowerId;   // 선택한 꽃 종류
+
+    @NotEmpty
+    private List<Color> colors; // 보유 색상 목록
+
+    @NotNull
+    @Min(0)
+    private Integer price;   // 판매 가격
+}

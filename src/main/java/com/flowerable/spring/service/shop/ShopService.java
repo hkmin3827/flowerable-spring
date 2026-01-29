@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 public class ShopService {
     private final ShopRepository shopRepository;
 
+
+
     public ShopDetailRes getMyDetails(Long accountId){
         Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
                 .orElseThrow(ShopNotFoundException::new);

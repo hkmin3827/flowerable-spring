@@ -29,14 +29,13 @@ public class UserAuthService {
     private final RefreshTokenService refreshTokenService;
     private final AccountRepository accountRepository;
 
-    public AuthResDto signup(AuthReqDto.Signup dto){
+    public AuthResDto signup(AuthReqDto.UserSignup dto){
         if (accountRepository.existsByEmail(dto.getEmail())) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
         }
-        Account account = Account.createLocal(
+        Account account = Account.createUserAccount(
                 dto.getEmail(),
-                passwordEncoder.encode(dto.getPassword()),
-                Role.ROLE_USER
+                passwordEncoder.encode(dto.getPassword())
         );
         accountRepository.save(account);
 

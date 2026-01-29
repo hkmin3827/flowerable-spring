@@ -22,20 +22,6 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    public AuthResDto signup(AuthReqDto.Signup dto) {
-        if (dto.getRole() == Role.ROLE_ADMIN) {
-            throw new CustomException(ErrorCode.ADMIN_SIGNUP_NOT_ALLOWED);
-        }
-        if (dto.getRole() == Role.ROLE_USER) {
-            return userAuthService.signup(dto);
-        }
-
-        if (dto.getRole() == Role.ROLE_SHOP) {
-            return shopAuthService.signup(dto);
-        }
-        throw new CustomException(ErrorCode.INVALID_ROLE);
-    }
-
 
     @Transactional(readOnly = true)
     public AuthResDto login(AuthReqDto.Login dto) {
@@ -101,4 +87,8 @@ public class AuthService {
                 .refreshToken(newRefreshToken)
                 .build();
     }
+
+        public void logout(Long accountId) {
+            refreshTokenService.deleteRefreshToken(accountId);
+        }
 }
