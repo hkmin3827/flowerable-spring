@@ -1,0 +1,24 @@
+package com.flowerable.spring.service.order;
+
+import com.flowerable.spring.constant.OrderCancelBy;
+import com.flowerable.spring.entity.order.OrderCancelLog;
+import com.flowerable.spring.repository.OrderCancelLogRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class OrderCancelLogService {
+
+    private final OrderCancelLogRepository orderCancelLogRepository;
+
+
+    @Transactional
+    public void recordCancel(Long orderRequestId, OrderCancelBy canceledBy) {
+        if (orderCancelLogRepository.findByOrderRequestId(orderRequestId).isPresent()) {
+            return;
+        }
+        orderCancelLogRepository.save(OrderCancelLog.create(orderRequestId, canceledBy));
+    }
+}

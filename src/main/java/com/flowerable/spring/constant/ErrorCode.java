@@ -10,16 +10,28 @@ public enum ErrorCode {
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "이미 등록된 이메일입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     SHOP_NOT_FOUND(HttpStatus.NOT_FOUND, "샵을 찾을 수 없습니다."),
-    INACTIVE_ACCOUNT(HttpStatus.FORBIDDEN,"비활성된 계정입니다."),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."),
+    SUSPENDED_ACCOUNT(HttpStatus.FORBIDDEN,"접근 제한된 계정입니다."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증된 사용자가 아닙니다."),  // 401 UNAUTHORIZED
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효한 토큰이 아닙니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효한 REFRESH 토큰이 아닙니다."),
+    INVALID_LOCATION(HttpStatus.BAD_REQUEST, "유효하지 않은 지역 주소입니다."),
     FLOWER_NAME_DUPLICATED(HttpStatus.CONFLICT, "이미 존재하는 꽃입니다."),
     FLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 꽃이 존재하지 않습니다."),
+    SHOP_FLOWER_ALREADY_REGISTER(HttpStatus.CONFLICT, "이미 매장에 등록된 꽃입니다."),
+    SHOP_FLOWER_NOT_REGISTER(HttpStatus.CONFLICT, "매장에 등록된 꽃이 아닙니다."),
+    SHOP_FLOWER_ALREADY_ONSALE(HttpStatus.CONFLICT, "이미 판매 중인 꽃입니다."),
+    SHOP_FLOWER_ALREADY_STOPSALE(HttpStatus.CONFLICT, "이미 숨김 처리된 꽃입니다."),
+    SHOP_FLOWER_NOT_ON_SALE(HttpStatus.NOT_FOUND, "매장에서 판매 중인 꽃이 아닙니다."),
     PASSWORD_REQUIRED(HttpStatus.BAD_REQUEST, "비밀번호가 필요합니다"),
+    INVALID_SHOP_STATUS(HttpStatus.BAD_REQUEST, "샵 상태 변경 오류, 유효하지 않은 요청입니다."),
+    SUSPEND_ORDER_ACCOUNT(HttpStatus.FORBIDDEN, "주문 기능이 이용 불가한 계정입니다."),
+    INVALID_ACCOUNT_STATUS(HttpStatus.BAD_REQUEST, "계정 상태 변경 오류, 유효하지 않은 요청입니다."),
     ACCOUNT_ALREADY_ACTIVE(HttpStatus.CONFLICT, "이미 활성화된 회원 입니다."),
     ACCOUNT_ALREADY_INACTIVE(HttpStatus.CONFLICT, "이미 비활성화된 회원 입니다."),
+    INVALID_FLOWER_COLORS(HttpStatus.BAD_REQUEST, "색상은 최소 1개 이상이어야 합니다."),
+    FAIL_CHANGE_ORDER_STATUS(HttpStatus.BAD_REQUEST, "현재 주문 상태에서 변경 불가한 요청입니다."),
     INVALID_UPLOAD_FOLDER(HttpStatus.BAD_REQUEST,"허용되지 않은 업로드 경로입니다."),
     INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "잘못된 파일명입니다."),
     INVALID_CONTENT_TYPE(HttpStatus.BAD_REQUEST, "잘못된 파일형식입니다."),
@@ -27,7 +39,12 @@ public enum ErrorCode {
     ADMIN_SIGNUP_NOT_ALLOWED(HttpStatus.FORBIDDEN, "관리자 계정은 회원가입할 수 없습니다."),
     ADMIN_WITHDRAW_NOT_ALLOWED(HttpStatus.FORBIDDEN, "관리자 계정은 회원탈퇴할 수 없습니다."),
     LOGIN_ROLE_MISMATCH(HttpStatus.BAD_REQUEST,"계정 유형을 잘못 선택하셨습니다."),
-    INVALID_ROLE(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정 유형입니다.");
+    INVALID_ROLE(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정 유형입니다."),
+    INVALID_COORDINATE(HttpStatus.BAD_REQUEST, "유효하지 않은 좌표 값입니다."),
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 주문 상태 요청입니다."),
+    WRAPPING_OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "설정된 포장지 옵션이 없습니다."),
+    ORDER_ALREADY_CONFIRM(HttpStatus.CONFLICT, "이미 접수된 주문건은 취소가 불가합니다."),
+    ORDER_ALREADY_CANCELED(HttpStatus.CONFLICT, "이미 취소 완료된 주문입니다.");
 
     private final HttpStatus status;
     private final String message;

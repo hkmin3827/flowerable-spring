@@ -1,17 +1,19 @@
 package com.flowerable.spring.entity.shopflower;
 
 import com.flowerable.spring.constant.Color;
-import com.flowerable.spring.constant.Season;
+import com.flowerable.spring.constant.ErrorCode;
 import com.flowerable.spring.entity.flower.Flower;
 import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.repository.ShopFlowerRepository;
+import com.flowerable.spring.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "shop_flowers")
@@ -19,7 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShopFlower {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,10 +39,7 @@ public class ShopFlower {
     @Column(nullable = false)
     private Boolean onSale = true; // 판매 여부
 
-    public void NotOnSale(){
-        this.onSale = false;
-    }
-
+    @BatchSize(size = 20)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
             name = "shop_flower_colors",
@@ -49,27 +47,39 @@ public class ShopFlower {
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "color", length = 20)
-    private List<Color> colors = new ArrayList<>();
+    private Set<Color> colors = new HashSet<>();
 
     public ShopFlower(Shop shop, Flower flower, Integer price, List<Color> colors){
         this.shop = shop;
         this.flower = flower;
         this.price = price;
         this.onSale = true;
+        this.colors = new HashSet<>(colors);
+
+        shop.getShopFlowers().add(this);
     }
 
-    public void updateInfo(Integer price, Boolean onSale, List<Color> colors) {
+    public void updateInfo(Integer price, List<Color> colors) {
         if (price != null) {
             this.price = price;
         }
-        if (onSale != null) {
-            this.onSale = onSale;
-        }
-        
         // 프론트에서 기존 색상 + 추가 색상 full로 내려줌
         if (colors != null) {
-            this.colors.clear();
-            this.colors.addAll(colors);
+            this.colors = new HashSet<>(colors);
         }
     }
+
+    public void startSale() {
+        if(Boolean.TRUE.equals(this.onSale)){
+            throw new CustomException(ErrorCode.SHOP_FLOWER_ALREADY_ONSALE);
+        }
+        this.onSale = true;
+    }
+    public void stopSale(){
+        if(Boolean.FALSE.equals(this.onSale)){
+            throw new CustomException(ErrorCode.SHOP_FLOWER_ALREADY_STOPSALE);
+        }
+        this.onSale = false;
+    }  // 숨김 처리
+
 }

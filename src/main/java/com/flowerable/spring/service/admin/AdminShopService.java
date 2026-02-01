@@ -1,0 +1,69 @@
+package com.flowerable.spring.service.admin;
+
+import com.flowerable.spring.constant.ErrorCode;
+import com.flowerable.spring.constant.ShopStatus;
+import com.flowerable.spring.dto.admin.AdminShopListRes;
+import com.flowerable.spring.dto.shop.ShopDetailRes;
+import com.flowerable.spring.entity.shop.Shop;
+import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.exception.ShopNotFoundException;
+import com.flowerable.spring.repository.ShopRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AdminShopService {
+    private final ShopRepository shopRepository;
+
+    @Transactional(readOnly = true)
+    public Page<AdminShopListRes> getShopsByStatus(ShopStatus status, Pageable pageable) {
+        if (status == null) {
+            return shopRepository.findAllAdminShops(pageable);
+        }
+        return shopRepository.findAdminShopsByStatus(status, pageable);
+    }
+
+    @Transactional
+    public void changeStatus(Long shopId, ShopStatus targetStatus) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(ShopNotFoundException::new);
+
+        if (shop.getStatus() == targetStatus) {
+            throw new CustomException(ErrorCode.INVALID_SHOP_STATUS);
+        }
+
+        switch (targetStatus) {
+            case ACTIVE -> shop.activate();
+            case SUSPENDED -> shop.suspend();
+            default -> throw new CustomException(ErrorCode.INVALID_SHOP_STATUS);
+        }
+    }
+
+
+    @Transactional(readOnly = true)
+    public ShopDetailRes getShopDetails(Long shopId){
+        Shop shop = shopRepository.findDetailById(shopId)
+                .orElseThrow(ShopNotFoundException::new);
+
+        return ShopDetailRes.builder()
+                .id(shop.getId())
+                .email(shop.getAccount().getEmail())
+                .address(shop.getAddress())
+                .registerAt(shop.getRegisterAt())
+                .shopName(shop.getShopName())
+                .status(shop.getStatus())
+                .deletedAt(shop.getDeletedAt())
+                .telnum(shop.getTelnum())
+                .latitude(shop.getLatitude())
+                .longitude(shop.getLongitude())
+                .description(shop.getDescription())
+                .build();
+    }
+
+}

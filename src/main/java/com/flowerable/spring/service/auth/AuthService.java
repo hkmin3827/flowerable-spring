@@ -3,8 +3,8 @@ package com.flowerable.spring.service.auth;
 import com.flowerable.spring.constant.ErrorCode;
 import com.flowerable.spring.constant.Role;
 import com.flowerable.spring.constant.TokenType;
-import com.flowerable.spring.dto.auth.AuthReqDto;
-import com.flowerable.spring.dto.auth.AuthResDto;
+import com.flowerable.spring.dto.auth.AuthReq;
+import com.flowerable.spring.dto.auth.AuthRes;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.jwt.JwtProvider;
 import com.flowerable.spring.jwt.RefreshTokenService;
@@ -24,7 +24,7 @@ public class AuthService {
 
 
     @Transactional(readOnly = true)
-    public AuthResDto login(AuthReqDto.Login dto) {
+    public AuthRes login(AuthReq.Login dto) {
         if (dto.getLoginType() == Role.ROLE_USER || dto.getLoginType() == Role.ROLE_ADMIN) {
             return userAuthService.login(dto);
         }
@@ -36,11 +36,11 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public AuthResDto oauth2Login(AuthReqDto.OAuth2Login dto){
+    public AuthRes oauth2Login(AuthReq.OAuth2Login dto){
         return userAuthService.signupOrLoginOAuth2(dto);
     }
 
-    public void withdraw(Long accountId, Role role, AuthReqDto.Withdraw dto) {
+    public void withdraw(Long accountId, Role role, AuthReq.Withdraw dto) {
 
         if (role == Role.ROLE_ADMIN) {
             throw new CustomException(ErrorCode.ADMIN_WITHDRAW_NOT_ALLOWED);
@@ -58,7 +58,7 @@ public class AuthService {
         throw new CustomException(ErrorCode.INVALID_ROLE);
     }
 
-    public AuthResDto reissue(String refreshToken) {
+    public AuthRes reissue(String refreshToken) {
 
         if (jwtProvider.getTokenType(refreshToken) != TokenType.REFRESH) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
@@ -80,7 +80,7 @@ public class AuthService {
 
         refreshTokenService.saveRefreshToken(accountId, newRefreshToken);
 
-        return AuthResDto.builder()
+        return AuthRes.builder()
                 .id(accountId)
                 .role(role)
                 .accessToken(newAccessToken)

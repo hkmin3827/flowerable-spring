@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -14,9 +16,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private CorsConfigurationSource corsConfigurationSource;
+    private final CorsConfigurationSource corsConfigurationSource;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
@@ -30,13 +33,22 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/users/signup",
-                                "/api/auth/shops/signup"
+                                "/api/auth/shops/signup",
+                                "/api/auth/oauth/login",
+                                "/api/regions"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/auth/withdraw",
+                                "/api/auth/reissue",
+                                "/api/auth/logout",
                                 "/api/users/**",
-                                "/api/shops/**"
+                                "/api/shops/**",
+                                "/api/flowers/**"
                         ).authenticated()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/shopflowers/**",
+                                "/api/orders/shops/**").hasRole("SHOP")
+                        .requestMatchers("/api/orders/users/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex ->
@@ -56,6 +68,12 @@ public class SecurityConfig {
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
+                )
+                // Tomcat이 HTTP 세션 ID를 생성하기 위해 SecureRandom(SHA1PRNG) 초기화
+                // 엔트로피 수집(특히 첫 초기화 시) 때문에 느리게 시작되는 경우가 흔함
+                // => sessionManagement ~ : 세션 아예 비활성화
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
         return http.build();

@@ -1,24 +1,35 @@
 package com.flowerable.spring.dto.shop;
 
+import com.flowerable.spring.constant.District;
+import com.flowerable.spring.constant.Region;
 import com.flowerable.spring.constant.ShopStatus;
+import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+// shop 정보 조회(user) / shop profile
 @Builder
 @Getter @Setter
 public class ShopDetailRes {
-    private Long id;
-    private String email;
-    private String shopName;
-    private String description;
-    private String telnum;
-    private String address;
-    private Double latitude;
-    private Double longitude;
-    private ShopStatus status;
-    private LocalDateTime deletedAt;
-    private LocalDateTime registerAt;
+    private final Long id;
+    private final String email;
+    private final String shopName;
+    private final String description;
+    private final String telnum;
+    private final String address;
+    private final Double latitude;
+    private final Double longitude;
+    private final Region region;
+    private final District district;
+    private final String regionDesc;
+    private final String districtDesc;
+    private final ShopStatus status;
+    private final LocalDateTime deletedAt;
+    private final LocalDateTime registerAt;
+
+    private List<ShopFlowerRes> shopFlowers;
 }

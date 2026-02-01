@@ -21,13 +21,14 @@ public class Flower {
     @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(length = 100)
+    @Column(length = 255)
     private String floralLang;   // 꽃말
 
     @Column(length = 500)
     private String imageUrl;
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
     private Season category;
 
     @Column(nullable = false)

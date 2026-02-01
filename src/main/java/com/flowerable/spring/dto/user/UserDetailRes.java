@@ -11,14 +11,13 @@ import java.time.LocalDateTime;
 @Builder
 @Getter @Setter
 public class UserDetailRes {
-    private Long id;
-    private String email;
-    private Provider provider;
-    private String name;
-    private String providerId;
-    private String telnum;
-    private String address;
-    private LocalDateTime createdAt;
-    private LocalDateTime deletedAt;
-    private boolean active;
+    private final Long id;
+    private final String email;
+    private final Provider provider;
+    private final String name;
+    private final String providerId;
+    private final String telnum;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime deletedAt;
+    private final boolean active;
 }

@@ -1,8 +1,10 @@
 package com.flowerable.spring.entity.account;
 
 import com.flowerable.spring.constant.AccountStatus;
+import com.flowerable.spring.constant.ErrorCode;
 import com.flowerable.spring.constant.Provider;
 import com.flowerable.spring.constant.Role;
+import com.flowerable.spring.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,7 +22,6 @@ import java.time.LocalDateTime;
         }
 )
 public class Account {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -81,10 +82,16 @@ public class Account {
     }
 
     public void suspend() {
+        if(this.status == AccountStatus.SUSPENDED) {
+            throw new CustomException(ErrorCode.ACCOUNT_ALREADY_INACTIVE);
+        }
         this.status = AccountStatus.SUSPENDED;
     }
 
     public void activate() {
+        if(this.status == AccountStatus.ACTIVE) {
+            throw new CustomException(ErrorCode.ACCOUNT_ALREADY_ACTIVE);
+        }
         this.status = AccountStatus.ACTIVE;
     }
 

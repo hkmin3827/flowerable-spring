@@ -1,12 +1,13 @@
-package com.flowerable.spring.controller;
+package com.flowerable.spring.controller.auth;
 
-import com.flowerable.spring.dto.auth.AuthReqDto;
-import com.flowerable.spring.dto.auth.AuthResDto;
+import com.flowerable.spring.dto.auth.AuthReq;
+import com.flowerable.spring.dto.auth.AuthRes;
 import com.flowerable.spring.security.CustomUserDetails;
 import com.flowerable.spring.service.auth.AuthService;
 import com.flowerable.spring.service.auth.ShopAuthService;
 import com.flowerable.spring.service.auth.UserAuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,45 +20,47 @@ public class AuthController {
     private final ShopAuthService shopAuthService;
 
     @PostMapping("/users/signup")
-    public AuthResDto userSignup(
-            @RequestBody AuthReqDto.UserSignup dto
+    public AuthRes userSignup(
+            @RequestBody AuthReq.UserSignup dto
     ) {
         return userAuthService.signup(dto);
     }
 
     @PostMapping("/shops/signup")
-    public AuthResDto shopSignup(
-            @RequestBody AuthReqDto.ShopSignup dto
+    public AuthRes shopSignup(
+            @RequestBody AuthReq.ShopSignup dto
     ) {
         return shopAuthService.signup(dto);
     }
     @PostMapping("/login")
-    public AuthResDto login(@RequestBody AuthReqDto.Login req) {
+    public AuthRes login(@RequestBody AuthReq.Login req) {
         return authService.login(req);
     }
 
     @PostMapping("/oauth/login")
-    public AuthResDto oauthLogin(@RequestBody AuthReqDto.OAuth2Login dto) {
+    public AuthRes oauthLogin(@RequestBody AuthReq.OAuth2Login dto) {
         return authService.oauth2Login(dto);
     }
 
     @PostMapping("/withdraw")
-    public void withdraw(
+    public ResponseEntity<Void> withdraw(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody AuthReqDto.Withdraw req
+            @RequestBody AuthReq.Withdraw req
     ) {
         authService.withdraw(userDetails.getId(), userDetails.getRole(), req);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout")
-    public void logout(
+    public ResponseEntity<Void> logout(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ){
         authService.logout(userDetails.getId());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reissue")
-    public AuthResDto reissue(@RequestHeader("Refresh-Token") String refreshToken) {
+    public AuthRes reissue(@RequestHeader("Refresh-Token") String refreshToken) {
         return authService.reissue(refreshToken);
     }
 }

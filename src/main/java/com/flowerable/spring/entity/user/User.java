@@ -1,5 +1,6 @@
-package com.flowerable.spring.entity;
+package com.flowerable.spring.entity.user;
 
+import com.flowerable.spring.dto.user.UserUpdateInfoReq;
 import com.flowerable.spring.entity.account.Account;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,9 +32,6 @@ public class User {
     @Column(length = 30)
     private String name;
 
-    @Column(nullable = true)
-    private String address;
-
     @Column(length = 20)
     private String telnum;
 
@@ -56,18 +54,22 @@ public class User {
         this.telnum = telnum;
     }
 
-    public static User create(Account account, String name, String telnum) {
-        return new User(account, name, telnum);
+    public void update(UserUpdateInfoReq req){
+        if(req.getName() != null){
+            this.name = req.getName();
+        }
+        if(req.getTelnum() != null){
+            this.telnum = req.getTelnum();
+        }
     }
 
-    public void updateAddress(String address) {
-        this.address = address;
+    public static User create(Account account, String name, String telnum) {
+        return new User(account, name, telnum);
     }
 
     public void deactivate() {
         this.active = false;
     }
-
     public void activate() {
         this.active = true;
     }

@@ -1,12 +1,12 @@
 package com.flowerable.spring.service.auth;
 
 import com.flowerable.spring.constant.*;
-import com.flowerable.spring.dto.auth.AuthReqDto;
-import com.flowerable.spring.dto.auth.AuthResDto;
+import com.flowerable.spring.dto.auth.AuthReq;
+import com.flowerable.spring.dto.auth.AuthRes;
 import com.flowerable.spring.entity.account.Account;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.InactiveAccountException;
+import com.flowerable.spring.exception.SuspendedAccountException;
 import com.flowerable.spring.exception.ShopNotFoundException;
 import com.flowerable.spring.jwt.JwtProvider;
 import com.flowerable.spring.jwt.RefreshTokenService;
@@ -26,10 +26,14 @@ public class ShopAuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    public AuthResDto signup(AuthReqDto.ShopSignup dto){
+    public AuthRes signup(AuthReq.ShopSignup dto){
         if (accountRepository.existsByEmail(dto.getEmail())) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
         }
+        Region region = Region.fromDescription(dto.getRegionDesc());
+        District district = District.fromDescription(dto.getDistrictDesc());
+
+        validateRegionDistrict(region, district);
         Account account = Account.createShopAccount(
                 dto.getEmail(),
                 passwordEncoder.encode(dto.getPassword())
@@ -37,14 +41,14 @@ public class ShopAuthService {
 
         accountRepository.save(account);
 
-        Shop shop = Shop.create(account, dto.getShopName(), dto.getAddress(), dto.getTelnum());
+        Shop shop = Shop.create(account, dto.getShopName(), dto.getAddress(), dto.getTelnum(), region, district);
         shopRepository.save(shop);
 
         return issue(account.getId(), Role.ROLE_SHOP);
     }
 
     @Transactional(readOnly = true)
-    public AuthResDto login(AuthReqDto.Login dto) {
+    public AuthRes login(AuthReq.Login dto) {
         Account account = accountRepository.findByEmailAndDeletedAtIsNull(dto.getEmail())
                 .orElseThrow(ShopNotFoundException::new);
 
@@ -57,7 +61,7 @@ public class ShopAuthService {
         }
 
         if (account.getStatus() != AccountStatus.ACTIVE) {
-            throw new InactiveAccountException();
+            throw new SuspendedAccountException();
         }
 
         if (!passwordEncoder.matches(dto.getPassword(), account.getPassword())) {
@@ -67,13 +71,13 @@ public class ShopAuthService {
                 .orElseThrow(ShopNotFoundException::new);
 
         if(shop.getStatus()== ShopStatus.SUSPENDED){
-            throw new InactiveAccountException();
+            throw new SuspendedAccountException();
         }
 
         return issue(account.getId(), Role.ROLE_SHOP);
     }
 
-    public void withdraw(Long accountId, AuthReqDto.Withdraw dto) {
+    public void withdraw(Long accountId, AuthReq.Withdraw dto) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(ShopNotFoundException::new);
 
@@ -84,12 +88,13 @@ public class ShopAuthService {
             throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
-        shopRepository.findByAccountId(accountId).ifPresent(Shop::softDelete);
+        shopRepository.findByAccountIdAndDeletedAtIsNull(accountId).ifPresent(Shop::softDelete);
         account.softDelete();
 
-        refreshTokenService.deleteRefreshToken(accountId);    }
+        refreshTokenService.deleteRefreshToken(accountId);
+    }
 
-    private AuthResDto issue(Long accountId, Role role) {
+    private AuthRes issue(Long accountId, Role role) {
         String accessToken =
                 jwtProvider.createAccessToken(accountId, role);
 
@@ -99,11 +104,21 @@ public class ShopAuthService {
         // Redis에 Refresh Token 저장
         refreshTokenService.saveRefreshToken(accountId, refreshToken);
 
-        return AuthResDto.builder()
+        return AuthRes.builder()
                 .id(accountId)
                 .role(role)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    private void validateRegionDistrict(Region region, District district){
+        if(district == null || region == null){
+            throw new CustomException(ErrorCode.INVALID_LOCATION);
+        }
+
+        if(!District.findByRegion(region).contains(district)){
+            throw new CustomException(ErrorCode.INVALID_LOCATION);
+        }
     }
 }

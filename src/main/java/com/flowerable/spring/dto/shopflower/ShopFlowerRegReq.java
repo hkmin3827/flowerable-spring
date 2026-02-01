@@ -4,6 +4,7 @@ import com.flowerable.spring.constant.Color;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,6 @@ public class ShopFlowerRegReq {
     private List<Color> colors; // 보유 색상 목록
 
     @NotNull
-    @Min(0)
+    @Positive
     private Integer price;   // 판매 가격
 }

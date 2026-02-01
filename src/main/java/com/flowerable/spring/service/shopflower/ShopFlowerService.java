@@ -1,17 +1,27 @@
 package com.flowerable.spring.service.shopflower;
 
+import com.flowerable.spring.constant.Color;
+import com.flowerable.spring.constant.ErrorCode;
 import com.flowerable.spring.dto.shopflower.ShopFlowerRegReq;
+import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
+import com.flowerable.spring.dto.shopflower.ShopFlowerUpdateReq;
 import com.flowerable.spring.entity.flower.Flower;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.entity.shopflower.ShopFlower;
+import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.exception.ShopNotFoundException;
 import com.flowerable.spring.repository.FlowerRepository;
 import com.flowerable.spring.repository.ShopFlowerRepository;
 import com.flowerable.spring.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +31,14 @@ public class ShopFlowerService {
     private final FlowerRepository flowerRepository;
 
     @Transactional
-    public void register(Long shopId, ShopFlowerRegReq req) {
-        if (shopFlowerRepository.existsByShopIdAndFlowerId(shopId, req.getFlowerId())) {
-            throw new IllegalStateException("이미 등록된 꽃입니다.");
+    public void register(Long accountId, ShopFlowerRegReq req) {
+        Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                .orElseThrow(() -> new AccessDeniedException("SHOP 권한이 필요합니다."));
+
+        if (shopFlowerRepository.existsByShopIdAndFlowerId(shop.getId(), req.getFlowerId())) {
+            throw new CustomException(ErrorCode.SHOP_FLOWER_ALREADY_REGISTER);
         }
 
-        Shop shop = shopRepository.getReferenceById(shopId);
         Flower flower = flowerRepository.getReferenceById(req.getFlowerId());
 
         ShopFlower shopFlower = new ShopFlower(
@@ -37,5 +49,70 @@ public class ShopFlowerService {
         );
 
         shopFlowerRepository.save(shopFlower);
+    }
+
+    @Transactional
+    public void updateOption(Long accountId, Long shopFlowerId, ShopFlowerUpdateReq req){
+        ShopFlower shopFlower = shopFlowerRepository.findWithShopAndAccount(shopFlowerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_REGISTER));
+
+        if(!shopFlower.getShop().getAccount().getId().equals(accountId)) {
+            throw new AccessDeniedException("해당 Shop 계정과 일치하지 않습니다.");
+        }
+
+        if (req.getColors() != null && req.getColors().isEmpty()) {
+            throw new CustomException(ErrorCode.INVALID_FLOWER_COLORS);
+        }
+
+        shopFlower.updateInfo(req.getPrice(), req.getColors());
+    }
+
+
+    @Transactional
+    public void activate(Long accountId, Long shopFlowerId) {
+        Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                .orElseThrow(ShopNotFoundException::new);
+
+        ShopFlower shopFlower = shopFlowerRepository
+                .findByIdAndShopId(shopFlowerId, shop.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_REGISTER));
+
+        shopFlower.startSale();
+    }
+
+    @Transactional
+    public void deactivate(Long accountId, Long shopFlowerId) {
+        Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
+
+        ShopFlower shopFlower = shopFlowerRepository
+                .findByIdAndShopId(shopFlowerId, shop.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_REGISTER));
+
+        shopFlower.stopSale();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ShopFlowerRes> getMyShopFlowers(
+            Long accountId,
+            Boolean isOnSale,
+            Pageable pageable
+    ) {
+        Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                .orElseThrow(ShopNotFoundException::new);
+
+        return shopFlowerRepository.findMyShopFlowers(
+                shop.getId(),
+                isOnSale,
+                pageable
+        ).map(sf -> ShopFlowerRes.builder()
+                .id(sf.getId())
+                .flowerId(sf.getFlower().getId())
+                .flowerName(sf.getFlower().getName())
+                .price(sf.getPrice())
+                .onSale(sf.getOnSale())
+                .colors(new ArrayList<>(sf.getColors()))
+                .build()
+        );
     }
 }
