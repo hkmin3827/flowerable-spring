@@ -43,6 +43,9 @@ public class OrderRequest {
 
     private Integer wrappingExtraPrice;
 
+    @Column(nullable = true, length = 100)
+    private String message;  // 요청 사항
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -55,7 +58,8 @@ public class OrderRequest {
                                       Long shopId,
                                       String wrappingColorName,
                                       Integer wrappingExtraPrice,
-                                      List<OrderItem> orderItems) {
+                                      List<OrderItem> orderItems,
+                                      String message) {
         OrderRequest order = new OrderRequest();
         order.userId = userId;
         order.shopId = shopId;
@@ -77,6 +81,9 @@ public class OrderRequest {
                 ? order.wrappingExtraPrice
                 : 0;
         order.totalPrice = order.totalFlowerPrice + wrappingPrice;
+        if(message != null){
+            order.message = message;
+        }
         return order;
     }
 

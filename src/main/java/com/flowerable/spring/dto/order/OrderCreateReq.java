@@ -9,4 +9,5 @@ public class OrderCreateReq {
     private String wrappingColorName;
     private Integer wrappingExtraPrice;
     private List<OrderItemReq> orderItems;
+    private String message;
 }

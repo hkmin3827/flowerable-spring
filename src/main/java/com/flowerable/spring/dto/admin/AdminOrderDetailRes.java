@@ -1,6 +1,7 @@
 package com.flowerable.spring.dto.admin;
 
 import com.flowerable.spring.constant.OrderCancelBy;
+import com.flowerable.spring.constant.OrderCancelReason;
 import com.flowerable.spring.constant.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,4 +30,9 @@ public class AdminOrderDetailRes {
     private OrderCancelBy canceledBy;
 
     private List<AdminOrderItemRes> items;
+
+    private String message;
+
+//    private OrderCancelBy cancelBy;
+//    private OrderCancelReason cancelReason;
 }

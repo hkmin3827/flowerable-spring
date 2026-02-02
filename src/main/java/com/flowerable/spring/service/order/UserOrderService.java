@@ -1,8 +1,7 @@
 package com.flowerable.spring.service.order;
 
-import com.flowerable.spring.constant.ErrorCode;
-import com.flowerable.spring.constant.OrderCancelBy;
-import com.flowerable.spring.constant.OrderStatus;
+import com.flowerable.spring.constant.*;
+import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.dto.order.*;
 import com.flowerable.spring.entity.order.OrderItem;
 import com.flowerable.spring.entity.order.OrderRequest;
@@ -15,6 +14,7 @@ import com.flowerable.spring.repository.OrderRequestRepository;
 import com.flowerable.spring.repository.ShopFlowerRepository;
 import com.flowerable.spring.repository.ShopRepository;
 import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +32,7 @@ public class UserOrderService {
     private final ShopRepository shopRepository;
     private final ShopFlowerRepository shopFlowerRepository;
     private final OrderCancelLogService orderCancelLogService;
+    private final NotificationService notificationService;
 
     @Transactional
     public Long createOrder(Long userId, Long shopId, OrderCreateReq req) {
@@ -43,7 +44,7 @@ public class UserOrderService {
         for (OrderItemReq itemReq : req.getOrderItems()) {
 
             ShopFlower shopFlower = shopFlowerRepository
-                    .findByIdAndOnSaleTrue(itemReq.getShopFlowerId())
+                    .findByIdAndShopIdAndOnSaleTrue(itemReq.getShopFlowerId(), shopId)
                     .orElseThrow(() -> new CustomException(
                             ErrorCode.SHOP_FLOWER_NOT_ON_SALE
                     ));
@@ -62,10 +63,16 @@ public class UserOrderService {
                 shopId,
                 req.getWrappingColorName(),
                 req.getWrappingExtraPrice(),
-                orderItems
+                orderItems,
+                req.getMessage()
         );
 
         orderRequestRepository.save(order);
+
+        String content = order.getMessage() == null
+                ? "주문 확인 후 접수 또는 취소해주세요."
+                : "주문 확인 후 접수 또는 취소해주세요. (요청 사항 : " + order.getMessage()+ ")";
+        notifyShop(order, order.getShopId(), NotificationType.ORDER_CREATED, "새 주문이 접수되었습니다.", content);
         return order.getId();
     }
 
@@ -77,11 +84,16 @@ public class UserOrderService {
         OrderRequest order = orderRequestRepository.findByIdAndUserId(orderId, user.getId())
                 .orElseThrow(OrderNotFoundException::new);
 
-        if(order.getStatus() == OrderStatus.CANCELLED || order.getCanceledAt() != null) {
-            throw new CustomException(ErrorCode.ORDER_ALREADY_CANCELED);
+        if(order.getStatus() != OrderStatus.CANCELLED && order.getStatus() != OrderStatus.REQUESTED){
+            throw new CustomException(ErrorCode.ORDER_ALREADY_ACCEPTED);
         }
 
+        if(order.getStatus() == OrderStatus.CANCELLED) {
+            throw new CustomException(ErrorCode.ORDER_ALREADY_CANCELED);
+        }
         order.cancel();
+
+        notifyShop(order, order.getShopId(), NotificationType.ORDER_CANCELED, "주문이 취소되었습니다.", "고객이 주문을 취소하였습니다.");
         orderCancelLogService.recordCancel(order.getId(), OrderCancelBy.USER);
     }
 
@@ -124,6 +136,20 @@ public class UserOrderService {
                 .createdAt(order.getCreatedAt())
                 .canceledAt(order.getCanceledAt())
                 .items(items)
+                .message(order.getMessage())
                 .build();
+    }
+
+    private void notifyShop(OrderRequest order, Long receiverId, NotificationType type, String title, String content) {
+        notificationService.createNotification(
+                new NotificationCreateReq(
+                        NotificationReceiverType.SHOP,
+                        receiverId,
+                        type,
+                        title,
+                        content,
+                        order.getId()
+                )
+        );
     }
 }

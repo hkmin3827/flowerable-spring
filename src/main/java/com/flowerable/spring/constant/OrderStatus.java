@@ -2,7 +2,7 @@ package com.flowerable.spring.constant;
 
 public enum OrderStatus {
     REQUESTED,
-    CONFIRMED,
+    ACCEPTED,
     READY,
     COMPLETED,
     CANCELLED

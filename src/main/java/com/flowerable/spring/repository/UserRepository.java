@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    @Query("select u.id from User u where u.account.id = :accountId")
+    Optional<Long> findIdByAccountId(Long accountId);
 
     @Query("""
     select

@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ShopFlowerRepository extends JpaRepository<ShopFlower, Long> {
     Optional<ShopFlower> findByIdAndShopId(Long id, Long shopId);
 
-    Optional<ShopFlower> findByIdAndOnSaleTrue(Long id);
+    Optional<ShopFlower> findByIdAndShopIdAndOnSaleTrue(Long id, Long shopId);
 
     @Query("""
     select sf

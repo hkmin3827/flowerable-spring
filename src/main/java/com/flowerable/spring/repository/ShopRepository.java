@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ShopRepository extends JpaRepository<Shop, Long> {
+    @Query("select s.id from Shop s where s.account.id = :accountId")
+    Optional<Long> findIdByAccountId(Long accountId);
+
     Optional<Shop> findByAccountIdAndDeletedAtIsNull(Long accountId);
     // 사용자 꽃 + 지역 선택 후
     @Query("""

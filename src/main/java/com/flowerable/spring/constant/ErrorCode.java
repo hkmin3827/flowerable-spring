@@ -11,6 +11,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     SHOP_NOT_FOUND(HttpStatus.NOT_FOUND, "샵을 찾을 수 없습니다."),
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림을 찾을 수 없습니다."),
     SUSPENDED_ACCOUNT(HttpStatus.FORBIDDEN,"접근 제한된 계정입니다."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증된 사용자가 아닙니다."),  // 401 UNAUTHORIZED
@@ -43,8 +44,11 @@ public enum ErrorCode {
     INVALID_COORDINATE(HttpStatus.BAD_REQUEST, "유효하지 않은 좌표 값입니다."),
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 주문 상태 요청입니다."),
     WRAPPING_OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "설정된 포장지 옵션이 없습니다."),
-    ORDER_ALREADY_CONFIRM(HttpStatus.CONFLICT, "이미 접수된 주문건은 취소가 불가합니다."),
-    ORDER_ALREADY_CANCELED(HttpStatus.CONFLICT, "이미 취소 완료된 주문입니다.");
+    ORDER_ALREADY_ACCEPTED(HttpStatus.CONFLICT, "이미 접수된 주문건은 취소가 불가합니다."),
+    ORDER_ALREADY_CANCELED(HttpStatus.CONFLICT, "이미 취소 완료된 주문입니다."),
+    ROLE_NOT_USER(HttpStatus.BAD_REQUEST, "USER 계정이 아닙니다."),
+    ROLE_NOT_SHOP(HttpStatus.BAD_REQUEST, "SHOP 계정이 아닙니다."),
+    CANCEL_REASON_REQUIRED(HttpStatus.BAD_REQUEST, "취소 사유는 필수 값입니다.");
 
     private final HttpStatus status;
     private final String message;

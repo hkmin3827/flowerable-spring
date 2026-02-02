@@ -1,19 +1,16 @@
 package com.flowerable.spring.service.order;
 
-import com.flowerable.spring.constant.ErrorCode;
-import com.flowerable.spring.constant.OrderCancelBy;
-import com.flowerable.spring.constant.OrderStatus;
-import com.flowerable.spring.dto.order.OrderItemRes;
-import com.flowerable.spring.dto.order.OrderDetailRes;
-import com.flowerable.spring.dto.order.OrderListRes;
+import com.flowerable.spring.constant.*;
+import com.flowerable.spring.dto.notification.NotificationCreateReq;
+import com.flowerable.spring.dto.order.*;
 import com.flowerable.spring.entity.order.OrderRequest;
-import com.flowerable.spring.dto.order.OrderStatusChangeReq;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.exception.OrderNotFoundException;
 import com.flowerable.spring.exception.ShopNotFoundException;
 import com.flowerable.spring.repository.OrderRequestRepository;
 import com.flowerable.spring.repository.ShopRepository;
+import com.flowerable.spring.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +25,7 @@ public class ShopOrderService {
     private final OrderRequestRepository orderRequestRepository;
     private final ShopRepository shopRepository;
     private final OrderCancelLogService orderCancelLogService;
+    private final NotificationService notificationService;
 
     @Transactional
     public void changeStatus(Long accountId, Long orderId, OrderStatusChangeReq req) {
@@ -37,16 +35,27 @@ public class ShopOrderService {
         OrderRequest orderReq = orderRequestRepository.findDetailForStatusChange(orderId, shop.getId())
                 .orElseThrow(OrderNotFoundException::new);
 
+        OrderStatus targetStatus = req.status();
         OrderStatus current = orderReq.getStatus();
 
-        validateTransition(current, req.status());
+        validateTransition(current, targetStatus);
 
-        orderReq.changeStatus(req.status());
-
-        if(req.status() == OrderStatus.CANCELLED){
+        if(targetStatus == OrderStatus.CANCELLED){
+            if (req.cancelReason() == null) {
+                throw new CustomException(ErrorCode.CANCEL_REASON_REQUIRED);
+            }
             orderReq.markCanceledAt();
             orderCancelLogService.recordCancel(orderReq.getId(), OrderCancelBy.SHOP);
+            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_CANCELED, "주문이 취소되었습니다.", "취소 사유 : " + req.cancelReason().getDescription());
         }
+        if(targetStatus == OrderStatus.ACCEPTED){
+            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_ACCEPTED, "주문이 접수되었습니다.", "주문해주셔서 감사합니다. 빠르게 준비해드리겠습니다.");
+        }
+        if(targetStatus == OrderStatus.READY){
+            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_READY, "상품이 준비되었습니다.", "매장으로 픽업하러 방문해주세요.");
+        }
+
+        orderReq.changeStatus(targetStatus);
     }
 
     @Transactional(readOnly = true)
@@ -89,6 +98,7 @@ public class ShopOrderService {
                 .createdAt(order.getCreatedAt())
                 .canceledAt(order.getCanceledAt())
                 .items(items)
+                .message(order.getMessage())
                 .build();
     }
 
@@ -96,11 +106,11 @@ public class ShopOrderService {
     private void validateTransition(OrderStatus current, OrderStatus statusReq) {
         switch (current) {
             case REQUESTED -> {
-                if (statusReq != OrderStatus.CONFIRMED && statusReq != OrderStatus.CANCELLED) {
+                if (statusReq != OrderStatus.ACCEPTED && statusReq != OrderStatus.CANCELLED) {
                     throw new CustomException(ErrorCode.FAIL_CHANGE_ORDER_STATUS);
                 }
             }
-            case CONFIRMED -> {
+            case ACCEPTED -> {
                 if (statusReq != OrderStatus.READY && statusReq != OrderStatus.CANCELLED) {
                     throw new CustomException(ErrorCode.FAIL_CHANGE_ORDER_STATUS);
                 }
@@ -115,5 +125,17 @@ public class ShopOrderService {
             }
             default -> throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
         }
+    }
+    private void notifyUser(OrderRequest order, Long receiverId, NotificationType type, String title, String content) {
+        notificationService.createNotification(
+                new NotificationCreateReq(
+                        NotificationReceiverType.USER,
+                        receiverId,
+                        type,
+                        title,
+                        content,
+                        order.getId()
+                )
+        );
     }
 }

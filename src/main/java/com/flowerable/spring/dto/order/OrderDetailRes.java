@@ -23,4 +23,5 @@ public class OrderDetailRes {
     private final LocalDateTime canceledAt;
 
     private final List<OrderItemRes> items;
+    private String message;
 }

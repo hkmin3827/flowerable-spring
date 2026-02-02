@@ -43,7 +43,8 @@ public class SecurityConfig {
                                 "/api/auth/logout",
                                 "/api/users/**",
                                 "/api/shops/**",
-                                "/api/flowers/**"
+                                "/api/flowers/**",
+                                "/api/notifications/**"
                         ).authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/shopflowers/**",
