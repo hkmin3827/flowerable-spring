@@ -1,6 +1,6 @@
 //package com.flowerable.spring.repository;
 //
-//import com.flowerable.spring.constant.OrderStatus;
+//import com.flowerable.spring.constant.order.OrderStatus;
 //import com.flowerable.spring.entity.order.OrderRequest;
 //import com.querydsl.core.BooleanBuilder;
 //import com.querydsl.jpa.impl.JPAQueryFactory;

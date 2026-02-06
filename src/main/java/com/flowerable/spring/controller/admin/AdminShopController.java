@@ -1,6 +1,6 @@
 package com.flowerable.spring.controller.admin;
 
-import com.flowerable.spring.constant.ShopStatus;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.admin.AdminShopListRes;
 import com.flowerable.spring.dto.common.PageResponse;
 import com.flowerable.spring.dto.shop.ShopDetailRes;
@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/shops")

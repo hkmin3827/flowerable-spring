@@ -1,6 +1,6 @@
 package com.flowerable.spring.repository;
 
-import com.flowerable.spring.constant.OrderStatus;
+import com.flowerable.spring.constant.order.OrderStatus;
 import com.flowerable.spring.dto.order.OrderListRes;
 import com.flowerable.spring.entity.order.OrderRequest;
 import org.springframework.data.domain.Page;

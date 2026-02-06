@@ -1,6 +1,6 @@
 package com.flowerable.spring.oauth2.userInfo;
 
-import com.flowerable.spring.constant.Provider;
+import com.flowerable.spring.constant.auth.Provider;
 
 import java.util.Map;
 

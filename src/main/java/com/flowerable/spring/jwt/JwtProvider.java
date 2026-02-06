@@ -1,7 +1,7 @@
 package com.flowerable.spring.jwt;
 
-import com.flowerable.spring.constant.Role;
-import com.flowerable.spring.constant.TokenType;
+import com.flowerable.spring.constant.auth.Role;
+import com.flowerable.spring.constant.auth.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

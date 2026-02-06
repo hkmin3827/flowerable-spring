@@ -1,6 +1,6 @@
 //package com.flowerable.spring.service.admin;
 //
-//import com.flowerable.spring.constant.OrderCancelBy;
+//import com.flowerable.spring.constant.order.OrderCancelBy;
 //import com.flowerable.spring.dto.admin.AdminOrderDetailRes;
 //import com.flowerable.spring.dto.admin.AdminOrderItemRes;
 //import com.flowerable.spring.dto.admin.AdminOrderListRes;
@@ -8,7 +8,7 @@
 //import com.flowerable.spring.entity.order.OrderItem;
 //import com.flowerable.spring.entity.order.OrderRequest;
 //import com.flowerable.spring.exception.CustomException;
-//import com.flowerable.spring.constant.ErrorCode;
+//import com.flowerable.spring.constant.common.ErrorCode;
 //import com.flowerable.spring.repository.OrderCancelLogRepository;
 //import com.flowerable.spring.repository.OrderRequestRepository;
 //import lombok.RequiredArgsConstructor;

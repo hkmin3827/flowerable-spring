@@ -1,6 +1,6 @@
 package com.flowerable.spring.exception;
 
-import com.flowerable.spring.constant.ErrorCode;
+import com.flowerable.spring.constant.common.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

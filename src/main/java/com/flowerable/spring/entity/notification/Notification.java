@@ -1,7 +1,7 @@
 package com.flowerable.spring.entity.notification;
 
-import com.flowerable.spring.constant.NotificationReceiverType;
-import com.flowerable.spring.constant.NotificationType;
+import com.flowerable.spring.constant.notification.NotificationReceiverType;
+import com.flowerable.spring.constant.notification.NotificationType;
 import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 @Table(name = "notifications")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification {
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private Long receiverId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private NotificationReceiverType receiverType;
 
     @Column(nullable = false)

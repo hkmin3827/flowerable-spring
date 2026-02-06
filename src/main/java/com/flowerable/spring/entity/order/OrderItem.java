@@ -1,6 +1,6 @@
 package com.flowerable.spring.entity.order;
 
-import com.flowerable.spring.constant.Color;
+import com.flowerable.spring.constant.shopflower.Color;
 import com.flowerable.spring.entity.shopflower.ShopFlower;
 import jakarta.persistence.*;
 import lombok.*;

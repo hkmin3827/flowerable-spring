@@ -1,7 +1,7 @@
 package com.flowerable.spring.entity.shopflower;
 
-import com.flowerable.spring.constant.Color;
-import com.flowerable.spring.constant.ErrorCode;
+import com.flowerable.spring.constant.shopflower.Color;
+import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.entity.flower.Flower;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.exception.CustomException;

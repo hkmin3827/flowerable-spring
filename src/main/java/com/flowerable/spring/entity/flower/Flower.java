@@ -1,7 +1,8 @@
 package com.flowerable.spring.entity.flower;
 
-import com.flowerable.spring.constant.Season;
+import com.flowerable.spring.constant.flower.Season;
 import com.flowerable.spring.dto.flower.FlowerCreateReq;
+import com.flowerable.spring.dto.flower.FlowerUpdateInfoReq;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -58,19 +59,18 @@ public class Flower {
         this.category = dto.getCategory();
     }
 
-    public void updateInfo(FlowerCreateReq dto) {
-        if(dto.getName() != null) {
-            this.name = dto.getName();
+    public void updateInfo(FlowerUpdateInfoReq req) {
+        if(req.name() != null) {
+            this.name = req.name();;
         }
-        if(dto.getFloralLang() != null){
-            this.floralLang = dto.getFloralLang();
+        if(req.floralLang() != null){
+            this.floralLang = req.floralLang();
         }
-        if(dto.getCategory() != null){
-            this.category = dto.getCategory();
+        if(req.category() != null){
+            this.category = req.category();
         }
-        if(dto.getImageUrl() != null){
-            this.imageUrl = dto.getImageUrl();
+        if(req.imageUrl() != null){
+            this.imageUrl = req.imageUrl();
         }
     }
-
 }

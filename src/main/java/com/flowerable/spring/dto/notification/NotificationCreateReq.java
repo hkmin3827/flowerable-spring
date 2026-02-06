@@ -1,7 +1,7 @@
 package com.flowerable.spring.dto.notification;
 
-import com.flowerable.spring.constant.NotificationReceiverType;
-import com.flowerable.spring.constant.NotificationType;
+import com.flowerable.spring.constant.notification.NotificationReceiverType;
+import com.flowerable.spring.constant.notification.NotificationType;
 
 public record NotificationCreateReq (
         NotificationReceiverType receiverType,

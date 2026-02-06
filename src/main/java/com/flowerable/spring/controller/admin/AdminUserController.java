@@ -1,6 +1,6 @@
 package com.flowerable.spring.controller.admin;
 
-import com.flowerable.spring.constant.AccountStatus;
+import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.dto.admin.AdminUserListRes;
 import com.flowerable.spring.dto.common.PageResponse;
 import com.flowerable.spring.dto.user.UserDetailRes;

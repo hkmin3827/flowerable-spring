@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant;
+package com.flowerable.spring.constant.flower;
 
 public enum Season {
     SPRING,

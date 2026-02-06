@@ -1,6 +1,6 @@
 package com.flowerable.spring.controller.order;
 
-import com.flowerable.spring.constant.OrderStatus;
+import com.flowerable.spring.constant.order.OrderStatus;
 import com.flowerable.spring.dto.common.PageResponse;
 import com.flowerable.spring.dto.order.OrderDetailRes;
 import com.flowerable.spring.dto.order.OrderListRes;

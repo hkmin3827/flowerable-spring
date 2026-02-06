@@ -1,10 +1,9 @@
 package com.flowerable.spring.entity.shop;
 
-import com.flowerable.spring.constant.District;
-import com.flowerable.spring.constant.ErrorCode;
-import com.flowerable.spring.constant.Region;
-import com.flowerable.spring.constant.ShopStatus;
-import com.flowerable.spring.dto.shop.ShopDetailRes;
+import com.flowerable.spring.constant.region.District;
+import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.constant.region.Region;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.shop.ShopUpdateInfoReq;
 import com.flowerable.spring.entity.account.Account;
 import com.flowerable.spring.entity.shopflower.ShopFlower;

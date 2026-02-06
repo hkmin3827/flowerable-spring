@@ -1,8 +1,8 @@
 package com.flowerable.spring.repository;
 
-import com.flowerable.spring.constant.District;
-import com.flowerable.spring.constant.Region;
-import com.flowerable.spring.constant.ShopStatus;
+import com.flowerable.spring.constant.region.District;
+import com.flowerable.spring.constant.region.Region;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.admin.AdminShopListRes;
 import com.flowerable.spring.dto.shop.ShopSearchRes;
 import com.flowerable.spring.entity.shop.Shop;
@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ShopRepository extends JpaRepository<Shop, Long> {

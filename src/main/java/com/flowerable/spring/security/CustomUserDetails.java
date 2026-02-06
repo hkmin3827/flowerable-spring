@@ -1,6 +1,6 @@
 package com.flowerable.spring.security;
 
-import com.flowerable.spring.constant.Role;
+import com.flowerable.spring.constant.auth.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

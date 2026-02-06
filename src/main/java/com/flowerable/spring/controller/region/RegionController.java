@@ -1,7 +1,7 @@
 package com.flowerable.spring.controller.region;
 
-import com.flowerable.spring.constant.District;
-import com.flowerable.spring.constant.Region;
+import com.flowerable.spring.constant.region.District;
+import com.flowerable.spring.constant.region.Region;
 import com.flowerable.spring.dto.shop.DistrictRes;
 import com.flowerable.spring.dto.shop.RegionRes;
 import lombok.RequiredArgsConstructor;

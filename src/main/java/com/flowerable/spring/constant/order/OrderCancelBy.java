@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant;
+package com.flowerable.spring.constant.order;
 
 public enum OrderCancelBy {
     USER,

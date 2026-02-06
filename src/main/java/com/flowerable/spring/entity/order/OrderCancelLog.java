@@ -1,6 +1,6 @@
 package com.flowerable.spring.entity.order;
 
-import com.flowerable.spring.constant.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderCancelBy;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

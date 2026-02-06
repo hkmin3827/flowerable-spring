@@ -1,6 +1,6 @@
 package com.flowerable.spring.infra.sse;
 
-import com.flowerable.spring.constant.ErrorCode;
+import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.repository.ShopRepository;
 import com.flowerable.spring.repository.UserRepository;

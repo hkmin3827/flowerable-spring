@@ -8,11 +8,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.Optional;
 
 public interface ShopFlowerRepository extends JpaRepository<ShopFlower, Long> {
-    Optional<ShopFlower> findByIdAndShopId(Long id, Long shopId);
+
+    @Query("""
+        select sf
+        from ShopFlower sf
+        join fetch sf.flower
+        where sf.shop.id = :shopId
+            and sf.id = :id
+    """)
+    Optional<ShopFlower> findByIdAndShopId(@Param("id") Long id, @Param("shopId") Long shopId);
 
     Optional<ShopFlower> findByIdAndShopIdAndOnSaleTrue(Long id, Long shopId);
 
@@ -53,12 +62,14 @@ public interface ShopFlowerRepository extends JpaRepository<ShopFlower, Long> {
             Pageable pageable
     );
 
-    // Flower 비활성/삭제 시 일괄 삭제용
-    @Modifying
+    // Flower 비활성/삭제 시 일괄 판매 숨김 처리용
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
-        delete from ShopFlower sf
+        update ShopFlower sf
+        set sf.onSale = false
         where sf.flower.id = :flowerId
+          and sf.onSale = true
     """)
-    void deleteByFlowerId(@Param("flowerId") Long flowerId);
+    void stopSaleByFlowerId(@Param("flowerId") Long flowerId);
 
 }

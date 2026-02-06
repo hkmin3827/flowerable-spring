@@ -1,6 +1,6 @@
 package com.flowerable.spring.repository;
 
-import com.flowerable.spring.constant.Season;
+import com.flowerable.spring.constant.flower.Season;
 import com.flowerable.spring.dto.admin.AdminFlowerListRes;
 import com.flowerable.spring.entity.flower.Flower;
 import org.springframework.data.domain.Page;
@@ -9,11 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface FlowerRepository extends JpaRepository<Flower, Long> {
-    Optional<Flower> findByName(String name);
+    Optional<Flower> findByIdAndActiveTrue(Long id);
 
     boolean existsByName(String name);
     Page<Flower> findAll(Pageable pageable);

@@ -1,7 +1,7 @@
 package com.flowerable.spring.controller.flower;
 
 
-import com.flowerable.spring.constant.Season;
+import com.flowerable.spring.constant.flower.Season;
 import com.flowerable.spring.dto.common.PageResponse;
 import com.flowerable.spring.dto.flower.FlowerRes;
 import com.flowerable.spring.service.flower.FlowerService;

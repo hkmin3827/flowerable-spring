@@ -1,6 +1,6 @@
 package com.flowerable.spring.dto.order;
 
-import com.flowerable.spring.constant.Color;
+import com.flowerable.spring.constant.shopflower.Color;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

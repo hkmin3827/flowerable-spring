@@ -1,6 +1,6 @@
 package com.flowerable.spring.repository;
 
-import com.flowerable.spring.constant.Provider;
+import com.flowerable.spring.constant.auth.Provider;
 import com.flowerable.spring.entity.account.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 

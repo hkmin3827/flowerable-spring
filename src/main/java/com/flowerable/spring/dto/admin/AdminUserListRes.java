@@ -1,6 +1,6 @@
 package com.flowerable.spring.dto.admin;
 
-import com.flowerable.spring.constant.AccountStatus;
+import com.flowerable.spring.constant.auth.AccountStatus;
 
 public interface AdminUserListRes {
     Long getId();

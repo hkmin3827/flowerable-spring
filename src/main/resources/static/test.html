@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WebSocket STOMP Test</title>
+
+    <!-- SockJS -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+    <!-- STOMP -->
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+  </head>
+  <body>
+    <h2>WebSocket 테스트</h2>
+
+    <button onclick="connect()">CONNECT</button>
+    <button onclick="sendMessage()">SEND MESSAGE</button>
+    <button onclick="disconnect()">DISCONNECT</button>
+
+    <pre id="log"></pre>
+
+    <script>
+      let stompClient = null;
+      const chatRoomId = 1; // 테스트용
+
+function connect() {
+  console.log("[HTML] CONNECT button clicked");
+
+  const socket = new SockJS("http://localhost:8080/ws/chat");
+
+  stompClient = new StompJs.Client({
+    webSocketFactory: () => socket,
+
+    debug: function (str) {
+      console.log("[STOMP DEBUG]", str);
+    },
+
+    onConnect: function (frame) {
+      log("CONNECTED: " + frame);
+
+      stompClient.subscribe(
+        "/sub/chat/room/" + chatRoomId,
+        function (message) {
+          log("RECEIVED: " + message.body);
+        }
+      );
+    },
+
+    onStompError: function (frame) {
+      log("BROKER ERROR: " + frame.headers["message"]);
+    }
+  });
+
+  stompClient.activate();
+}
+
+     function sendMessage() {
+  if (!stompClient || !stompClient.connected) {
+    log("NOT CONNECTED");
+    return;
+  }
+
+  stompClient.publish({
+    destination: "/pub/chat/message",
+    body: JSON.stringify({
+      targetId: 1,
+      content: "임시 HTML에서 보낸 메시지"
+    })
+  });
+
+  log("SEND MESSAGE");
+}
+
+      function disconnect() {
+        if (stompClient) {
+          stompClient.disconnect(() => {
+            log("DISCONNECTED");
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

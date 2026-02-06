@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant;
+package com.flowerable.spring.constant.auth;
 
 public enum AccountStatus {
     ACTIVE,   // 가입 가능

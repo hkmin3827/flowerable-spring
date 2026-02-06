@@ -1,6 +1,6 @@
 package com.flowerable.spring.service.order;
 
-import com.flowerable.spring.constant.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderCancelBy;
 import com.flowerable.spring.entity.order.OrderCancelLog;
 import com.flowerable.spring.repository.OrderCancelLogRepository;
 import lombok.RequiredArgsConstructor;

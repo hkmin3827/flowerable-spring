@@ -1,9 +1,9 @@
 package com.flowerable.spring.entity.account;
 
-import com.flowerable.spring.constant.AccountStatus;
-import com.flowerable.spring.constant.ErrorCode;
-import com.flowerable.spring.constant.Provider;
-import com.flowerable.spring.constant.Role;
+import com.flowerable.spring.constant.auth.AccountStatus;
+import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.constant.auth.Provider;
+import com.flowerable.spring.constant.auth.Role;
 import com.flowerable.spring.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

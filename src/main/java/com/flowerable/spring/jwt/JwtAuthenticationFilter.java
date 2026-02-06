@@ -1,7 +1,7 @@
 package com.flowerable.spring.jwt;
 
-import com.flowerable.spring.constant.Role;
-import com.flowerable.spring.constant.TokenType;
+import com.flowerable.spring.constant.auth.Role;
+import com.flowerable.spring.constant.auth.TokenType;
 
 import com.flowerable.spring.security.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -11,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || uri.equals("/api/auth/shops/signup")
                 || uri.equals("/api/auth/oauth/login")
                 || uri.startsWith("/swagger")
-                || uri.startsWith("/v3/api-docs");
+                || uri.startsWith("/v3/api-docs")
+                || uri.equals("/ws-test.html")
+                || uri.startsWith("/ws/")
+                || uri.endsWith(".html")
+                ;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.flowerable.spring.service.admin;
 
-import com.flowerable.spring.constant.ErrorCode;
-import com.flowerable.spring.constant.ShopStatus;
+import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.admin.AdminShopListRes;
 import com.flowerable.spring.dto.shop.ShopDetailRes;
 import com.flowerable.spring.entity.shop.Shop;
@@ -13,8 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

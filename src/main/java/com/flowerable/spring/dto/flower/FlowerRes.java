@@ -1,6 +1,6 @@
 package com.flowerable.spring.dto.flower;
 
-import com.flowerable.spring.constant.Season;
+import com.flowerable.spring.constant.flower.Season;
 import com.flowerable.spring.entity.flower.Flower;
 import lombok.Getter;
 

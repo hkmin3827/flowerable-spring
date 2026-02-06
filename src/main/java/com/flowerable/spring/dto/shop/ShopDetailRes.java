@@ -1,8 +1,8 @@
 package com.flowerable.spring.dto.shop;
 
-import com.flowerable.spring.constant.District;
-import com.flowerable.spring.constant.Region;
-import com.flowerable.spring.constant.ShopStatus;
+import com.flowerable.spring.constant.region.District;
+import com.flowerable.spring.constant.region.Region;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
 import lombok.Builder;
 import lombok.Getter;

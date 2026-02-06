@@ -1,6 +1,6 @@
 package com.flowerable.spring.service.wrappingoption;
 
-import com.flowerable.spring.constant.ErrorCode;
+import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.dto.wrappingoption.WrappingOptionRes;
 import com.flowerable.spring.entity.wrappingoption.WrappingOption;
 import com.flowerable.spring.entity.shop.Shop;

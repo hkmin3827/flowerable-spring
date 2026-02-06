@@ -1,6 +1,6 @@
 package com.flowerable.spring.dto.admin;
 
-import com.flowerable.spring.constant.OrderStatus;
+import com.flowerable.spring.constant.order.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;

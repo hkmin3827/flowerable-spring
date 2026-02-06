@@ -1,10 +1,9 @@
 package com.flowerable.spring.entity.order;
 
-import com.flowerable.spring.constant.ErrorCode;
-import com.flowerable.spring.constant.OrderStatus;
+import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.constant.order.OrderStatus;
 import com.flowerable.spring.exception.CustomException;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;

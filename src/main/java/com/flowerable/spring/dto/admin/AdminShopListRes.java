@@ -1,7 +1,7 @@
 package com.flowerable.spring.dto.admin;
 
-import com.flowerable.spring.constant.District;
-import com.flowerable.spring.constant.ShopStatus;
+import com.flowerable.spring.constant.region.District;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface AdminShopListRes {

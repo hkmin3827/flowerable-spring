@@ -1,6 +1,10 @@
 package com.flowerable.spring.service.order;
 
-import com.flowerable.spring.constant.*;
+import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.constant.notification.NotificationReceiverType;
+import com.flowerable.spring.constant.notification.NotificationType;
+import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderStatus;
 import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.dto.order.*;
 import com.flowerable.spring.entity.order.OrderRequest;
@@ -46,13 +50,13 @@ public class ShopOrderService {
             }
             orderReq.markCanceledAt();
             orderCancelLogService.recordCancel(orderReq.getId(), OrderCancelBy.SHOP);
-            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_CANCELED, "주문이 취소되었습니다.", "취소 사유 : " + req.cancelReason().getDescription());
+            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_CANCELED,  "취소 사유 : " + req.cancelReason().getDescription());
         }
         if(targetStatus == OrderStatus.ACCEPTED){
-            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_ACCEPTED, "주문이 접수되었습니다.", "주문해주셔서 감사합니다. 빠르게 준비해드리겠습니다.");
+            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_ACCEPTED, "주문해주셔서 감사합니다. 빠르게 준비해드리겠습니다.");
         }
         if(targetStatus == OrderStatus.READY){
-            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_READY, "상품이 준비되었습니다.", "매장으로 픽업하러 방문해주세요.");
+            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_READY, "매장으로 픽업하러 방문해주세요.");
         }
 
         orderReq.changeStatus(targetStatus);
@@ -126,13 +130,13 @@ public class ShopOrderService {
             default -> throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
         }
     }
-    private void notifyUser(OrderRequest order, Long receiverId, NotificationType type, String title, String content) {
+    private void notifyUser(OrderRequest order, Long receiverId, NotificationType type, String content) {
         notificationService.createNotification(
                 new NotificationCreateReq(
                         NotificationReceiverType.USER,
                         receiverId,
                         type,
-                        title,
+                        type.getTitle(),
                         content,
                         order.getId()
                 )

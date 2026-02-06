@@ -1,7 +1,6 @@
 package com.flowerable.spring.service.shopflower;
 
-import com.flowerable.spring.constant.Color;
-import com.flowerable.spring.constant.ErrorCode;
+import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.dto.shopflower.ShopFlowerRegReq;
 import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
 import com.flowerable.spring.dto.shopflower.ShopFlowerUpdateReq;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +37,9 @@ public class ShopFlowerService {
             throw new CustomException(ErrorCode.SHOP_FLOWER_ALREADY_REGISTER);
         }
 
-        Flower flower = flowerRepository.getReferenceById(req.getFlowerId());
+        Flower flower = flowerRepository.findByIdAndActiveTrue(req.getFlowerId())
+                .orElseThrow(() -> new CustomException(ErrorCode.FLOWER_NOT_ACTIVE));
+
 
         ShopFlower shopFlower = new ShopFlower(
                 shop,
@@ -76,6 +76,10 @@ public class ShopFlowerService {
         ShopFlower shopFlower = shopFlowerRepository
                 .findByIdAndShopId(shopFlowerId, shop.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_REGISTER));
+
+        if (!shopFlower.getFlower().getActive()) {
+            throw new CustomException(ErrorCode.FLOWER_NOT_ACTIVE);
+        }
 
         shopFlower.startSale();
     }

@@ -1,6 +1,10 @@
 package com.flowerable.spring.service.order;
 
-import com.flowerable.spring.constant.*;
+import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.constant.notification.NotificationReceiverType;
+import com.flowerable.spring.constant.notification.NotificationType;
+import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderStatus;
 import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.dto.order.*;
 import com.flowerable.spring.entity.order.OrderItem;
@@ -72,7 +76,7 @@ public class UserOrderService {
         String content = order.getMessage() == null
                 ? "주문 확인 후 접수 또는 취소해주세요."
                 : "주문 확인 후 접수 또는 취소해주세요. (요청 사항 : " + order.getMessage()+ ")";
-        notifyShop(order, order.getShopId(), NotificationType.ORDER_CREATED, "새 주문이 접수되었습니다.", content);
+        notifyShop(order, order.getShopId(), NotificationType.ORDER_CREATED, content);
         return order.getId();
     }
 
@@ -93,7 +97,7 @@ public class UserOrderService {
         }
         order.cancel();
 
-        notifyShop(order, order.getShopId(), NotificationType.ORDER_CANCELED, "주문이 취소되었습니다.", "고객이 주문을 취소하였습니다.");
+        notifyShop(order, order.getShopId(), NotificationType.ORDER_CANCELED, "고객이 주문을 취소하였습니다.");
         orderCancelLogService.recordCancel(order.getId(), OrderCancelBy.USER);
     }
 
@@ -140,13 +144,13 @@ public class UserOrderService {
                 .build();
     }
 
-    private void notifyShop(OrderRequest order, Long receiverId, NotificationType type, String title, String content) {
+    private void notifyShop(OrderRequest order, Long receiverId, NotificationType type, String content) {
         notificationService.createNotification(
                 new NotificationCreateReq(
                         NotificationReceiverType.SHOP,
                         receiverId,
                         type,
-                        title,
+                        type.getTitle(),
                         content,
                         order.getId()
                 )

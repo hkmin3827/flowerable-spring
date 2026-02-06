@@ -1,6 +1,6 @@
 package com.flowerable.spring.dto.order;
 
-import com.flowerable.spring.constant.OrderStatus;
+import com.flowerable.spring.constant.order.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

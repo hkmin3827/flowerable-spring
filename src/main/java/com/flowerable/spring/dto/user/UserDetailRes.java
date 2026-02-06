@@ -1,7 +1,6 @@
 package com.flowerable.spring.dto.user;
 
-import com.flowerable.spring.constant.Provider;
-import com.flowerable.spring.constant.Role;
+import com.flowerable.spring.constant.auth.Provider;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

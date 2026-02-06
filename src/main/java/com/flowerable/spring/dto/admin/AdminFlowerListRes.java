@@ -1,6 +1,6 @@
 package com.flowerable.spring.dto.admin;
 
-import com.flowerable.spring.constant.Season;
+import com.flowerable.spring.constant.flower.Season;
 
 public interface AdminFlowerListRes {
     Long getId();

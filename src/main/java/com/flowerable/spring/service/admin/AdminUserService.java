@@ -1,7 +1,7 @@
 package com.flowerable.spring.service.admin;
 
-import com.flowerable.spring.constant.AccountStatus;
-import com.flowerable.spring.constant.ErrorCode;
+import com.flowerable.spring.constant.auth.AccountStatus;
+import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.dto.admin.AdminUserListRes;
 import com.flowerable.spring.dto.user.UserDetailRes;
 import com.flowerable.spring.entity.user.User;

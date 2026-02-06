@@ -1,8 +1,8 @@
 package com.flowerable.spring.service.auth;
 
-import com.flowerable.spring.constant.ErrorCode;
-import com.flowerable.spring.constant.Role;
-import com.flowerable.spring.constant.TokenType;
+import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.constant.auth.Role;
+import com.flowerable.spring.constant.auth.TokenType;
 import com.flowerable.spring.dto.auth.AuthReq;
 import com.flowerable.spring.dto.auth.AuthRes;
 import com.flowerable.spring.exception.CustomException;

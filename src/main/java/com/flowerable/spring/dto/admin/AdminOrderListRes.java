@@ -1,7 +1,7 @@
 package com.flowerable.spring.dto.admin;
 
-import com.flowerable.spring.constant.OrderCancelBy;
-import com.flowerable.spring.constant.OrderStatus;
+import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 

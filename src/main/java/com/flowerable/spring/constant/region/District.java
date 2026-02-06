@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant;
+package com.flowerable.spring.constant.region;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
