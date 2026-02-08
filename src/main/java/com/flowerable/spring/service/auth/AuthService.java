@@ -25,11 +25,11 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public AuthRes login(AuthReq.Login dto) {
-        if (dto.getLoginType() == Role.ROLE_USER || dto.getLoginType() == Role.ROLE_ADMIN) {
+        if (dto.getRole() == Role.ROLE_USER || dto.getRole() == Role.ROLE_ADMIN) {
             return userAuthService.login(dto);
         }
 
-        if (dto.getLoginType() == Role.ROLE_SHOP) {
+        if (dto.getRole() == Role.ROLE_SHOP) {
             return shopAuthService.login(dto);
         }
         throw new CustomException(ErrorCode.INVALID_ROLE);
@@ -88,7 +88,10 @@ public class AuthService {
                 .build();
     }
 
-        public void logout(Long accountId) {
+    public void logout(Long accountId) {
             refreshTokenService.deleteRefreshToken(accountId);
         }
+
 }
+
+

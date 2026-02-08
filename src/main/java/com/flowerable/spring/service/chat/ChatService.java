@@ -16,10 +16,7 @@ import com.flowerable.spring.entity.user.User;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.exception.ShopNotFoundException;
 import com.flowerable.spring.exception.UserNotFoundException;
-import com.flowerable.spring.repository.ChatMessageRepository;
-import com.flowerable.spring.repository.ChatRoomRepository;
-import com.flowerable.spring.repository.ShopRepository;
-import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.repository.*;
 import com.flowerable.spring.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +35,7 @@ public class ChatService {
     private final ShopRepository shopRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public void sendMessage(
@@ -47,7 +45,6 @@ public class ChatService {
     ) {
         SenderContext sender = resolveSender(accountId, senderRole, req.targetId());
 
-
         ChatRoom chatRoom = chatRoomRepository
                 .findByUserIdAndShopId(sender.userId(), sender.shopId())
                 .orElseGet(() ->
@@ -55,6 +52,11 @@ public class ChatService {
                                 ChatRoom.create(sender.userId(), sender.shopId())
                         )
                 );
+
+        chatRoomRepository.findByUserIdAndShopId(
+                sender.userId(),
+                sender.shopId()
+        ).orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
         ChatMessage message = ChatMessage.create(
                 sender.senderId(),
@@ -70,13 +72,13 @@ public class ChatService {
                 ChatMessageRes.from(message)
         );
 
-        notificationService.createNotification(
+        notificationService.createOrUpdateChatNotification(
                 new NotificationCreateReq(
                         sender.receiverType(),
                         sender.receiverId(),
                         NotificationType.MESSAGE_RECEIVED,
                         NotificationType.MESSAGE_RECEIVED.getTitle(),
-                        message.getContent(),
+                        "새 메세지가 도착했습니다.",
                         chatRoom.getId()
                 )
         );
@@ -89,19 +91,37 @@ public class ChatService {
         );
     }
 
-//    @Transactional
-//    public void enterChatRoom(
-//            Long chatRoomId,
-//            Long accountId,
-//            Role role
-//    ) {
-//        Long receiverId = resolveReceiverId(accountId, role);
-//
-//        notificationService.markChatRoomNotificationsAsRead(
-//                chatRoomId,
-//                receiverId
-//        );
-//    }
+    @Transactional
+    public void enterChatRoom(
+            Long chatRoomId,
+            Long accountId,
+            Role role
+    ) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+
+        Long receiverId = resolveReceiverId(accountId, role);
+
+        if (role == Role.ROLE_USER && !chatRoom.getUserId().equals(receiverId)) {
+            throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
+        }
+        if (role == Role.ROLE_SHOP && !chatRoom.getShopId().equals(receiverId)) {
+            throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
+        }
+
+        chatMessageRepository.markMessagesAsRead(
+                chatRoomId,
+                receiverId
+        );
+
+        notificationRepository.markAsReadByTypeAndReceiverIdAndReferenceId(
+                NotificationType.MESSAGE_RECEIVED,
+                receiverId,
+                chatRoomId
+        );
+    }
+
 
     private SenderContext resolveSender(
             Long accountId,

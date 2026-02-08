@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorCode {
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "이미 등록된 이메일입니다."),
+    TELNUM_DUPLICATED(HttpStatus.CONFLICT, "이미 일반 회원으로 가입한 전화번호입니다."),
+    ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND,"계정을 찾을 수 없습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     SHOP_NOT_FOUND(HttpStatus.NOT_FOUND, "샵을 찾을 수 없습니다."),
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."),
@@ -53,7 +55,9 @@ public enum ErrorCode {
     ROLE_NOT_SHOP(HttpStatus.BAD_REQUEST, "SHOP 계정이 아닙니다."),
     CANCEL_REASON_REQUIRED(HttpStatus.BAD_REQUEST, "취소 사유는 필수 값입니다."),
     IMAGE_ALREADY_NOT_THUMBNAIL(HttpStatus.CONFLICT, "이미 대표 이미지가 아닌 사진입니다."),
-    IMAGE_ALREADY_THUMBNAIL(HttpStatus.CONFLICT, "이미 대표 이미지로 설정된 사진입니다.");
+    IMAGE_ALREADY_THUMBNAIL(HttpStatus.CONFLICT, "이미 대표 이미지로 설정된 사진입니다."),
+    CHAT_ROOM_ACCESS_DENIED(HttpStatus.FORBIDDEN, "채팅방 인원에 속해있지 않습니다."),
+    PROFILE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "프로필 필수 값이 입력되지 않았습니다.");
 
     private final HttpStatus status;
     private final String message;

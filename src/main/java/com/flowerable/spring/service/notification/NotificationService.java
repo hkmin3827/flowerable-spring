@@ -3,6 +3,7 @@ package com.flowerable.spring.service.notification;
 import com.flowerable.spring.constant.auth.Role;
 import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.constant.notification.NotificationReceiverType;
+import com.flowerable.spring.constant.notification.NotificationType;
 import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.dto.notification.NotificationRes;
 import com.flowerable.spring.entity.notification.Notification;
@@ -43,6 +44,33 @@ public class NotificationService {
         sendIfConnected(notification);
 
         return notification;
+    }
+
+    @Transactional
+    public void createOrUpdateChatNotification(
+            NotificationCreateReq req
+    ) {
+        Notification notification = notificationRepository
+                .findByTypeAndReceiverTypeAndReceiverIdAndReferenceId(
+                        NotificationType.MESSAGE_RECEIVED,
+                        req.receiverType(),
+                        req.receiverId(),
+                        req.referenceId()
+                )
+                .orElse(null);
+
+        if (notification == null) {
+            Notification newNotification = Notification.create(req);
+
+            notificationRepository.save(newNotification);
+            sendIfConnected(newNotification);
+            return;
+        }
+
+        // 있으면 업데이트
+//        notification.updateContent(req.content());
+        notification.markAsUnread(); // 다시 안 읽음 처리
+        sendIfConnected(notification);
     }
 
     @Transactional

@@ -32,10 +32,11 @@
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(
                                     "/api/auth/login",
+                                    "/login/oauth2/**",
                                     "/api/auth/users/signup",
                                     "/api/auth/shops/signup",
                                     "/api/auth/oauth/login",
-                                    "/api/regions",
+                                    "/api/regions/**",
                                     "/ws-test.html",
                                     "/ws/**",
                                     "/sockjs/**"

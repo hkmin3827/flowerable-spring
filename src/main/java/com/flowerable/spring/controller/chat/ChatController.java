@@ -5,13 +5,10 @@ import com.flowerable.spring.security.CustomUserDetails;
 import com.flowerable.spring.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -31,6 +28,16 @@ public class ChatController {
                 req
         );
         log.info("[WS] @MessageMapping entered, payload={}", req);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{chatRoomId}/enter")
+    public ResponseEntity<Void> enterChatRoom(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long chatRoomId
+    )
+    {
+        chatService.enterChatRoom(chatRoomId, userDetails.getId(), userDetails.getRole());
         return ResponseEntity.noContent().build();
     }
 }

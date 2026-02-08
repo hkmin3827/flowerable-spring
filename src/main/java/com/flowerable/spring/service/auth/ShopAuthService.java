@@ -42,15 +42,16 @@ public class ShopAuthService {
         validateRegionDistrict(region, district);
         Account account = Account.createShopAccount(
                 dto.getEmail(),
-                passwordEncoder.encode(dto.getPassword())
+                passwordEncoder.encode(dto.getPassword()),
+                dto.getTelnum()
         );
 
         accountRepository.save(account);
 
-        Shop shop = Shop.create(account, dto.getShopName(), dto.getAddress(), dto.getTelnum(), region, district);
+        Shop shop = Shop.create(account, dto.getShopName(), dto.getAddress(), region, district);
         shopRepository.save(shop);
 
-        return issue(account.getId(), Role.ROLE_SHOP);
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL);
     }
 
     @Transactional(readOnly = true)
@@ -58,7 +59,7 @@ public class ShopAuthService {
         Account account = accountRepository.findByEmailAndDeletedAtIsNull(dto.getEmail())
                 .orElseThrow(ShopNotFoundException::new);
 
-        if (account.getRole() != dto.getLoginType()) {
+        if (account.getRole() != dto.getRole()) {
             throw new CustomException(ErrorCode.LOGIN_ROLE_MISMATCH);
         }
 
@@ -80,7 +81,7 @@ public class ShopAuthService {
             throw new SuspendedAccountException();
         }
 
-        return issue(account.getId(), Role.ROLE_SHOP);
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL);
     }
 
     public void withdraw(Long accountId, AuthReq.Withdraw dto) {
@@ -100,7 +101,7 @@ public class ShopAuthService {
         refreshTokenService.deleteRefreshToken(accountId);
     }
 
-    private AuthRes issue(Long accountId, Role role) {
+    private AuthRes issue(Long accountId, Role role, String shopName, Provider provider) {
         String accessToken =
                 jwtProvider.createAccessToken(accountId, role);
 
@@ -113,8 +114,10 @@ public class ShopAuthService {
         return AuthRes.builder()
                 .id(accountId)
                 .role(role)
+                .name(shopName)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .provider(provider)
                 .build();
     }
 

@@ -44,10 +44,13 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AccountStatus status = AccountStatus.ACTIVE;   // 로그인 가능 여부 Status
+    private AccountStatus status = AccountStatus.TEMP;   // 로그인 가능 여부 Status
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(length = 20, unique = true)
+    private String telnum;
 
     private LocalDateTime deletedAt;
 
@@ -56,29 +59,38 @@ public class Account {
         this.createdAt = LocalDateTime.now();
     }
 
-    private Account(String email, String password, Provider provider, String providerId, Role role) {
+    private Account(String email, String password, Provider provider, String providerId, Role role, String telnum) {
         this.email = email;
         this.password = password;
         this.provider = provider;
         this.providerId = providerId;
         this.role = role;
         this.status = AccountStatus.ACTIVE;
+        this.telnum = telnum;
     }
 
-    public static Account createUserAccount(String email, String password) {
-        return new Account(email, password, Provider.LOCAL, null,  Role.ROLE_USER);
+    public static Account createUserAccount(String email, String password, String telnum) {
+        return new Account(email, password, Provider.LOCAL, null,  Role.ROLE_USER, telnum);
     }
 
-    public static Account createShopAccount(String email, String password) {
-        return new Account(email, password, Provider.LOCAL, null, Role.ROLE_SHOP);
+    public static Account createShopAccount(String email, String password, String telnum) {
+        return new Account(email, password, Provider.LOCAL, null, Role.ROLE_SHOP, telnum);
     }
 
     public static Account createOAuth(Provider provider, String providerId, Role role) {
-        return new Account(null, null, provider, providerId, role);
+        return new Account(null, null, provider, providerId, role, null);
     }
 
-    public void setEmailIfPresent(String email) {
-        if (email != null) this.email = email;
+    public void markTemp(){
+        this.status = AccountStatus.TEMP;
+    }
+
+    public void setEmail(String email){
+        this.email = email;
+    }
+
+    public void setTelnum(String telnum){
+        this.telnum = telnum;
     }
 
     public void suspend() {

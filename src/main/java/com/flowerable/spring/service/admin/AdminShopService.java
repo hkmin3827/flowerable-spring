@@ -57,7 +57,7 @@ public class AdminShopService {
                 .shopName(shop.getShopName())
                 .status(shop.getStatus())
                 .deletedAt(shop.getDeletedAt())
-                .telnum(shop.getTelnum())
+                .telnum(shop.getAccount().getTelnum())
                 .latitude(shop.getLatitude())
                 .longitude(shop.getLongitude())
                 .description(shop.getDescription())

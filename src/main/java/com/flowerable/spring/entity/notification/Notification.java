@@ -42,12 +42,12 @@ public class Notification {
 //    private String message;
 
     @Column(nullable = false)
-    private boolean read;
+    private boolean isRead;
 
     private LocalDateTime readAt;
 
     public void markAsRead() {
-        this.read = true;
+        this.isRead = true;
         this.readAt = LocalDateTime.now();
     }
 
@@ -63,5 +63,13 @@ public class Notification {
         notification.content = req.content();
         notification.referenceId = req.referenceId();
         return notification;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void markAsUnread() {
+        this.isRead = false;
     }
 }

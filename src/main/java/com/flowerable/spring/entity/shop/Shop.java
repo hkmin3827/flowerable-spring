@@ -40,9 +40,6 @@ public class Shop {
     @Column(length = 255)
     private String description;
 
-    @Column(length = 20)
-    private String telnum;
-
     @Column(nullable = false, length = 100)
     private String address;  // 상세주소
 
@@ -73,19 +70,18 @@ public class Shop {
         this.registerAt = LocalDateTime.now();
     }
 
-    private Shop(Account account, String shopName, String address, String telnum, Region region, District district) {
+    private Shop(Account account, String shopName, String address, Region region, District district) {
         this.account = account;
         this.shopName = shopName;
         this.address = address;
-        this.telnum = telnum;
         this.status = ShopStatus.PENDING;
         this.region = region;
         this.district = district;
     }
 
 
-    public static Shop create(Account account, String shopName, String address, String telnum, Region region, District district) {
-        return new Shop(account, shopName, address, telnum, region, district);
+    public static Shop create(Account account, String shopName, String address, Region region, District district) {
+        return new Shop(account, shopName, address, region, district);
     }
 
     public void activate() {
@@ -99,7 +95,7 @@ public class Shop {
     public void updateInfo(ShopUpdateInfoReq req, Region region, District district) {
         if (req.getShopName() != null) {this.shopName = req.getShopName();}
         if (req.getDescription() != null) {this.description = req.getDescription();}
-        if (req.getTelnum() != null) {this.telnum = req.getTelnum();}
+        if (req.getTelnum() != null) {this.account.setTelnum(req.getTelnum());}
         if (region != null) {this.region = region;}
         if (district != null) {this.district = district;}
         if (req.getAddress() != null) {this.address = req.getAddress();}

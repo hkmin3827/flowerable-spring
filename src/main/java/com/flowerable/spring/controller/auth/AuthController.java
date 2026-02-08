@@ -42,6 +42,13 @@ public class AuthController {
         return authService.oauth2Login(dto);
     }
 
+    @PostMapping("/oauth/complete")
+    public AuthRes completeOAuthSignup(
+            @RequestBody AuthReq.OAuthComplete req
+    ) {
+        return userAuthService.completeOAuthSignup(req);
+    }
+
     @PostMapping("/withdraw")
     public ResponseEntity<Void> withdraw(
             @AuthenticationPrincipal CustomUserDetails userDetails,

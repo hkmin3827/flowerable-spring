@@ -32,9 +32,6 @@ public class User {
     @Column(length = 30)
     private String name;
 
-    @Column(length = 20)
-    private String telnum;
-
     @Column(nullable = false)
     private boolean active = true;
 
@@ -48,10 +45,9 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
 
-    private User(Account account, String name, String telnum) {
+    private User(Account account, String name) {
         this.account = account;
         this.name = name;
-        this.telnum = telnum;
     }
 
     public void update(UserUpdateInfoReq req){
@@ -59,12 +55,12 @@ public class User {
             this.name = req.getName();
         }
         if(req.getTelnum() != null){
-            this.telnum = req.getTelnum();
+            this.account.setTelnum(req.getTelnum());
         }
     }
 
-    public static User create(Account account, String name, String telnum) {
-        return new User(account, name, telnum);
+    public static User create(Account account, String name) {
+        return new User(account, name);
     }
 
     public void deactivate() {

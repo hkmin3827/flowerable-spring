@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class RegionController {
     @GetMapping("/districts")
     public ResponseEntity<List<DistrictRes>> getDistricts(@RequestParam Region region) {
         List<DistrictRes> responses = District.findByRegion(region).stream()
+                .sorted(Comparator.comparing(District::getDescription))
                 .map(d -> new DistrictRes(d.name(), d.getDescription()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responses);

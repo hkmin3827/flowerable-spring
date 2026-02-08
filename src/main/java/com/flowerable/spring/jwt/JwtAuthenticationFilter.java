@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || uri.equals("/ws-test.html")
                 || uri.startsWith("/ws/")
                 || uri.endsWith(".html")
-                ;
+                || uri.startsWith("/login/oauth2/");
     }
 
     @Override

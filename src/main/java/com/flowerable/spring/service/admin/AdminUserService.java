@@ -61,7 +61,7 @@ public class AdminUserService {
                 .createdAt(user.getCreatedAt())
                 .name(user.getName())
                 .deletedAt(user.getDeletedAt())
-                .telnum(user.getTelnum())
+                .telnum(user.getAccount().getTelnum())
                 .active(user.isActive())
                 .provider(user.getAccount().getProvider())
                 .providerId(user.getAccount().getProviderId())

@@ -53,7 +53,7 @@ public class AuthReq {
     @Getter @Setter
     public static class Login{
         @NotNull
-        private Role loginType;
+        private Role role;
 
         @Email
         @NotBlank
@@ -73,6 +73,7 @@ public class AuthReq {
 
         private String email;  // optional
         private String name;   // optional
+        private String telnum;
     }
 
     @Getter @Setter
@@ -81,4 +82,9 @@ public class AuthReq {
         private String password;
     }
 
+    public record OAuthComplete(
+            Long accountId,
+            String email,
+            String telnum
+    ) {}
 }
