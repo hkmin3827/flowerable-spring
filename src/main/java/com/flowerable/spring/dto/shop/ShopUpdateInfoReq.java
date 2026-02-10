@@ -9,8 +9,8 @@ public class ShopUpdateInfoReq {
     private String shopName;
     private String description;
     private String telnum;
-    private String regionDesc;
-    private String districtDesc;
+    private String regionCode;
+    private String districtCode;
     private String address;
     private Double latitude;
     private Double longitude;

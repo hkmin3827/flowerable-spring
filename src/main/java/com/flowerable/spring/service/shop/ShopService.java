@@ -50,8 +50,8 @@ public class ShopService {
         Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
                 .orElseThrow(ShopNotFoundException::new);
 
-    Region region = Region.fromDescription(req.getRegionDesc());
-    District district = District.fromDescription(req.getDistrictDesc());
+    Region region = Region.fromCode(req.getRegionCode());
+    District district = District.fromCode(req.getDistrictCode());
 
         shop.updateInfo(req, region, district);
     }

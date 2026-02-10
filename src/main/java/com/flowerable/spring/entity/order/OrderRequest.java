@@ -22,6 +22,9 @@ public class OrderRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String orderNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
@@ -53,13 +56,16 @@ public class OrderRequest {
     @OneToMany(mappedBy = "orderRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public static OrderRequest create(Long userId,
-                                      Long shopId,
-                                      String wrappingColorName,
-                                      Integer wrappingExtraPrice,
-                                      List<OrderItem> orderItems,
-                                      String message) {
+    public static OrderRequest create(
+            String orderNumber,
+            Long userId,
+            Long shopId,
+            String wrappingColorName,
+            Integer wrappingExtraPrice,
+            List<OrderItem> orderItems,
+            String message) {
         OrderRequest order = new OrderRequest();
+        order.orderNumber = orderNumber;
         order.userId = userId;
         order.shopId = shopId;
         order.status = OrderStatus.REQUESTED;

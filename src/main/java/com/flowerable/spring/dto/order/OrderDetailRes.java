@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @Builder
 public class OrderDetailRes {
-
     private final Long orderId;
+    private final String orderNumber;
     private final OrderStatus status;
 
     private final Integer totalFlowerPrice;

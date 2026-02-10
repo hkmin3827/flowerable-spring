@@ -1,6 +1,7 @@
     package com.flowerable.spring.config;
 
     import com.flowerable.spring.jwt.JwtAuthenticationFilter;
+    import com.flowerable.spring.oauth2.handler.OAuth2LoginSuccessHandler;
     import lombok.RequiredArgsConstructor;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@
     public class SecurityConfig {
         private final CorsConfigurationSource corsConfigurationSource;
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,10 +34,12 @@
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(
                                     "/api/auth/login",
+                                    "/api/auth/oauth/**",
+                                    "/api/auth/reissue",
+                                    "/oauth2/**",
                                     "/login/oauth2/**",
                                     "/api/auth/users/signup",
                                     "/api/auth/shops/signup",
-                                    "/api/auth/oauth/login",
                                     "/api/regions/**",
                                     "/ws-test.html",
                                     "/ws/**",
@@ -43,7 +47,6 @@
                             ).permitAll()
                             .requestMatchers(
                                     "/api/auth/withdraw",
-                                    "/api/auth/reissue",
                                     "/api/auth/logout",
                                     "/api/users/**",
                                     "/api/shops/**",
@@ -82,7 +85,9 @@
                     // => sessionManagement ~ : 세션 아예 비활성화
                     .sessionManagement(session ->
                             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    );
+                    ).oauth2Login(oauth -> oauth
+                    .successHandler(oAuth2LoginSuccessHandler)
+            );
 
             return http.build();
         }

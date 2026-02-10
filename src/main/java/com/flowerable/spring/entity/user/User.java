@@ -50,6 +50,10 @@ public class User {
         this.name = name;
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
     public void update(UserUpdateInfoReq req){
         if(req.getName() != null){
             this.name = req.getName();

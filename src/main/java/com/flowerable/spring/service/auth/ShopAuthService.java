@@ -19,6 +19,7 @@ import com.flowerable.spring.jwt.RefreshTokenService;
 import com.flowerable.spring.repository.AccountRepository;
 import com.flowerable.spring.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +37,8 @@ public class ShopAuthService {
         if (accountRepository.existsByEmail(dto.getEmail())) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
         }
-        Region region = Region.fromDescription(dto.getRegionDesc());
-        District district = District.fromDescription(dto.getDistrictDesc());
+        Region region = Region.fromCode(dto.getRegionCode());
+        District district = District.fromCode(dto.getDistrictCode());
 
         validateRegionDistrict(region, district);
         Account account = Account.createShopAccount(
@@ -50,8 +51,7 @@ public class ShopAuthService {
 
         Shop shop = Shop.create(account, dto.getShopName(), dto.getAddress(), region, district);
         shopRepository.save(shop);
-
-        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL);
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus());
     }
 
     @Transactional(readOnly = true)
@@ -81,7 +81,7 @@ public class ShopAuthService {
             throw new SuspendedAccountException();
         }
 
-        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL);
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus());
     }
 
     public void withdraw(Long accountId, AuthReq.Withdraw dto) {
@@ -101,7 +101,7 @@ public class ShopAuthService {
         refreshTokenService.deleteRefreshToken(accountId);
     }
 
-    private AuthRes issue(Long accountId, Role role, String shopName, Provider provider) {
+    private AuthRes issue(Long accountId, Role role, String shopName, Provider provider, AccountStatus status) {
         String accessToken =
                 jwtProvider.createAccessToken(accountId, role);
 
@@ -118,6 +118,7 @@ public class ShopAuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .provider(provider)
+                .accountStatus(status)
                 .build();
     }
 

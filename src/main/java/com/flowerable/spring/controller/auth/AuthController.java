@@ -32,21 +32,10 @@ public class AuthController {
     ) {
         return shopAuthService.signup(dto);
     }
+
     @PostMapping("/login")
     public AuthRes login(@RequestBody AuthReq.Login req) {
         return authService.login(req);
-    }
-
-    @PostMapping("/oauth/login")
-    public AuthRes oauthLogin(@RequestBody AuthReq.OAuth2Login dto) {
-        return authService.oauth2Login(dto);
-    }
-
-    @PostMapping("/oauth/complete")
-    public AuthRes completeOAuthSignup(
-            @RequestBody AuthReq.OAuthComplete req
-    ) {
-        return userAuthService.completeOAuthSignup(req);
     }
 
     @PostMapping("/withdraw")
@@ -67,7 +56,9 @@ public class AuthController {
     }
 
     @PostMapping("/reissue")
-    public AuthRes reissue(@RequestHeader("Refresh-Token") String refreshToken) {
+    public AuthRes reissue(@RequestHeader("X-Refresh-Token") String refreshToken) {
         return authService.reissue(refreshToken);
     }
+
+
 }

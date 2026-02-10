@@ -29,6 +29,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     @Query("""
     select new com.flowerable.spring.dto.order.OrderListRes(
         o.id,
+        o.orderNumber,
         o.status,
         o.totalPrice,
         o.createdAt,
@@ -38,7 +39,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     left join o.orderItems oi
     where o.shopId = :shopId
       and (:status is null or o.status = :status)
-    group by o.id, o.status, o.totalPrice, o.createdAt  
+    group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt  
     order by o.createdAt desc
     """)
     Page<OrderListRes> findShopOrders(
@@ -50,6 +51,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     @Query("""
     select new com.flowerable.spring.dto.order.OrderListRes(
         o.id,
+        o.orderNumber,
         o.status,
         o.totalPrice,
         o.createdAt,
@@ -58,7 +60,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     from OrderRequest o
     left join o.orderItems oi
     where o.userId = :userId
-    group by o.id, o.status, o.totalPrice, o.createdAt
+    group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt
     order by o.createdAt desc
     """)
     Page<OrderListRes> findUserOrders(

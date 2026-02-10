@@ -14,12 +14,19 @@ import com.flowerable.spring.exception.UserNotFoundException;
 import com.flowerable.spring.infra.kakao.KakaoUnlinkClient;
 import com.flowerable.spring.jwt.JwtProvider;
 import com.flowerable.spring.jwt.RefreshTokenService;
+import com.flowerable.spring.oauth2.userInfo.GoogleOAuth2UserInfo;
+import com.flowerable.spring.oauth2.userInfo.KakaoOAuth2UserInfo;
+import com.flowerable.spring.oauth2.userInfo.NaverOAuth2UserInfo;
+import com.flowerable.spring.oauth2.userInfo.OAuth2UserInfo;
 import com.flowerable.spring.repository.AccountRepository;
 import com.flowerable.spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +55,7 @@ public class UserAuthService {
         User user = User.create(account, dto.getName());
         userRepository.save(user);
 
-        return issue(account.getId(), Role.ROLE_USER, dto.getName(), Provider.LOCAL);
+        return issue(account.getId(), Role.ROLE_USER, user.getName(), Provider.LOCAL, account.getStatus(), null);
     }
 
     @Transactional(readOnly = true)
@@ -56,15 +63,15 @@ public class UserAuthService {
         Account account = accountRepository.findByEmailAndDeletedAtIsNull(dto.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 
+        if (account.getProvider() != Provider.LOCAL) {
+            throw new CustomException(ErrorCode.INVALID_LOGIN_TYPE);
+        }
+
         if (account.getRole() != dto.getRole()) {
             throw new CustomException(ErrorCode.LOGIN_ROLE_MISMATCH);
         }
         if (account.getStatus() != AccountStatus.ACTIVE) {
             throw new SuspendedAccountException();
-        }
-
-        if (account.getProvider() != Provider.LOCAL) {
-            throw new CustomException(ErrorCode.INVALID_LOGIN_TYPE);
         }
 
         if (!passwordEncoder.matches(dto.getPassword(), account.getPassword())) {
@@ -74,56 +81,68 @@ public class UserAuthService {
         User user = userRepository.findByAccountIdAndDeletedAtIsNull(account.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        return issue(account.getId(), account.getRole(), user.getName(), Provider.LOCAL);
+        return issue(account.getId(), account.getRole(), user.getName(), Provider.LOCAL, account.getStatus(), user.getProfileImageUrl());
     }
 
+
+    /**
+     * OAuth 로그인 처리 (Provider와 ProviderId로)
+     */
     @Transactional
-    public AuthRes signupOrLoginOAuth2(AuthReq.OAuth2Login dto){
+    public AuthRes processOAuthLogin(Provider provider, String providerId) {
+
         Account account = accountRepository
-                .findByProviderAndProviderIdAndDeletedAtIsNull(dto.getProvider(), dto.getProviderId())
-                .orElseGet(() -> createOAuthAccount(dto));
+                .findByProviderAndProviderIdAndDeletedAtIsNull(provider, providerId)
+                .orElseGet(() -> createOAuthAccount(provider, providerId));
 
-        userRepository.findByAccountId(account.getId())
-                .orElseGet(() -> userRepository.save(User.create(account, dto.getName())));
-
-        if (account.getStatus() == AccountStatus.SUSPENDED || account.getStatus() == AccountStatus.DELETED) {
+        if (account.getStatus() == AccountStatus.SUSPENDED ||
+                account.getStatus() == AccountStatus.DELETED) {
             throw new SuspendedAccountException();
         }
 
-        // email 미확정 → 토큰 발급 X 또는 제한 토큰
-        if (account.getStatus() == AccountStatus.TEMP) {
+        User user = userRepository
+                .findByAccountId(account.getId())
+                .orElseGet(() -> userRepository.save(User.create(account, null)));
+
+        // 필수 정보 미완성 → TEMP
+        if (account.getEmail() == null ||
+                account.getTelnum() == null ||
+                user.getName() == null) {
+
+            account.markTemp();
+
             return AuthRes.requireEmailAndTelnum(
                     account.getId(),
-                    dto.getProvider()
+                    provider,
+                    AccountStatus.TEMP
             );
         }
 
-        return issue(account.getId(), account.getRole(), dto.getName(), dto.getProvider());
+        return issue(
+                account.getId(),
+                account.getRole(),
+                user.getName(),
+                account.getProvider(),
+                account.getStatus(),
+                user.getProfileImageUrl()
+        );
     }
 
-    private Account createOAuthAccount(AuthReq.OAuth2Login dto) {
 
+    @Transactional
+    private Account createOAuthAccount(Provider provider, String providerId) {
         Account account = Account.createOAuth(
-                dto.getProvider(),
-                dto.getProviderId(),
+                provider,
+                providerId,
                 Role.ROLE_USER
         );
 
-        if (dto.getEmail() != null || dto.getTelnum() != null) {
-            validateEmailOrTelnumDuplicated(dto.getEmail(), dto.getTelnum());
-            account.setEmail(dto.getEmail());
-            account.setTelnum(dto.getTelnum());
-            account.activate();
-        } else {
-            account.markTemp();
-        }
-
+        account.markTemp();
         return accountRepository.save(account);
     }
 
     @Transactional
     public AuthRes completeOAuthSignup(AuthReq.OAuthComplete req) {
-
         Account account = accountRepository.findById(req.accountId())
                 .orElseThrow(AccountNotFoundException::new);
 
@@ -133,15 +152,21 @@ public class UserAuthService {
 
         validateEmailOrTelnumDuplicated(req.email(), req.telnum()); // 여기서 터지면 전체 롤백
 
+        User user = userRepository.findByAccountId(account.getId())
+                .orElseGet(() -> userRepository.save(User.create(account, req.name())));
+
         account.setEmail(req.email());
         account.setTelnum(req.telnum());
         account.activate();
+        user.setName(req.name());
 
         return issue(
                 account.getId(),
                 account.getRole(),
-                account.getEmail(),
-                account.getProvider()
+                user.getName(),
+                account.getProvider(),
+                account.getStatus(),
+                null
         );
     }
 
@@ -174,7 +199,7 @@ public class UserAuthService {
         refreshTokenService.deleteRefreshToken(accountId);
     }
 
-    private AuthRes issue(Long accountId, Role role, String name, Provider provider) {
+    private AuthRes issue(Long accountId, Role role, String name, Provider provider, AccountStatus status, String profileImageUrl) {
         String accessToken =
                 jwtProvider.createAccessToken(accountId, role);
 
@@ -188,6 +213,8 @@ public class UserAuthService {
                 .id(accountId)
                 .role(role)
                 .name(name)
+                .profileImgUrl(profileImageUrl)
+                .accountStatus(status)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .provider(provider)

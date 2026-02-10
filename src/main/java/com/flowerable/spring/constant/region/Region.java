@@ -28,12 +28,12 @@ public enum Region {
 
     private final String description;
 
-    public static Region fromDescription(String description) {
+    public static Region fromCode(String code) {
         return Arrays.stream(values())
-                .filter(r -> r.description.equals(description))
+                .filter(r -> r.name().equals(code))
                 .findFirst()
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Invalid region description: " + description)
+                        new IllegalArgumentException("Invalid region code: " + code)
                 );
     }
 

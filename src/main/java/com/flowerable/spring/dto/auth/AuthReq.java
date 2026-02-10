@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,10 +46,10 @@ public class AuthReq {
         String address;
 
         @NotBlank
-        String regionDesc;
+        String regionCode;
 
         @NotBlank
-        String districtDesc;
+        String districtCode;
     }
     @Getter @Setter
     public static class Login{
@@ -63,7 +64,7 @@ public class AuthReq {
         private String password;
     }
 
-    @Getter @Setter
+    @Getter @Setter @AllArgsConstructor
     public static class OAuth2Login{
         @NotNull
         private Provider provider;
@@ -73,7 +74,6 @@ public class AuthReq {
 
         private String email;  // optional
         private String name;   // optional
-        private String telnum;
     }
 
     @Getter @Setter
@@ -82,9 +82,19 @@ public class AuthReq {
         private String password;
     }
 
+
+    public record OAuthTokenExchange(
+            String code,
+            String provider
+    ) {}
+
+    /**
+     * OAuth 추가 정보 입력
+     */
     public record OAuthComplete(
             Long accountId,
             String email,
-            String telnum
+            String telnum,
+            String name
     ) {}
 }

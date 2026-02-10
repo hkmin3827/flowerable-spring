@@ -94,6 +94,7 @@ public class ShopOrderService {
 
         return OrderDetailRes.builder()
                 .orderId(order.getId())
+                .orderNumber(order.getOrderNumber())
                 .status(order.getStatus())
                 .totalFlowerPrice(order.getTotalFlowerPrice())
                 .wrappingExtraPrice(order.getWrappingExtraPrice())

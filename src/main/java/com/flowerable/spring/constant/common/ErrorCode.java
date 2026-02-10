@@ -57,7 +57,8 @@ public enum ErrorCode {
     IMAGE_ALREADY_NOT_THUMBNAIL(HttpStatus.CONFLICT, "이미 대표 이미지가 아닌 사진입니다."),
     IMAGE_ALREADY_THUMBNAIL(HttpStatus.CONFLICT, "이미 대표 이미지로 설정된 사진입니다."),
     CHAT_ROOM_ACCESS_DENIED(HttpStatus.FORBIDDEN, "채팅방 인원에 속해있지 않습니다."),
-    PROFILE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "프로필 필수 값이 입력되지 않았습니다.");
+    PROFILE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "프로필 필수 값이 입력되지 않았습니다."),
+    INVALID_OAUTH_CODE(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 인증 코드입니다.");
 
     private final HttpStatus status;
     private final String message;

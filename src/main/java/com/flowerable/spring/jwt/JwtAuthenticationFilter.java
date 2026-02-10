@@ -28,18 +28,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final RefreshTokenService refreshTokenService;
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request){
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
 
         return uri.equals("/api/auth/login")
                 || uri.equals("/api/auth/users/signup")
                 || uri.equals("/api/auth/shops/signup")
-                || uri.equals("/api/auth/oauth/login")
+                || uri.startsWith("/api/auth/oauth")
+                || uri.equals("/api/auth/reissue")
                 || uri.startsWith("/swagger")
                 || uri.startsWith("/v3/api-docs")
                 || uri.equals("/ws-test.html")
                 || uri.startsWith("/ws/")
                 || uri.endsWith(".html")
+                || uri.startsWith("/oauth2/")
                 || uri.startsWith("/login/oauth2/");
     }
 

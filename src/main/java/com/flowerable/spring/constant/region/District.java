@@ -123,14 +123,15 @@ public enum District {
                 .filter(d -> d.region == region)
                 .collect(Collectors.toList());
     }
-    public static District fromDescription(String description) {
+    public static District fromCode(String code) {
         return Arrays.stream(values())
-                .filter(d -> d.description.equals(description))
+                .filter(d -> d.name().equals(code))
                 .findFirst()
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Invalid district description: " + description)
+                        new IllegalArgumentException("Invalid district code: " + code)
                 );
     }
+
     public static District fromSearchParams(String desc){
         if (desc == null) {
             return null;

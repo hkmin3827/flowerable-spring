@@ -37,6 +37,7 @@ public class UserOrderService {
     private final ShopFlowerRepository shopFlowerRepository;
     private final OrderCancelLogService orderCancelLogService;
     private final NotificationService notificationService;
+    private final OrderNumberGenerator orderNumberGenerator;
 
     @Transactional
     public Long createOrder(Long userId, Long shopId, OrderCreateReq req) {
@@ -62,7 +63,10 @@ public class UserOrderService {
             orderItems.add(orderItem);
         }
 
+        String orderNumber = orderNumberGenerator.generate();
+
         OrderRequest order = OrderRequest.create(
+                orderNumber,
                 userId,
                 shopId,
                 req.getWrappingColorName(),
@@ -132,6 +136,7 @@ public class UserOrderService {
 
         return OrderDetailRes.builder()
                 .orderId(order.getId())
+                .orderNumber(order.getOrderNumber())
                 .status(order.getStatus())
                 .totalFlowerPrice(order.getTotalFlowerPrice())
                 .wrappingExtraPrice(order.getWrappingExtraPrice())
@@ -150,7 +155,7 @@ public class UserOrderService {
                         NotificationReceiverType.SHOP,
                         receiverId,
                         type,
-                        type.getTitle(),
+                        order.getOrderNumber() + " : " + type.getTitle(),
                         content,
                         order.getId()
                 )
