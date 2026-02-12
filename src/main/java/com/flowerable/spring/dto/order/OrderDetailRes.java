@@ -24,4 +24,7 @@ public class OrderDetailRes {
 
     private final List<OrderItemRes> items;
     private String message;
+
+    private String shopName;
+    private String userName;
 }

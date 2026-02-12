@@ -4,14 +4,21 @@ import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.constant.auth.Role;
 import com.flowerable.spring.constant.auth.TokenType;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.auth.AuthReq;
 import com.flowerable.spring.dto.auth.AuthRes;
 import com.flowerable.spring.entity.account.Account;
+import com.flowerable.spring.entity.shop.Shop;
+import com.flowerable.spring.entity.user.User;
 import com.flowerable.spring.exception.AccountNotFoundException;
 import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.exception.ShopNotFoundException;
+import com.flowerable.spring.exception.UserNotFoundException;
 import com.flowerable.spring.jwt.JwtProvider;
 import com.flowerable.spring.jwt.RefreshTokenService;
 import com.flowerable.spring.repository.AccountRepository;
+import com.flowerable.spring.repository.ShopRepository;
+import com.flowerable.spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +33,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
     private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
+    private final ShopRepository shopRepository;
 
 
     @Transactional(readOnly = true)
@@ -81,11 +90,27 @@ public class AuthService {
         String newAccessToken =
                 jwtProvider.createAccessToken(accountId, role);
 
-
         String newRefreshToken =
                 jwtProvider.createRefreshToken(accountId, role);
 
         refreshTokenService.saveRefreshToken(accountId, newRefreshToken);
+
+        String profileImgUrl = null;
+        ShopStatus shopStatus = null;
+
+        if (role == Role.ROLE_USER) {
+            User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            profileImgUrl = user.getProfileImageUrl();
+        }
+
+        if (role == Role.ROLE_SHOP) {
+            Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                    .orElseThrow(ShopNotFoundException::new);
+
+            shopStatus = shop.getStatus();
+        }
 
         return AuthRes.builder()
                 .id(accountId)
@@ -93,6 +118,8 @@ public class AuthService {
                 .accountStatus(account.getStatus())
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
+                .profileImgUrl(profileImgUrl)
+                .shopStatus(shopStatus)
                 .build();
     }
 

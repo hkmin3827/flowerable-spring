@@ -54,6 +54,9 @@ public class Notification {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     public static Notification create(NotificationCreateReq req) {
         Notification notification = new Notification();
         notification.receiverType = req.receiverType();
@@ -62,11 +65,13 @@ public class Notification {
         notification.title = req.title();
         notification.content = req.content();
         notification.referenceId = req.referenceId();
+        notification.updatedAt = LocalDateTime.now();
         return notification;
     }
 
     public void updateContent(String content) {
         this.content = content;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void markAsUnread() {

@@ -1,5 +1,6 @@
 package com.flowerable.spring.repository;
 
+import com.flowerable.spring.dto.shopflower.ShopFlowerOrderCountDto;
 import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
 import com.flowerable.spring.entity.shopflower.ShopFlower;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ShopFlowerRepository extends JpaRepository<ShopFlower, Long> {
@@ -71,5 +73,20 @@ public interface ShopFlowerRepository extends JpaRepository<ShopFlower, Long> {
           and sf.onSale = true
     """)
     void stopSaleByFlowerId(@Param("flowerId") Long flowerId);
+
+    @Query("""
+    SELECT new com.flowerable.spring.dto.shopflower.ShopFlowerOrderCountDto(
+            f.name,
+            COUNT(DISTINCT o.id)
+        )
+        FROM OrderItem oi
+        JOIN oi.orderRequest o
+        JOIN oi.shopFlower sf
+        JOIN sf.flower f
+        WHERE o.shop.id = :shopId
+        GROUP BY f.id, f.name
+        ORDER BY COUNT(DISTINCT o.id) DESC
+    """)
+    List<ShopFlowerOrderCountDto> findTop5FlowersByOrderCount(@Param("shopId") Long shopId, Pageable pageable);
 
 }

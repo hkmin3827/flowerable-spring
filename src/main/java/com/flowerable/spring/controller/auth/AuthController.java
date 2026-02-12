@@ -6,6 +6,7 @@ import com.flowerable.spring.security.CustomUserDetails;
 import com.flowerable.spring.service.auth.AuthService;
 import com.flowerable.spring.service.auth.ShopAuthService;
 import com.flowerable.spring.service.auth.UserAuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,14 +22,14 @@ public class AuthController {
 
     @PostMapping("/users/signup")
     public AuthRes userSignup(
-            @RequestBody AuthReq.UserSignup dto
+            @Valid @RequestBody AuthReq.UserSignup dto
     ) {
         return userAuthService.signup(dto);
     }
 
     @PostMapping("/shops/signup")
     public AuthRes shopSignup(
-            @RequestBody AuthReq.ShopSignup dto
+            @Valid @RequestBody AuthReq.ShopSignup dto
     ) {
         return shopAuthService.signup(dto);
     }
@@ -59,6 +60,4 @@ public class AuthController {
     public AuthRes reissue(@RequestHeader("X-Refresh-Token") String refreshToken) {
         return authService.reissue(refreshToken);
     }
-
-
 }

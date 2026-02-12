@@ -20,7 +20,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
         where n.receiverType = :receiverType
           and n.receiverId = :receiverId
           and n.isRead = false
-        order by n.createdAt desc
+        order by n.updatedAt desc
     """)
     Page<Notification> findUnreadNotifications(
             @Param("receiverType") NotificationReceiverType receiverType,

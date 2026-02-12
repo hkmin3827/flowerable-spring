@@ -1,9 +1,7 @@
 package com.flowerable.spring.service.shopflower;
 
 import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.shopflower.ShopFlowerRegReq;
-import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
-import com.flowerable.spring.dto.shopflower.ShopFlowerUpdateReq;
+import com.flowerable.spring.dto.shopflower.*;
 import com.flowerable.spring.entity.flower.Flower;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.entity.shopflower.ShopFlower;
@@ -14,12 +12,15 @@ import com.flowerable.spring.repository.ShopFlowerRepository;
 import com.flowerable.spring.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -118,5 +119,31 @@ public class ShopFlowerService {
                 .colors(new ArrayList<>(sf.getColors()))
                 .build()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopFlowerOrderStatsRes> getTop5FlowerStats(Long accountId) {
+
+        Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                .orElseThrow(ShopNotFoundException::new);
+
+        List<ShopFlowerOrderCountDto> results =
+                shopFlowerRepository.findTop5FlowersByOrderCount(
+                        shop.getId(),
+                        PageRequest.of(0, 5)
+                );
+
+        int rank = 1;
+        List<ShopFlowerOrderStatsRes> stats = new ArrayList<>();
+
+        for (ShopFlowerOrderCountDto dto : results) {
+            stats.add(new ShopFlowerOrderStatsRes(
+                    rank++,
+                    dto.flowerName(),
+                    dto.orderCount()
+            ));
+        }
+
+        return stats;
     }
 }

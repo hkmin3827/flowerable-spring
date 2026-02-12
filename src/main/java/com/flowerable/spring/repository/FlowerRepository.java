@@ -40,4 +40,17 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
             @Param("active") Boolean active,
             Pageable pageable
     );
+
+//    // 관리자 기능 추가
+//    Page<Flower> findByActive(Boolean active, Pageable pageable);
+//    Page<Flower> findByCategory(Season category, Pageable pageable);
+//    Page<Flower> findByActiveAndCategory(Boolean active, Season category, Pageable pageable);
+//
+//    @Query("SELECT f FROM Flower f WHERE f.active = :active AND " +
+//            "LOWER(f.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+//    Page<Flower> findByActiveAndSearchKeyword(
+//            @Param("active") Boolean active,
+//            @Param("keyword") String keyword,
+//            Pageable pageable
+//    );
 }

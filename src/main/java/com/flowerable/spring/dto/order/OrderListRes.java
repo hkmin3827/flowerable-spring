@@ -16,5 +16,9 @@ public class OrderListRes {
     private final Integer totalPrice;
     private final LocalDateTime createdAt;
 
+    private String shopName;
+    private String userName;
+
     private final long totalCount;  // 총수량
+
 }

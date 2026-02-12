@@ -51,7 +51,7 @@ public class WrappingOptionService {
 
         return wrappingOptionRepository.findByShopId(shop.getId())
                 .map(this::toDto)
-                .orElseThrow(() -> new CustomException(ErrorCode.WRAPPING_OPTION_NOT_FOUND)); // 설정 유도용 에러
+                .orElse(null);
     }
 
     private WrappingOptionRes toDto(WrappingOption option) {

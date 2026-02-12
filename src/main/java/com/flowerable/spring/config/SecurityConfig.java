@@ -59,7 +59,8 @@
                             .requestMatchers("/api/shopflowers/**",
                                     "/api/orders/shops/**",
                                     "/api/my-shop/images/**").hasRole("SHOP")
-                            .requestMatchers("/api/orders/users/**").hasRole("USER")
+                            .requestMatchers("/api/orders/users/**",
+                                    "/api/cart/**").hasRole("USER")
                             .anyRequest().authenticated()
                     )
                     .exceptionHandling(ex ->

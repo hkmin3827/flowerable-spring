@@ -17,6 +17,7 @@ import com.flowerable.spring.repository.ShopRepository;
 import com.flowerable.spring.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,19 +45,19 @@ public class ShopOrderService {
 
         validateTransition(current, targetStatus);
 
-        if(targetStatus == OrderStatus.CANCELLED){
+        if(targetStatus == OrderStatus.CANCELED){
             if (req.cancelReason() == null) {
                 throw new CustomException(ErrorCode.CANCEL_REASON_REQUIRED);
             }
             orderReq.markCanceledAt();
             orderCancelLogService.recordCancel(orderReq.getId(), OrderCancelBy.SHOP);
-            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_CANCELED,  "취소 사유 : " + req.cancelReason().getDescription());
+            notifyUser(orderReq, orderReq.getUser().getId(), NotificationType.ORDER_CANCELED,  "취소 사유 : " + req.cancelReason().getDescription());
         }
         if(targetStatus == OrderStatus.ACCEPTED){
-            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_ACCEPTED, "주문해주셔서 감사합니다. 빠르게 준비해드리겠습니다.");
+            notifyUser(orderReq, orderReq.getUser().getId(), NotificationType.ORDER_ACCEPTED, "주문해주셔서 감사합니다. 빠르게 준비해드리겠습니다.");
         }
         if(targetStatus == OrderStatus.READY){
-            notifyUser(orderReq, orderReq.getUserId(), NotificationType.ORDER_READY, "매장으로 픽업하러 방문해주세요.");
+            notifyUser(orderReq, orderReq.getUser().getId(), NotificationType.ORDER_READY, "매장으로 픽업하러 방문해주세요.");
         }
 
         orderReq.changeStatus(targetStatus);
@@ -104,19 +105,31 @@ public class ShopOrderService {
                 .canceledAt(order.getCanceledAt())
                 .items(items)
                 .message(order.getMessage())
+                .shopName(order.getShop().getShopName())
+                .userName(order.getUser().getName())
                 .build();
+    }
+    /**
+     * Shop 대시보드: REQUESTED 상태 최신 8개 주문 조회
+     */
+    @Transactional(readOnly = true)
+    public Page<OrderListRes> getRecentRequestedOrders(Long accountId, Pageable pageable) {
+        Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+                .orElseThrow(ShopNotFoundException::new);
+
+        return orderRequestRepository.findRecentRequestedOrders(shop.getId(), PageRequest.of(0, 5));
     }
 
 
     private void validateTransition(OrderStatus current, OrderStatus statusReq) {
         switch (current) {
             case REQUESTED -> {
-                if (statusReq != OrderStatus.ACCEPTED && statusReq != OrderStatus.CANCELLED) {
+                if (statusReq != OrderStatus.ACCEPTED && statusReq != OrderStatus.CANCELED) {
                     throw new CustomException(ErrorCode.FAIL_CHANGE_ORDER_STATUS);
                 }
             }
             case ACCEPTED -> {
-                if (statusReq != OrderStatus.READY && statusReq != OrderStatus.CANCELLED) {
+                if (statusReq != OrderStatus.READY && statusReq != OrderStatus.CANCELED) {
                     throw new CustomException(ErrorCode.FAIL_CHANGE_ORDER_STATUS);
                 }
             }
@@ -125,7 +138,7 @@ public class ShopOrderService {
                     throw new CustomException(ErrorCode.FAIL_CHANGE_ORDER_STATUS);
                 }
             }
-            case COMPLETED, CANCELLED -> {
+            case COMPLETED, CANCELED -> {
                 throw new CustomException(ErrorCode.FAIL_CHANGE_ORDER_STATUS);
             }
             default -> throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
@@ -143,4 +156,6 @@ public class ShopOrderService {
                 )
         );
     }
+
+
 }

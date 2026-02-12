@@ -1,6 +1,7 @@
 package com.flowerable.spring.controller.shopflower;
 
 import com.flowerable.spring.dto.common.PageResponse;
+import com.flowerable.spring.dto.shopflower.ShopFlowerOrderStatsRes;
 import com.flowerable.spring.dto.shopflower.ShopFlowerRegReq;
 import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
 import com.flowerable.spring.dto.shopflower.ShopFlowerUpdateReq;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/shopflowers")
@@ -65,6 +68,13 @@ public class ShopFlowerController {
     ){
         shopFlowerService.deactivate(userDetails.getId(), shopFlowerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/dashboard/top-flowers")
+    public ResponseEntity<List<ShopFlowerOrderStatsRes>> getTop5FlowerStats(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(shopFlowerService.getTop5FlowerStats(userDetails.getId()));
     }
 
 }

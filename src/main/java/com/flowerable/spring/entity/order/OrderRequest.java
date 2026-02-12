@@ -2,6 +2,8 @@ package com.flowerable.spring.entity.order;
 
 import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.constant.order.OrderStatus;
+import com.flowerable.spring.entity.shop.Shop;
+import com.flowerable.spring.entity.user.User;
 import com.flowerable.spring.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,11 +31,18 @@ public class OrderRequest {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @Column(nullable = false)
-    private Long userId;
+//    @Column(nullable = false)
+//    private Long userId;
+//
+//    @Column(nullable = false)
+//    private Long shopId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
-    private Long shopId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id", nullable = false)
+    private Shop shop;
 
     @Column(nullable = false)
     private Integer totalFlowerPrice;   // 각 orderItem calculateItemPrice의 합
@@ -58,16 +67,16 @@ public class OrderRequest {
 
     public static OrderRequest create(
             String orderNumber,
-            Long userId,
-            Long shopId,
+            User user,
+           Shop shop,
             String wrappingColorName,
             Integer wrappingExtraPrice,
             List<OrderItem> orderItems,
             String message) {
         OrderRequest order = new OrderRequest();
         order.orderNumber = orderNumber;
-        order.userId = userId;
-        order.shopId = shopId;
+        order.user = user;
+        order.shop = shop;
         order.status = OrderStatus.REQUESTED;
         // 포장 옵션 (스냅샷)
         order.wrappingColorName = wrappingColorName;
@@ -99,7 +108,7 @@ public class OrderRequest {
 
     public void cancel() {
         validateStatus(OrderStatus.REQUESTED);
-        this.status = OrderStatus.CANCELLED;
+        this.status = OrderStatus.CANCELED;
         markCanceledAt();
     }
 

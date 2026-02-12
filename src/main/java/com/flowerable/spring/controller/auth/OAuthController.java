@@ -7,6 +7,7 @@ import com.flowerable.spring.dto.auth.AuthRes;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.service.auth.OAuthStateService;
 import com.flowerable.spring.service.auth.UserAuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class OAuthController {
      */
     @PostMapping("/complete")
     public ResponseEntity<AuthRes> completeOAuthSignup(
-            @RequestBody AuthReq.OAuthComplete req
+            @Valid @RequestBody AuthReq.OAuthComplete req
     ) {
         AuthRes authRes = userAuthService.completeOAuthSignup(req);
         return ResponseEntity.ok(authRes);

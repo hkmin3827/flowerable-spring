@@ -23,7 +23,10 @@ public class AuthReq {
         @NotBlank
         String name;
 
-        @Pattern(regexp = "^[0-9]{10,11}$")
+        @Pattern(
+                regexp = "^010[0-9]{8}$",
+                message = "전화번호는 010으로 시작하는 11자리 숫자여야 합니다."
+        )
         String telnum;
     }
 
@@ -39,7 +42,10 @@ public class AuthReq {
         @NotBlank
         String shopName;
 
-        @NotBlank
+        @Pattern(
+                regexp = "^[0-9]{9,11}$",
+                message = "전화번호는 숫자 9~11자리여야 합니다."
+        )
         String telnum;
 
         @NotBlank
@@ -92,9 +98,12 @@ public class AuthReq {
      * OAuth 추가 정보 입력
      */
     public record OAuthComplete(
-            Long accountId,
-            String email,
-            String telnum,
-            String name
+            @NotNull Long accountId,
+            @Email @NotBlank String email,
+            @Pattern(
+                    regexp = "^010[0-9]{8}$",
+                    message = "전화번호는 010으로 시작하는 11자리 숫자여야 합니다."
+            ) String telnum,
+            @NotBlank String name
     ) {}
 }

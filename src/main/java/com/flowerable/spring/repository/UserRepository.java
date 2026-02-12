@@ -55,16 +55,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     """)
     Optional<User> findDetailById(@Param("id") Long id);
 
-    // 주문 생성용 조회
-    @Query("""
-    select count(u) > 0
-    from User u
-    join u.account a
-    where u.id = :userId
-      and u.active = true
-      and a.status = 'ACTIVE'
-    """)
-    boolean existsActiveUser(@Param("userId") Long userId);
 
     @Query("""
         select u
@@ -76,6 +66,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findAdminUserById(@Param("userId") Long userId);
 
     Optional<User> findByAccountIdAndDeletedAtIsNull(Long accountId);
+
+    Optional<User> findByIdAndDeletedAtIsNull(Long id);
 
     Optional<User> findByAccountId(Long accountId);
 }

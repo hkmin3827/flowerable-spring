@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/orders/shops")
 @RequiredArgsConstructor
@@ -46,4 +48,11 @@ public class ShopOrderController {
         return shopOrderService.getOrderDetails(userDetails.getId(), orderId);
     }
 
+    @GetMapping("/dashboard/recent-requests")
+    public PageResponse<OrderListRes> getRecentRequestedOrders(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            Pageable pageable
+    ) {
+        return PageResponse.from(shopOrderService.getRecentRequestedOrders(userDetails.getId(), pageable));
+    }
 }

@@ -1,5 +1,6 @@
 package com.flowerable.spring.controller.shop;
 
+import com.flowerable.spring.dto.common.PageResponse;
 import com.flowerable.spring.dto.shop.ShopDetailRes;
 import com.flowerable.spring.dto.shop.ShopSearchRes;
 import com.flowerable.spring.dto.shop.ShopUpdateInfoReq;
@@ -8,6 +9,7 @@ import com.flowerable.spring.dto.wrappingoption.WrappingOptionRes;
 import com.flowerable.spring.security.CustomUserDetails;
 import com.flowerable.spring.service.shop.ShopService;
 import com.flowerable.spring.service.wrappingoption.WrappingOptionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +33,7 @@ public class ShopController {
     @PatchMapping("/me")
     public void updateShopInfo(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody ShopUpdateInfoReq req
+            @Valid @RequestBody ShopUpdateInfoReq req
     ) {
         shopService.updateShopInfo(userDetails.getId(), req);
     }
@@ -43,7 +45,7 @@ public class ShopController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<ShopSearchRes>> searchShops(
+    public ResponseEntity<PageResponse<ShopSearchRes>> searchShops(
             @RequestParam String flowerName,
             @RequestParam(required = false) String regionDesc,
             @RequestParam(required = false) String districtDesc,
@@ -61,7 +63,7 @@ public class ShopController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(PageResponse.from(result));
     }
 
 

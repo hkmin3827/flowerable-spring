@@ -51,7 +51,7 @@ public class ShopAuthService {
 
         Shop shop = Shop.create(account, dto.getShopName(), dto.getAddress(), region, district);
         shopRepository.save(shop);
-        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus());
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus(), shop.getStatus());
     }
 
     @Transactional(readOnly = true)
@@ -81,7 +81,7 @@ public class ShopAuthService {
             throw new SuspendedAccountException();
         }
 
-        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus());
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus(), shop.getStatus());
     }
 
     public void withdraw(Long accountId, AuthReq.Withdraw dto) {
@@ -101,7 +101,7 @@ public class ShopAuthService {
         refreshTokenService.deleteRefreshToken(accountId);
     }
 
-    private AuthRes issue(Long accountId, Role role, String shopName, Provider provider, AccountStatus status) {
+    private AuthRes issue(Long accountId, Role role, String shopName, Provider provider, AccountStatus status, ShopStatus shopStatus) {
         String accessToken =
                 jwtProvider.createAccessToken(accountId, role);
 
@@ -119,6 +119,7 @@ public class ShopAuthService {
                 .refreshToken(refreshToken)
                 .provider(provider)
                 .accountStatus(status)
+                .shopStatus(shopStatus)
                 .build();
     }
 

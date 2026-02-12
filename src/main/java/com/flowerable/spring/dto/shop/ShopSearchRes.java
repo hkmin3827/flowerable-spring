@@ -1,17 +1,27 @@
 package com.flowerable.spring.dto.shop;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.flowerable.spring.constant.region.District;
+import com.flowerable.spring.constant.region.Region;
+import lombok.Getter;
 
-public interface ShopSearchRes {
-    Long getId();
-    String getShopName();
-    String getDescription();
-    String getAddress();
-    String getTelnum();
+@Getter
+public class ShopSearchRes {
 
-    @Value("#{target.region.description}")
-    String getRegionDescription();
+    private final Long shopId;
+    private final String shopName;
+    private final String telnum;
+    private final String description;
+    private final String address;
+    private final String regionDesc;
+    private final String districtDesc;
 
-    @Value("#{target.district.description}")
-    String getDistrictDescription();
+    public ShopSearchRes(Long shopId, String shopName, String telnum, String description, String address, Region region, District district) {
+        this.shopId = shopId;
+        this.shopName = shopName;
+        this.telnum = telnum;
+        this.description = description;
+        this.address = address;
+        this.regionDesc = region.getDescription();
+        this.districtDesc = district.getDescription();
+    }
 }

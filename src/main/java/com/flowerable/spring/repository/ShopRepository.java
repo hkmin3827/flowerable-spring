@@ -12,23 +12,43 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface ShopRepository extends JpaRepository<Shop, Long> {
     @Query("select s.id from Shop s where s.account.id = :accountId")
     Optional<Long> findIdByAccountId(Long accountId);
 
+
+    @Query("""
+            select s
+            from Shop s
+            where s.id = :shopId
+                and s.status = 'ACTIVE'
+                and s.deletedAt is null
+            """)
+    Optional<Shop> findByIdAndDeletedAtIsNullAndIsActive(@Param("shopId") Long shopId);
+
     Optional<Shop> findByAccountIdAndDeletedAtIsNull(Long accountId);
     // 사용자 꽃 + 지역 선택 후
     @Query("""
-        select s
-        from Shop s
-        join s.shopFlowers sf
-        where sf.flower.name = :flowerName
-          and s.status = 'ACTIVE'
-          and (:region IS NULL OR s.region = :region)
-          and (:district IS NULL OR s.district = :district)
-    """)
+    select new com.flowerable.spring.dto.shop.ShopSearchRes(
+        s.id,
+        s.shopName,
+        a.telnum,
+        s.description,
+        s.address,
+        s.region,
+        s.district
+    )
+    from Shop s
+    join s.account a
+    join s.shopFlowers sf
+    where sf.flower.name = :flowerName
+      and s.status = 'ACTIVE'
+      and (:region IS NULL OR s.region = :region)
+      and (:district IS NULL OR s.district = :district)
+""")
     Page<ShopSearchRes> findShopsByFilter(
             @Param("flowerName") String flowerName,
             @Param("region") Region region,
@@ -57,17 +77,6 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
           and s.deletedAt is null
     """)
     Optional<Shop> findDetailById(@Param("id") Long id);
-
-    // 주문 생성용 조회
-    @Query("""
-    select count(s) > 0
-    from Shop s
-    join s.account a
-    where s.id = :shopId
-      and s.status = 'ACTIVE'
-      and a.status = 'ACTIVE'
-    """)
-    boolean existsActiveShop(@Param("shopId") Long shopId);
 
     // 탈퇴 게정은 조회 제외, 상태관리용
     @Query("""
@@ -110,4 +119,5 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
         where s.deletedAt is null
     """)
     Page<AdminShopListRes> findAllAdminShops(Pageable pageable);
+
 }

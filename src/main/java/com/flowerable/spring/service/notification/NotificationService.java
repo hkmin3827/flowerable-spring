@@ -68,7 +68,7 @@ public class NotificationService {
         }
 
         // 있으면 업데이트
-//        notification.updateContent(req.content());
+        notification.updateContent(req.content());
         notification.markAsUnread(); // 다시 안 읽음 처리
         sendIfConnected(notification);
     }

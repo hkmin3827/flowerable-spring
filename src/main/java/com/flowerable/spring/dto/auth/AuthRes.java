@@ -3,6 +3,7 @@ package com.flowerable.spring.dto.auth;
 import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.constant.auth.Provider;
 import com.flowerable.spring.constant.auth.Role;
+import com.flowerable.spring.constant.shop.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ public class AuthRes {
     private final String refreshToken;
     private final Provider provider;
     private final AccountStatus accountStatus;
+    private final ShopStatus shopStatus;
 
     public static AuthRes requireEmailAndTelnum(Long accountId, Provider provider, AccountStatus status) {
         return AuthRes.builder()
@@ -26,6 +28,7 @@ public class AuthRes {
                 .accessToken(null)
                 .refreshToken(null)
                 .accountStatus(status)
+                .shopStatus(null)
                 .build();
     }
 }

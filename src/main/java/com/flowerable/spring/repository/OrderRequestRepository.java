@@ -13,16 +13,30 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long> {
-    Optional<OrderRequest> findByIdAndUserId(Long id, Long userId);
+
+
+    // 사용자 주문 취소용
+    @Query("""
+            select o
+            from OrderRequest o
+            join fetch o.shop s
+            join fetch o.user u
+            where o.id = :orderId
+                and o.canceledAt is null
+                and u.id = :userId
+            """)
+    Optional<OrderRequest> findByIdAndUserId(@Param("orderId")Long id, @Param("userId") Long userId);
 
     // 샵에서 주문 상태관리용
     @Query("""
         select o
         from OrderRequest o
+        join fetch o.user u
+        join fetch o.shop s
         join fetch o.orderItems oi
         where o.id = :orderId
           and o.canceledAt is null
-          and o.shopId = :shopId
+          and s.id = :shopId
     """)
     Optional<OrderRequest> findDetailForStatusChange(@Param("orderId") Long orderId, @Param("shopId") Long shopId);
 
@@ -33,13 +47,17 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         o.status,
         o.totalPrice,
         o.createdAt,
+        s.shopName,
+        u.name,
         coalesce(sum(oi.quantity), 0)
     )
     from OrderRequest o
-    left join o.orderItems oi
-    where o.shopId = :shopId
+        left join o.orderItems oi
+        join o.shop s
+        join o.user u
+    where s.id = :shopId
       and (:status is null or o.status = :status)
-    group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt  
+    group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt, s.shopName, u.name
     order by o.createdAt desc
     """)
     Page<OrderListRes> findShopOrders(
@@ -55,12 +73,16 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         o.status,
         o.totalPrice,
         o.createdAt,
+        s.shopName,
+        u.name,
         coalesce(sum(oi.quantity), 0)
     )
     from OrderRequest o
     left join o.orderItems oi
-    where o.userId = :userId
-    group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt
+    join o.shop s
+    join o.user u
+    where u.id = :userId
+    group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt, s.shopName, u.name
     order by o.createdAt desc
     """)
     Page<OrderListRes> findUserOrders(
@@ -73,8 +95,10 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         from OrderRequest o
         join fetch o.orderItems oi
         join fetch oi.shopFlower sf
+        join fetch o.shop s
+        join fetch o.user u
         join fetch sf.flower
-        where o.shopId = :shopId
+        where s.id = :shopId
         and o.id = :orderId
     """)
     Optional<OrderRequest> findShopOrderDetails(
@@ -86,9 +110,11 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         select o
         from OrderRequest o
         join fetch o.orderItems oi
+        join fetch o.user u
+        join fetch o.shop s
         join fetch oi.shopFlower sf
         join fetch sf.flower
-        where o.userId = :userId
+        where u.id = :userId
         and o.id = :orderId
     """)
     Optional<OrderRequest> findUserOrderDetails(
@@ -96,42 +122,33 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
             @Param("orderId") Long orderId
     );
 
-
     /**
-     * 관리자 리스트 조회(요약)
-     * - 페이징 때문에 orderItems fetch join 금지
+     * Shop 대시보드: REQUESTED 상태 최신 주문 조회
      */
     @Query("""
-        select o
-        from OrderRequest o
-        where (:status is null or o.status = :status)
-          and (:userId is null or o.userId = :userId)
-          and (:shopId is null or o.shopId = :shopId)
-          and (:from is null or o.createdAt >= cast(:from as timestamp))
-          and (:to   is null or o.createdAt <= cast(:to as timestamp))
-        order by o.createdAt desc
-        """)
-    Page<OrderRequest> findAdminOrders(
-            @Param("status") OrderStatus status,
-            @Param("userId") Long userId,
+    select new com.flowerable.spring.dto.order.OrderListRes(
+        o.id,
+        o.orderNumber,
+        o.status,
+        o.totalPrice,
+        o.createdAt,
+        s.shopName,
+        u.name,
+        coalesce(sum(oi.quantity), 0)
+    )
+    from OrderRequest o
+    left join o.orderItems oi
+    join o.shop s
+    join o.user u
+    where s.id = :shopId
+      and o.status = 'REQUESTED'
+    group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt, s.shopName, u.name
+    order by o.createdAt desc
+""")
+    Page<OrderListRes> findRecentRequestedOrders(
             @Param("shopId") Long shopId,
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
             Pageable pageable
     );
 
-    /**
-     * 관리자 상세 조회(아이템 + 꽃 정보까지)
-     * - 스냅샷 가격은 OrderItem.basePrice를 쓰고
-     * - 꽃 이름은 표시용으로만 join해서 가져옴
-     */
-    @Query("""
-        select distinct o
-        from OrderRequest o
-        left join fetch o.orderItems oi
-        left join fetch oi.shopFlower sf
-        left join fetch sf.flower f
-        where o.id = :orderId
-    """)
-    Optional<OrderRequest> findAdminOrderDetail(@Param("orderId") Long orderId);
+
 }

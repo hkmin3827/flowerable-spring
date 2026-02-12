@@ -9,6 +9,7 @@ import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.dto.order.*;
 import com.flowerable.spring.entity.order.OrderItem;
 import com.flowerable.spring.entity.order.OrderRequest;
+import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.entity.shopflower.ShopFlower;
 import com.flowerable.spring.entity.user.User;
 import com.flowerable.spring.exception.CustomException;
@@ -41,9 +42,11 @@ public class UserOrderService {
 
     @Transactional
     public Long createOrder(Long userId, Long shopId, OrderCreateReq req) {
-        if(!userRepository.existsActiveUser(userId) || !shopRepository.existsActiveShop(shopId)){
-            throw new CustomException(ErrorCode.SUSPEND_ORDER_ACCOUNT);
-        }
+        User user = userRepository.findByIdAndDeletedAtIsNull(userId).
+                orElseThrow(UserNotFoundException::new);
+
+        Shop shop = shopRepository.findByIdAndDeletedAtIsNullAndIsActive(shopId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_ORDER_CREATE_FAIL));
 
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemReq itemReq : req.getOrderItems()) {
@@ -63,12 +66,13 @@ public class UserOrderService {
             orderItems.add(orderItem);
         }
 
+
         String orderNumber = orderNumberGenerator.generate();
 
         OrderRequest order = OrderRequest.create(
                 orderNumber,
-                userId,
-                shopId,
+                user,
+                shop,
                 req.getWrappingColorName(),
                 req.getWrappingExtraPrice(),
                 orderItems,
@@ -80,7 +84,7 @@ public class UserOrderService {
         String content = order.getMessage() == null
                 ? "주문 확인 후 접수 또는 취소해주세요."
                 : "주문 확인 후 접수 또는 취소해주세요. (요청 사항 : " + order.getMessage()+ ")";
-        notifyShop(order, order.getShopId(), NotificationType.ORDER_CREATED, content);
+        notifyShop(order, shop.getId(), NotificationType.ORDER_CREATED, content);
         return order.getId();
     }
 
@@ -92,16 +96,16 @@ public class UserOrderService {
         OrderRequest order = orderRequestRepository.findByIdAndUserId(orderId, user.getId())
                 .orElseThrow(OrderNotFoundException::new);
 
-        if(order.getStatus() != OrderStatus.CANCELLED && order.getStatus() != OrderStatus.REQUESTED){
+        if(order.getStatus() != OrderStatus.CANCELED && order.getStatus() != OrderStatus.REQUESTED){
             throw new CustomException(ErrorCode.ORDER_ALREADY_ACCEPTED);
         }
 
-        if(order.getStatus() == OrderStatus.CANCELLED) {
+        if(order.getStatus() == OrderStatus.CANCELED) {
             throw new CustomException(ErrorCode.ORDER_ALREADY_CANCELED);
         }
         order.cancel();
 
-        notifyShop(order, order.getShopId(), NotificationType.ORDER_CANCELED, "고객이 주문을 취소하였습니다.");
+        notifyShop(order, order.getShop().getId(), NotificationType.ORDER_CANCELED, "고객이 주문을 취소하였습니다.");
         orderCancelLogService.recordCancel(order.getId(), OrderCancelBy.USER);
     }
 
@@ -146,6 +150,8 @@ public class UserOrderService {
                 .canceledAt(order.getCanceledAt())
                 .items(items)
                 .message(order.getMessage())
+                .shopName(order.getShop().getShopName())
+                .userName(order.getUser().getName())
                 .build();
     }
 

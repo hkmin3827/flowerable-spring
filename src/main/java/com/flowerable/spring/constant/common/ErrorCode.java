@@ -29,6 +29,7 @@ public enum ErrorCode {
     SHOP_FLOWER_ALREADY_STOPSALE(HttpStatus.CONFLICT, "이미 숨김 처리된 꽃입니다."),
     SHOP_FLOWER_NOT_ON_SALE(HttpStatus.NOT_FOUND, "매장에서 판매 중인 꽃이 아닙니다."),
     PASSWORD_REQUIRED(HttpStatus.BAD_REQUEST, "비밀번호가 필요합니다"),
+    SHOP_ORDER_CREATE_FAIL(HttpStatus.CONFLICT, "샵이 주문 가능한 상태가 아닙니다."),
     INVALID_SHOP_STATUS(HttpStatus.BAD_REQUEST, "샵 상태 변경 오류, 유효하지 않은 요청입니다."),
     SUSPEND_ORDER_ACCOUNT(HttpStatus.FORBIDDEN, "주문 기능이 이용 불가한 계정입니다."),
     INVALID_ACCOUNT_STATUS(HttpStatus.BAD_REQUEST, "계정 상태 변경 오류, 유효하지 않은 요청입니다."),
@@ -58,7 +59,11 @@ public enum ErrorCode {
     IMAGE_ALREADY_THUMBNAIL(HttpStatus.CONFLICT, "이미 대표 이미지로 설정된 사진입니다."),
     CHAT_ROOM_ACCESS_DENIED(HttpStatus.FORBIDDEN, "채팅방 인원에 속해있지 않습니다."),
     PROFILE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "프로필 필수 값이 입력되지 않았습니다."),
-    INVALID_OAUTH_CODE(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 인증 코드입니다.");
+    INVALID_OAUTH_CODE(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 인증 코드입니다."),
+    CART_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니 항목을 찾을 수 없습니다."),
+    SHOP_FLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "꽃을 찾을 수 없습니다."),
+    UNAUTHORIZED(HttpStatus.FORBIDDEN, "권한이 없습니다.");
 
     private final HttpStatus status;
     private final String message;

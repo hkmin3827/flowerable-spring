@@ -4,6 +4,7 @@ import com.flowerable.spring.dto.user.UserDetailRes;
 import com.flowerable.spring.dto.user.UserUpdateInfoReq;
 import com.flowerable.spring.security.CustomUserDetails;
 import com.flowerable.spring.service.user.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +24,7 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<Void> updateInfo(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody UserUpdateInfoReq req
+            @Valid @RequestBody UserUpdateInfoReq req
             ){
         userService.updateUserInfo(userDetails.getId(), req);
 

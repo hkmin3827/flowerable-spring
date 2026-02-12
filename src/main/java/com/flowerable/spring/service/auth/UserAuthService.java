@@ -218,6 +218,7 @@ public class UserAuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .provider(provider)
+                .shopStatus(null)
                 .build();
     }
 
