@@ -106,7 +106,7 @@ public class UserOrderService {
         order.cancel();
 
         notifyShop(order, order.getShop().getId(), NotificationType.ORDER_CANCELED, "고객이 주문을 취소하였습니다.");
-        orderCancelLogService.recordCancel(order.getId(), OrderCancelBy.USER);
+        orderCancelLogService.recordCancel(order.getId(), OrderCancelBy.USER, null);
     }
 
     @Transactional(readOnly = true)
@@ -132,6 +132,7 @@ public class UserOrderService {
                             .shopFlowerId(i.getShopFlower().getId())
                             .flowerName(i.getShopFlower().getFlower().getName())
                             .flowerColor(i.getFlowerColor())
+                            .flowerBasePrice(i.getBasePrice())
                             .quantity(i.getQuantity())
                             .itemTotalPrice(i.calculateItemPrice())
                             .build();
@@ -150,6 +151,8 @@ public class UserOrderService {
                 .canceledAt(order.getCanceledAt())
                 .items(items)
                 .message(order.getMessage())
+                .userId(order.getUser().getId())
+                .shopId(order.getShop().getId())
                 .shopName(order.getShop().getShopName())
                 .userName(order.getUser().getName())
                 .build();

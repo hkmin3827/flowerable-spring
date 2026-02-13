@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 public interface AdminShopListRes {
     Long getId();
-    String getAccountEmail();
+    String getAccount_Email();
+    String getAccount_Telnum();
     String getShopName();
 
     // enum 내부 필드 접근

@@ -56,8 +56,13 @@ public class CartItemDetail {
     public void updateQuantity(int quantity) {
         this.quantity = quantity;
     }
-    
+
     public int calculatePrice() {
         return basePrice * quantity;
     }
+
+    public void increaseQuantity(int quantity) {
+        this.quantity += quantity;
+    }
+
 }

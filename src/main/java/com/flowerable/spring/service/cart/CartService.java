@@ -87,16 +87,10 @@ public class CartService {
         
         CartItem cartItem;
         if (existingCartItem.isPresent()) {
-            // 기존 항목이 있으면 병합
             cartItem = existingCartItem.get();
-            // 기존 details 모두 삭제
-            cartItemDetailRepository.deleteAll(cartItem.getDetails());
-            cartItem.getDetails().clear();
-            // 새로운 정보로 업데이트
             cartItem.updateWrapping(request.getWrappingColorName(), request.getWrappingExtraPrice());
             cartItem.updateMessage(request.getMessage());
         } else {
-            // 새로운 CartItem 생성
             cartItem = CartItem.create(
                     shop,
                     request.getWrappingColorName(),
@@ -111,14 +105,12 @@ public class CartService {
         for (CartRequest.AddToCart.FlowerItem flowerItem : request.getFlowers()) {
             ShopFlower shopFlower = shopFlowerRepository.findById(flowerItem.getShopFlowerId())
                     .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_FOUND));
-            
-            CartItemDetail detail = CartItemDetail.create(
+
+            cartItem.addFlower(
                     shopFlower,
                     flowerItem.getQuantity(),
                     flowerItem.getFlowerColor()
             );
-            cartItem.addDetail(detail);
-            cartItemDetailRepository.save(detail);
         }
         
         return CartResponse.CartInfo.from(cart);
@@ -149,49 +141,49 @@ public class CartService {
         return CartResponse.CartInfo.from(cart);
     }
     
-    /**
-     * 장바구니 항목 수정
-     */
-    @Transactional
-    public CartResponse.CartInfo updateCartItem(Long accountId, Long cartItemId, CartRequest.UpdateCartItem request) {
-        User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        
-        Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
-        
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
-        
-        // 권한 확인
-        if (!cartItem.getCart().getId().equals(cart.getId())) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        }
-        
-        // 기존 details 삭제
-        cartItemDetailRepository.deleteAll(cartItem.getDetails());
-        cartItem.getDetails().clear();
-        
-        // 포장 정보 업데이트
-        cartItem.updateWrapping(request.getWrappingColorName(), request.getWrappingExtraPrice());
-        cartItem.updateMessage(request.getMessage());
-        
-        // 새로운 꽃 상세 추가
-        for (CartRequest.UpdateCartItem.FlowerItem flowerItem : request.getFlowers()) {
-            ShopFlower shopFlower = shopFlowerRepository.findById(flowerItem.getShopFlowerId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_FOUND));
-            
-            CartItemDetail detail = CartItemDetail.create(
-                    shopFlower,
-                    flowerItem.getQuantity(),
-                    flowerItem.getFlowerColor()
-            );
-            cartItem.addDetail(detail);
-            cartItemDetailRepository.save(detail);
-        }
-        
-        return CartResponse.CartInfo.from(cart);
-    }
+//    /**
+//     * 장바구니 항목 수정
+//     */
+//    @Transactional
+//    public CartResponse.CartInfo updateCartItem(Long accountId, Long cartItemId, CartRequest.UpdateCartItem request) {
+//        User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+//
+//        Cart cart = cartRepository.findByUser(user)
+//                .orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+//
+//        CartItem cartItem = cartItemRepository.findById(cartItemId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
+//
+//        // 권한 확인
+//        if (!cartItem.getCart().getId().equals(cart.getId())) {
+//            throw new CustomException(ErrorCode.UNAUTHORIZED);
+//        }
+//
+//        // 기존 details 삭제
+//        cartItemDetailRepository.deleteAll(cartItem.getDetails());
+//        cartItem.getDetails().clear();
+//
+//        // 포장 정보 업데이트
+//        cartItem.updateWrapping(request.getWrappingColorName(), request.getWrappingExtraPrice());
+//        cartItem.updateMessage(request.getMessage());
+//
+//        // 새로운 꽃 상세 추가
+//        for (CartRequest.UpdateCartItem.FlowerItem flowerItem : request.getFlowers()) {
+//            ShopFlower shopFlower = shopFlowerRepository.findById(flowerItem.getShopFlowerId())
+//                    .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_FOUND));
+//
+//            CartItemDetail detail = CartItemDetail.create(
+//                    shopFlower,
+//                    flowerItem.getQuantity(),
+//                    flowerItem.getFlowerColor()
+//            );
+//            cartItem.addDetail(detail);
+//            cartItemDetailRepository.save(detail);
+//        }
+//
+//        return CartResponse.CartInfo.from(cart);
+//    }
     
     /**
      * 장바구니 전체 비우기

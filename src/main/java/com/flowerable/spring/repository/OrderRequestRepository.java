@@ -151,4 +151,41 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     );
 
 
+    /**
+     * 관리자용 주문 조회 (동적 검색)
+     * status, userId, shopId, from, to 모두 optional
+     */
+    @Query("""
+    SELECT o FROM OrderRequest o
+        JOIN o.shop s
+        JOIN o.user u
+        WHERE (:status IS NULL OR o.status = :status)
+        AND (:userId IS NULL OR u.id = :userId)
+        AND (:shopId IS NULL OR s.id = :shopId)
+        AND (:from IS NULL OR o.createdAt >= :from)
+        AND (:to IS NULL OR o.createdAt <= :to)
+        ORDER BY o.createdAt DESC
+""")
+    Page<OrderRequest> findAdminOrders(
+            @Param("status") OrderStatus status,
+            @Param("userId") Long userId,
+            @Param("shopId") Long shopId,
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            Pageable pageable
+    );
+
+    /**
+     * 주문 상세 조회 (OrderItems fetch join)
+     */
+    @Query("""
+        SELECT DISTINCT o FROM OrderRequest o
+        join fetch o.shop s
+        join fetch o.user u
+        LEFT JOIN FETCH o.orderItems oi
+        LEFT JOIN FETCH oi.shopFlower sf
+        LEFT JOIN FETCH sf.flower
+        WHERE o.id = :orderId
+    """)
+    OrderRequest findByIdWithItems(@Param("orderId") Long orderId);
 }

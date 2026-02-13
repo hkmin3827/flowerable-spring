@@ -92,6 +92,8 @@ public class Shop {
         this.status = ShopStatus.SUSPENDED;
     }
 
+    public void reject() {this.status = ShopStatus.REJECTED; }
+
     public void updateInfo(ShopUpdateInfoReq req, Region region, District district) {
         if (req.getShopName() != null) {this.shopName = req.getShopName();}
         if (req.getDescription() != null) {this.description = req.getDescription();}

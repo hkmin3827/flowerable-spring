@@ -25,6 +25,15 @@ public class AdminUserController {
         return PageResponse.from(adminUserService.getUsersByStatus(accountStatus, page));
     }
 
+    @GetMapping("/search")
+    public PageResponse<AdminUserListRes> searchUsers(
+            @RequestParam String keyword,
+            @PageableDefault(size = 20, sort = "id")
+            Pageable page
+    ){
+        return PageResponse.from(adminUserService.searchUsers(keyword, page));
+    }
+
     @GetMapping("/{userId}")
     public UserDetailRes getUserDetails(@PathVariable Long userId)
     {

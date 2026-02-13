@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 @Builder
 public class AdminOrderListRes {
     private final Long orderId;
+    private final String orderNumber;
     private final OrderStatus status;
 
-    private final Long userId;
-    private final Long shopId;
+    private final String shopName;
+    private final String userName;
 
     private final Integer totalFlowerPrice;
     private final Integer totalPrice;

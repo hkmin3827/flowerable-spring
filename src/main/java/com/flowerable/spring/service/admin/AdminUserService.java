@@ -35,6 +35,16 @@ public class AdminUserService {
         return userRepository.findAdminUsersByStatus(targetStatus, pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<AdminUserListRes> searchUsers(String keyword, Pageable pageable) {
+        String normalizedKeyword =
+                (keyword == null || keyword.isBlank())
+                        ? null
+                        : keyword.trim();
+
+        return userRepository.searchAdminUsers(keyword, pageable);
+    }
+
     @Transactional
     public void changeStatus(Long userId, AccountStatus targetStatus) {
         User user = userRepository.findAdminUserById(userId)

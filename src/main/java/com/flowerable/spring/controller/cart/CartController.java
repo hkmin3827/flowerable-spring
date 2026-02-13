@@ -65,15 +65,15 @@ public class CartController {
     /**
      * 장바구니 항목 수정
      */
-    @PutMapping("/{cartItemId}")
-    public ResponseEntity<CartResponse.CartInfo> updateCartItem(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long cartItemId,
-            @RequestBody CartRequest.UpdateCartItem request
-    ) {
-        CartResponse.CartInfo cart = cartService.updateCartItem(userDetails.getId(), cartItemId, request);
-        return ResponseEntity.ok(cart);
-    }
+//    @PutMapping("/{cartItemId}")
+//    public ResponseEntity<CartResponse.CartInfo> updateCartItem(
+//            @AuthenticationPrincipal CustomUserDetails userDetails,
+//            @PathVariable Long cartItemId,
+//            @RequestBody CartRequest.UpdateCartItem request
+//    ) {
+//        CartResponse.CartInfo cart = cartService.updateCartItem(userDetails.getId(), cartItemId, request);
+//        return ResponseEntity.ok(cart);
+//    }
     
     /**
      * 장바구니 전체 비우기

@@ -117,7 +117,22 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
         from Shop s
         join s.account a
         where s.deletedAt is null
+        ORDER BY s.id DESC
     """)
     Page<AdminShopListRes> findAllAdminShops(Pageable pageable);
 
+    /**
+     * 관리자용 샵 검색 (샵명)
+     */
+    @Query("""
+    SELECT s
+        FROM Shop s
+        JOIN FETCH s.account
+        WHERE (:keyword IS NULL OR LOWER(s.shopName) LIKE LOWER(CONCAT('%', :keyword, '%')))
+        ORDER BY s.id DESC
+    """)
+    Page<AdminShopListRes> searchAdminShops(
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 }

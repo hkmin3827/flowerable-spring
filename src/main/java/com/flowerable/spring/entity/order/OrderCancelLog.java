@@ -1,6 +1,7 @@
 package com.flowerable.spring.entity.order;
 
 import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderCancelReason;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +29,17 @@ public class OrderCancelLog {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    private OrderCancelLog(Long orderRequestId, OrderCancelBy canceledBy) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private OrderCancelReason cancelReason;
+
+    private OrderCancelLog(Long orderRequestId, OrderCancelBy canceledBy, OrderCancelReason cancelReason) {
         this.orderRequestId = orderRequestId;
         this.canceledBy = canceledBy;
+        this.cancelReason = cancelReason;
     }
 
-    public static OrderCancelLog create(Long orderRequestId, OrderCancelBy canceledBy) {
-        return new OrderCancelLog(orderRequestId, canceledBy);
+    public static OrderCancelLog create(Long orderRequestId, OrderCancelBy canceledBy, OrderCancelReason cancelReason) {
+        return new OrderCancelLog(orderRequestId, canceledBy, cancelReason);
     }
 }

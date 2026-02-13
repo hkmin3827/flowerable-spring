@@ -37,7 +37,7 @@ public class UserOrderController {
         return ResponseEntity.ok(orderId);
     }
 
-    @GetMapping("/wrapping-options/{shopId}")
+    @GetMapping("/{shopId}/wrapping-options")
     public ResponseEntity<WrappingOptionRes> getShopWrappingOptions(
             @PathVariable Long shopId
     ) {

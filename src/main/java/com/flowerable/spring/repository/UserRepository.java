@@ -45,6 +45,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
             Pageable pageable
     );
 
+    @Query("""
+        SELECT u 
+        FROM User u 
+        JOIN FETCH u.account
+        WHERE (:keyword IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+        ORDER BY u.id DESC
+    """)
+    Page<AdminUserListRes> searchAdminUsers(
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
+
     // 관리자용
     @Query("""
         select u

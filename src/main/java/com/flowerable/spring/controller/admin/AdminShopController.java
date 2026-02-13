@@ -26,6 +26,15 @@ public class AdminShopController {
         return PageResponse.from(adminShopService.getShopsByStatus(status, pageable));
     }
 
+    @GetMapping("/search")
+    public PageResponse<AdminShopListRes> searchShops(
+            @RequestParam String keyword,
+            @PageableDefault(size = 20, sort = "id")
+            Pageable pageable
+    ) {
+        return PageResponse.from(adminShopService.searchShops(keyword, pageable));
+    }
+
     @GetMapping("/{shopId}")
     public ShopDetailRes getShopDetails(@PathVariable Long shopId)
     {

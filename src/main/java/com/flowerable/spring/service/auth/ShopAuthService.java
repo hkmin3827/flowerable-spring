@@ -77,10 +77,6 @@ public class ShopAuthService {
         Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(account.getId())
                 .orElseThrow(ShopNotFoundException::new);
 
-        if(shop.getStatus()== ShopStatus.SUSPENDED){
-            throw new SuspendedAccountException();
-        }
-
         return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus(), shop.getStatus());
     }
 

@@ -31,11 +31,6 @@ public class OrderRequest {
     @Column(nullable = false)
     private OrderStatus status;
 
-//    @Column(nullable = false)
-//    private Long userId;
-//
-//    @Column(nullable = false)
-//    private Long shopId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -1,6 +1,8 @@
 package com.flowerable.spring.entity.cart;
 
+import com.flowerable.spring.constant.shopflower.Color;
 import com.flowerable.spring.entity.shop.Shop;
+import com.flowerable.spring.entity.shopflower.ShopFlower;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "cart_items")
@@ -57,12 +60,32 @@ public class CartItem {
     public void assignCart(Cart cart) {
         this.cart = cart;
     }
-    
-    public void addDetail(CartItemDetail detail) {
-        details.add(detail);
+
+    private void addDetail(CartItemDetail detail) {
+        this.details.add(detail);
         detail.assignCartItem(this);
     }
-    
+
+    public void addFlower(ShopFlower shopFlower, int quantity, Color color) {
+        Optional<CartItemDetail> existing = this.details.stream()
+                .filter(d ->
+                        d.getShopFlower().getId().equals(shopFlower.getId())
+                                && d.getFlowerColor() == color
+                )
+                .findFirst();
+
+        if (existing.isPresent()) {
+            existing.get().increaseQuantity(quantity);
+        } else {
+            CartItemDetail detail = CartItemDetail.create(
+                    shopFlower,
+                    quantity,
+                    color
+            );
+            addDetail(detail);
+        }
+    }
+
     public void removeDetail(CartItemDetail detail) {
         details.remove(detail);
         detail.assignCartItem(null);

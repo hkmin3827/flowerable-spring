@@ -27,6 +27,17 @@ public class AdminShopService {
         return shopRepository.findAdminShopsByStatus(status, pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<AdminShopListRes> searchShops(String keyword, Pageable pageable) {
+
+        String normalizedKeyword =
+                (keyword == null || keyword.isBlank())
+                        ? null
+                        : keyword.trim();
+
+        return shopRepository.searchAdminShops(normalizedKeyword, pageable);
+    }
+
     @Transactional
     public void changeStatus(Long shopId, ShopStatus targetStatus) {
         Shop shop = shopRepository.findById(shopId)
@@ -39,6 +50,7 @@ public class AdminShopService {
         switch (targetStatus) {
             case ACTIVE -> shop.activate();
             case SUSPENDED -> shop.suspend();
+            case REJECTED -> shop.reject();
             default -> throw new CustomException(ErrorCode.INVALID_SHOP_STATUS);
         }
     }

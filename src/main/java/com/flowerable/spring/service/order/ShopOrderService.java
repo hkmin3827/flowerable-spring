@@ -50,7 +50,7 @@ public class ShopOrderService {
                 throw new CustomException(ErrorCode.CANCEL_REASON_REQUIRED);
             }
             orderReq.markCanceledAt();
-            orderCancelLogService.recordCancel(orderReq.getId(), OrderCancelBy.SHOP);
+            orderCancelLogService.recordCancel(orderReq.getId(), OrderCancelBy.SHOP, req.cancelReason());
             notifyUser(orderReq, orderReq.getUser().getId(), NotificationType.ORDER_CANCELED,  "취소 사유 : " + req.cancelReason().getDescription());
         }
         if(targetStatus == OrderStatus.ACCEPTED){
@@ -85,6 +85,7 @@ public class ShopOrderService {
                     return OrderItemRes.builder()
                             .shopFlowerId(i.getShopFlower().getId())
                             .flowerName(i.getShopFlower().getFlower().getName())
+                            .flowerBasePrice(i.getBasePrice())
                             .flowerColor(i.getFlowerColor())
                             .quantity(i.getQuantity())
                             .itemTotalPrice(i.calculateItemPrice())
@@ -105,6 +106,8 @@ public class ShopOrderService {
                 .canceledAt(order.getCanceledAt())
                 .items(items)
                 .message(order.getMessage())
+                .userId(order.getUser().getId())
+                .shopId(order.getShop().getId())
                 .shopName(order.getShop().getShopName())
                 .userName(order.getUser().getName())
                 .build();

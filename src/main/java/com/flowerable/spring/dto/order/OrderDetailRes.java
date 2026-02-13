@@ -14,6 +14,9 @@ public class OrderDetailRes {
     private final String orderNumber;
     private final OrderStatus status;
 
+    private final Long userId;
+    private final Long shopId;
+
     private final Integer totalFlowerPrice;
     private final Integer wrappingExtraPrice;
     private final Integer totalPrice;
@@ -25,6 +28,6 @@ public class OrderDetailRes {
     private final List<OrderItemRes> items;
     private String message;
 
-    private String shopName;
-    private String userName;
+    private final String shopName;
+    private final String userName;
 }

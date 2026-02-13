@@ -1,6 +1,7 @@
 package com.flowerable.spring.service.order;
 
 import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderCancelReason;
 import com.flowerable.spring.entity.order.OrderCancelLog;
 import com.flowerable.spring.repository.OrderCancelLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +16,10 @@ public class OrderCancelLogService {
 
 
     @Transactional
-    public void recordCancel(Long orderRequestId, OrderCancelBy canceledBy) {
+    public void recordCancel(Long orderRequestId, OrderCancelBy canceledBy, OrderCancelReason cancelReason) {
         if (orderCancelLogRepository.findByOrderRequestId(orderRequestId).isPresent()) {
             return;
         }
-        orderCancelLogRepository.save(OrderCancelLog.create(orderRequestId, canceledBy));
+        orderCancelLogRepository.save(OrderCancelLog.create(orderRequestId, canceledBy, cancelReason));
     }
 }
