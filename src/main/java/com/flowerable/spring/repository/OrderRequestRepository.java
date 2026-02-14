@@ -97,6 +97,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         join fetch oi.shopFlower sf
         join fetch o.shop s
         join fetch o.user u
+        join fetch u.account a
         join fetch sf.flower
         where s.id = :shopId
         and o.id = :orderId
@@ -112,6 +113,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         join fetch o.orderItems oi
         join fetch o.user u
         join fetch o.shop s
+        join fetch s.account a
         join fetch oi.shopFlower sf
         join fetch sf.flower
         where u.id = :userId

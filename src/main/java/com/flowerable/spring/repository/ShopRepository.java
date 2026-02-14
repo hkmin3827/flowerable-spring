@@ -1,5 +1,6 @@
 package com.flowerable.spring.repository;
 
+import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.constant.region.District;
 import com.flowerable.spring.constant.region.Region;
 import com.flowerable.spring.constant.shop.ShopStatus;
@@ -19,12 +20,15 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     @Query("select s.id from Shop s where s.account.id = :accountId")
     Optional<Long> findIdByAccountId(Long accountId);
 
+    @Query("select s from Shop s join fetch s.account a where s.id = :shopId")
+    Optional<Shop> findById(@Param("shopId") Long shopId);
+
 
     @Query("""
             select s
             from Shop s
             where s.id = :shopId
-                and s.status = 'ACTIVE'
+                and s.status = com.flowerable.spring.constant.shop.ShopStatus.ACTIVE
                 and s.deletedAt is null
             """)
     Optional<Shop> findByIdAndDeletedAtIsNullAndIsActive(@Param("shopId") Long shopId);
@@ -63,7 +67,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     left join fetch s.shopFlowers sf
     left join fetch sf.flower
     where s.id = :shopId
-            and s.status = 'ACTIVE'
+            and s.status = com.flowerable.spring.constant.shop.ShopStatus.ACTIVE
             and s.deletedAt is null
     """)
     Optional<Shop> findDetailWithFlowers(@Param("shopId") Long shopId);
@@ -74,26 +78,33 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
         from Shop s
         join fetch s.account
         where s.id = :id
-          and s.deletedAt is null
     """)
     Optional<Shop> findDetailById(@Param("id") Long id);
 
-    // 탈퇴 게정은 조회 제외, 상태관리용
     @Query("""
     select
-            s.id as id,
-            a.email as accountEmail,
-            s.shopName as shopName,
-            s.region as region,
-            s.district as district,
-            s.address as address,
-            s.status as status
-        from Shop s
-        join s.account a
-        where s.status = :status
-            and s.deletedAt is null
-    """)
-    Page<AdminShopListRes> findAdminShopsByStatus(@Param("status") ShopStatus status, Pageable pageable);
+        s.id as id,
+        a.email as accountEmail,
+        a.telnum as accountTelnum,
+        a.status as accountStatus,
+        s.shopName as shopName,
+        s.region as region,
+        s.district as district,
+        s.address as address,
+        s.status as status,
+        s.registerAt as registerAt
+    from Shop s
+    join s.account a
+    where (:shopStatus is null or s.status = :shopStatus)
+      and (:accountStatus is null or a.status = :accountStatus)
+    order by s.id desc
+""")
+    Page<AdminShopListRes> findAdminShops(
+            @Param("shopStatus") ShopStatus shopStatus,
+            @Param("accountStatus") AccountStatus accountStatus,
+            Pageable pageable
+    );
+
 
     @Query("""
         select distinct s
@@ -105,32 +116,27 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     """)
     Optional<Shop> findMyDetail(@Param("accountId") Long accountId);
 
-    @Query("""
-    select
-            s.id as id,
-            a.email as accountEmail,
-            s.shopName as shopName,
-            s.region as region,
-            s.district as district,
-            s.address as address,
-            s.status as status
-        from Shop s
-        join s.account a
-        where s.deletedAt is null
-        ORDER BY s.id DESC
-    """)
-    Page<AdminShopListRes> findAllAdminShops(Pageable pageable);
-
     /**
      * 관리자용 샵 검색 (샵명)
      */
     @Query("""
-    SELECT s
-        FROM Shop s
-        JOIN FETCH s.account
-        WHERE (:keyword IS NULL OR LOWER(s.shopName) LIKE LOWER(CONCAT('%', :keyword, '%')))
-        ORDER BY s.id DESC
-    """)
+    select
+        s.id as id,
+        a.email as accountEmail,
+        a.telnum as accountTelnum,
+        a.status as accountStatus,
+        s.shopName as shopName,
+        s.region as region,
+        s.district as district,
+        s.address as address,
+        s.status as status,
+        s.registerAt as registerAt
+    from Shop s
+    join s.account a
+    where (:keyword is null 
+           or lower(s.shopName) like lower(concat('%', :keyword, '%')))
+    order by s.id desc
+""")
     Page<AdminShopListRes> searchAdminShops(
             @Param("keyword") String keyword,
             Pageable pageable

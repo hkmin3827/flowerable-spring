@@ -105,6 +105,15 @@ public class NotificationService {
                 .map(NotificationRes::new);
     }
 
+    @Transactional(readOnly = true)
+    public Long getUnreadCount(Long accountId, Role role) {
+        NotificationReceiverType receiverType = resolveReceiverType(role);
+        Long receiverId = resolveReceiverId(accountId, receiverType);
+
+        return notificationRepository.countUnreadByUserId(receiverId);
+    }
+
+
     private void sendIfConnected(Notification notification) {
         if (notification.getReceiverType() == NotificationReceiverType.USER) {
             sseEmitterManager.sendToUser(

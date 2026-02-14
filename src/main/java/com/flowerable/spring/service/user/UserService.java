@@ -38,4 +38,22 @@ public class UserService {
                 .providerId(user.getAccount().getProviderId())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public UserDetailRes getUserDetails(Long userId){
+        User user = userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        return UserDetailRes.builder()
+                .id(user.getId())
+                .email(user.getAccount().getEmail())
+                .createdAt(user.getCreatedAt())
+                .name(user.getName())
+                .deletedAt(user.getDeletedAt())
+                .telnum(user.getAccount().getTelnum())
+                .active(user.isActive())
+                .provider(user.getAccount().getProvider())
+                .providerId(user.getAccount().getProviderId())
+                .build();
+    }
 }

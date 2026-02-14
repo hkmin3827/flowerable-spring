@@ -50,4 +50,14 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             Long receiverId,
             Long referenceId
     );
+
+    /**
+     * 미읽음 알림 개수 조회
+     */
+    @Query("""
+        SELECT COUNT(n) FROM Notification n
+        WHERE n.receiverId = :receiverId
+        AND n.isRead = false
+    """)
+    Long countUnreadByUserId(@Param("receiverId") Long receiverId);
 }

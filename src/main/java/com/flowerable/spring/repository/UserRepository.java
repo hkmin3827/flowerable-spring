@@ -20,9 +20,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     select
             u.id as id,
             a.email as accountEmail,
+            a.telnum as accountTelnum,
             a.status as accountStatus,
             u.name as name,
-            u.active as active
+            u.active as active,
+            u.createdAt as createdAt
         from User u
         join u.account a
         where a.status = :status
@@ -33,9 +35,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     select
             u.id as id,
             a.email as accountEmail,
+            a.telnum as accountTelnum,
             a.status as accountStatus,
             u.name as name,
-            u.active as active
+            u.active as active,
+            u.createdAt as createdAt
         from User u
         join u.account a
         where a.status in :statuses
@@ -46,9 +50,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     );
 
     @Query("""
-        SELECT u 
+        SELECT 
+            u.id as id,
+            a.email as accountEmail,
+            a.telnum as accountTelnum,
+            a.status as accountStatus,
+            u.name as name,
+            u.active as active,
+            u.createdAt as createdAt
         FROM User u 
-        JOIN FETCH u.account
+        JOIN u.account a
         WHERE (:keyword IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
         ORDER BY u.id DESC
     """)
@@ -57,13 +68,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             Pageable pageable
     );
 
-    // 관리자용
     @Query("""
         select u
         from User u
         join fetch u.account
         where u.id = :id
-          and u.deletedAt is null
     """)
     Optional<User> findDetailById(@Param("id") Long id);
 
@@ -73,7 +82,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         from User u
         join fetch u.account
         where u.id = :userId
-          and u.deletedAt is null
     """)
     Optional<User> findAdminUserById(@Param("userId") Long userId);
 

@@ -33,6 +33,7 @@ public class ShopAuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
+
     public AuthRes signup(AuthReq.ShopSignup dto){
         if (accountRepository.existsByEmail(dto.getEmail())) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
@@ -80,6 +81,7 @@ public class ShopAuthService {
         return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus(), shop.getStatus());
     }
 
+    @Transactional
     public void withdraw(Long accountId, AuthReq.Withdraw dto) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(ShopNotFoundException::new);

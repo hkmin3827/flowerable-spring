@@ -8,6 +8,8 @@ import com.flowerable.spring.constant.notification.NotificationReceiverType;
 import com.flowerable.spring.constant.notification.NotificationType;
 import com.flowerable.spring.dto.chat.ChatMessageRes;
 import com.flowerable.spring.dto.chat.ChatMessageSendReq;
+import com.flowerable.spring.dto.chat.ChatRoomListRes;
+import com.flowerable.spring.dto.chat.ChatRoomRes;
 import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.entity.chat.ChatMessage;
 import com.flowerable.spring.entity.chat.ChatRoom;
@@ -24,6 +26,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,34 +42,76 @@ public class ChatService {
     private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
 
+    @Transactional(readOnly = true)
+    public List<ChatRoomListRes> getChatRooms(
+            Long accountId,
+            Role role
+    ) {
+        if (role == Role.ROLE_USER) {
+            Long userId = userRepository.findIdByAccountId(accountId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            return chatRoomRepository.findChatRoomsByUserId(userId);
+        }
+
+        if (role == Role.ROLE_SHOP) {
+            Long shopId = shopRepository.findIdByAccountId(accountId)
+                    .orElseThrow(ShopNotFoundException::new);
+
+            return chatRoomRepository.findChatRoomsByShopId(shopId);
+        }
+
+        throw new CustomException(ErrorCode.INVALID_ROLE);
+    }
     @Transactional
     public void sendMessage(
             Long accountId,
-            Role senderRole,
+            Role role,
             ChatMessageSendReq req
     ) {
-        SenderContext sender = resolveSender(accountId, senderRole, req.targetId());
+        ChatRoom chatRoom = chatRoomRepository.findById(req.chatRoomId())
+                .orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
-        ChatRoom chatRoom = chatRoomRepository
-                .findByUserIdAndShopId(sender.userId(), sender.shopId())
-                .orElseGet(() ->
-                        chatRoomRepository.save(
-                                ChatRoom.create(sender.userId(), sender.shopId())
-                        )
-                );
+        SenderType senderType = SenderType.USER;
+        Long receiverId;
+        NotificationReceiverType receiverType;
 
-        chatRoomRepository.findByUserIdAndShopId(
-                sender.userId(),
-                sender.shopId()
-        ).orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+        if (role == Role.ROLE_USER) {
+            Long userId = userRepository.findIdByAccountId(accountId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            if (!chatRoom.getUserId().equals(userId)) {
+                throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
+            }
+
+            senderType = senderType.USER;
+            receiverId = chatRoom.getShopId();
+            receiverType = NotificationReceiverType.SHOP;
+
+        } else if (role == Role.ROLE_SHOP) {
+
+            Long shopId = shopRepository.findIdByAccountId(accountId)
+                    .orElseThrow(ShopNotFoundException::new);
+
+            if (!chatRoom.getShopId().equals(shopId)) {
+                throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
+            }
+
+            senderType = senderType.SHOP;
+            receiverId = chatRoom.getUserId();
+            receiverType = NotificationReceiverType.USER;
+        } else {
+            throw new CustomException(ErrorCode.INVALID_ROLE);
+        }
 
         ChatMessage message = ChatMessage.create(
-                sender.senderId(),
-                sender.senderType(),
+                chatRoom.getId(),
+                senderType,
                 req.content()
         );
 
         chatRoom.addMessage(message);
+
         chatMessageRepository.save(message);
 
         messagingTemplate.convertAndSend(
@@ -74,32 +121,21 @@ public class ChatService {
 
         notificationService.createOrUpdateChatNotification(
                 new NotificationCreateReq(
-                        sender.receiverType(),
-                        sender.receiverId(),
+                        receiverType,
+                        receiverId,
                         NotificationType.MESSAGE_RECEIVED,
                         NotificationType.MESSAGE_RECEIVED.getTitle(),
                         "새 메세지가 도착했습니다.",
                         chatRoom.getId()
                 )
         );
-
-        log.info(
-                "[CHAT] sendMessage roomId={}, senderType={}, senderId={}",
-                chatRoom.getId(),
-                sender.senderType(),
-                sender.senderId()
-        );
     }
 
     @Transactional
-    public void enterChatRoom(
-            Long chatRoomId,
-            Long accountId,
-            Role role
-    ) {
+    public List<ChatMessageRes> getChatMessages(Long chatRoomId, Long accountId, Role role) {
+        // 채팅방 존재 확인
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
-
 
         Long receiverId = resolveReceiverId(accountId, role);
 
@@ -110,47 +146,90 @@ public class ChatService {
             throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
         }
 
-        chatMessageRepository.markMessagesAsRead(
-                chatRoomId,
-                receiverId
-        );
+        // 메시지 목록 조회
+        List<ChatMessage> messages = chatMessageRepository.findByChatRoomId(chatRoomId);
 
-        notificationRepository.markAsReadByTypeAndReceiverIdAndReferenceId(
-                NotificationType.MESSAGE_RECEIVED,
-                receiverId,
-                chatRoomId
-        );
+        // 상대방 메시지 읽음 처리
+        SenderType opponentSender = role.equals("ROLE_USER")
+                ? SenderType.SHOP
+                : SenderType.USER;
+
+        chatMessageRepository.markMessagesAsRead(chatRoomId, opponentSender);
+
+        return messages.stream()
+                .map(ChatMessageRes::from)
+                .collect(Collectors.toList());
     }
 
-
-    private SenderContext resolveSender(
+    @Transactional
+    public ChatRoomRes enterChatRoom(
             Long accountId,
             Role role,
             Long targetId
     ) {
+        Long userId;
+        Long shopId;
+        String opponentName;
+        String opponentTelnum;
+
         if (role == Role.ROLE_USER) {
-            User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+
+            userId = userRepository.findIdByAccountId(accountId)
                     .orElseThrow(UserNotFoundException::new);
 
-            return SenderContext.user(
-                    user.getId(),
-                    targetId
-            );
-        }
+            shopId = targetId;
+            Shop shop = shopRepository.findDetailById(shopId)
+                    .orElseThrow(ShopNotFoundException::new);
+            opponentName = shop.getShopName();
+            opponentTelnum = shop.getAccount().getTelnum();
 
-        if (role == Role.ROLE_SHOP) {
-            Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
+        } else if (role == Role.ROLE_SHOP) {
+
+            shopId = shopRepository.findIdByAccountId(accountId)
                     .orElseThrow(ShopNotFoundException::new);
 
-            return SenderContext.shop(
-                    targetId,
-                    shop.getId()
-            );
+            userId = targetId;
+            User user = userRepository.findDetailById(userId)
+                    .orElseThrow(UserNotFoundException::new);
+            opponentName = user.getName();
+            opponentTelnum = user.getAccount().getTelnum();
+
+        } else {
+            throw new CustomException(ErrorCode.INVALID_ROLE);
         }
 
-        throw new CustomException(ErrorCode.INVALID_ROLE);
-    }
 
+        ChatRoom chatRoom = chatRoomRepository
+                .findByUserIdAndShopId(userId, shopId)
+                .orElseGet(() ->
+                        chatRoomRepository.save(
+                                ChatRoom.create(userId, shopId)
+                        )
+                );
+
+        if (role == Role.ROLE_USER && !chatRoom.getUserId().equals(userId)) {
+            throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
+        }
+        if (role == Role.ROLE_SHOP && !chatRoom.getShopId().equals(shopId)) {
+            throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
+        }
+
+        SenderType opponentSender =
+                role == Role.ROLE_USER ? SenderType.SHOP : SenderType.USER;
+
+        chatMessageRepository.markMessagesAsRead(
+                chatRoom.getId(),
+                opponentSender
+        );
+
+        notificationRepository.markAsReadByTypeAndReceiverIdAndReferenceId(
+                NotificationType.MESSAGE_RECEIVED,
+                role == Role.ROLE_USER ? shopId : userId,
+                chatRoom.getId()
+        );
+
+        return ChatRoomRes.from(chatRoom, opponentName, opponentTelnum);
+    }
 
     private Long resolveReceiverId(Long accountId, Role role) {
         if (role == Role.ROLE_USER) {
@@ -164,34 +243,4 @@ public class ChatService {
         throw new CustomException(ErrorCode.INVALID_ROLE);
     }
 
-    private record SenderContext(
-            Long userId,
-            Long shopId,
-            Long senderId,
-            SenderType senderType,
-            Long receiverId,
-            NotificationReceiverType receiverType
-    ) {
-        static SenderContext user(Long userId, Long shopId) {
-            return new SenderContext(
-                    userId,
-                    shopId,
-                    userId,
-                    SenderType.USER,
-                    shopId,
-                    NotificationReceiverType.SHOP
-            );
-        }
-
-        static SenderContext shop(Long userId, Long shopId) {
-            return new SenderContext(
-                    userId,
-                    shopId,
-                    shopId,
-                    SenderType.SHOP,
-                    userId,
-                    NotificationReceiverType.USER
-            );
-        }
-    }
 }

@@ -35,6 +35,7 @@ public class ChatMessage {
     @Column(nullable = false, length = 1000)
     private String content;
 
+    @Builder.Default
     @Column(nullable = false)
     private Boolean isRead = false;
 

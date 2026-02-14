@@ -3,6 +3,6 @@ package com.flowerable.spring.dto.chat;
 import com.flowerable.spring.constant.chat.SenderType;
 
 public record ChatMessageSendReq(
-        Long targetId,
+        Long chatRoomId,
         String content
 ) {}

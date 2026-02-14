@@ -16,6 +16,8 @@ public class OrderDetailRes {
 
     private final Long userId;
     private final Long shopId;
+    private String opponentTelnum;
+    private String shopAddress;
 
     private final Integer totalFlowerPrice;
     private final Integer wrappingExtraPrice;

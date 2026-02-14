@@ -1,5 +1,6 @@
 package com.flowerable.spring.controller.admin;
 
+import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.admin.AdminShopListRes;
 import com.flowerable.spring.dto.common.PageResponse;
@@ -18,12 +19,14 @@ public class AdminShopController {
     private final AdminShopService adminShopService;
 
     @GetMapping
-    public PageResponse<AdminShopListRes> getShopsByStatus(
-            @RequestParam(required = false) ShopStatus status,
-            @PageableDefault(size = 20, sort = "id")
+    public PageResponse<AdminShopListRes> getShops(
+            @RequestParam(required = false) ShopStatus shopStatus,
+            @RequestParam(required = false) AccountStatus accountStatus,
             Pageable pageable
     ) {
-        return PageResponse.from(adminShopService.getShopsByStatus(status, pageable));
+        return PageResponse.from(
+                adminShopService.getShops(shopStatus, accountStatus, pageable)
+        );
     }
 
     @GetMapping("/search")
@@ -41,27 +44,55 @@ public class AdminShopController {
         return adminShopService.getShopDetails(shopId);
     }
 
+
+    @PatchMapping("/{shopId}/activate-account")
+    public ResponseEntity<Void> activateShopAccount(
+            @PathVariable Long shopId
+    ){
+        adminShopService.changeStatus(shopId, AccountStatus.ACTIVE);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{shopId}/suspend-account")
+    public ResponseEntity<Void> suspendShopAccount(
+            @PathVariable Long shopId
+    ){
+        adminShopService.changeStatus(shopId, AccountStatus.SUSPENDED);
+
+        return ResponseEntity.noContent().build();
+    }
+
     // activate와 의미 동일하지만 재활성화, 승인 호출 api 구분 (의도 분리)
     @PatchMapping("/{shopId}/approve")
     public ResponseEntity<Void> approveShop(
             @PathVariable Long shopId
     ){
-        adminShopService.changeStatus(shopId, ShopStatus.ACTIVE);
+        adminShopService.changeShopStatus(shopId, ShopStatus.ACTIVE);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{shopId}/reject")
+    public ResponseEntity<Void> rejectShop(
+            @PathVariable Long shopId
+    ){
+        adminShopService.changeShopStatus(shopId, ShopStatus.REJECTED);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PatchMapping("/{shopId}/activate")
     public ResponseEntity<Void> activateShop(
             @PathVariable Long shopId
     ){
-        adminShopService.changeStatus(shopId, ShopStatus.ACTIVE);
+        adminShopService.changeShopStatus(shopId, ShopStatus.ACTIVE);
         return ResponseEntity.noContent().build();
     }
     @PatchMapping("/{shopId}/suspend")
     public ResponseEntity<Void> suspendShop(
             @PathVariable Long shopId
     ){
-        adminShopService.changeStatus(shopId, ShopStatus.SUSPENDED);
+        adminShopService.changeShopStatus(shopId, ShopStatus.SUSPENDED);
         return ResponseEntity.noContent().build();
     }
 }

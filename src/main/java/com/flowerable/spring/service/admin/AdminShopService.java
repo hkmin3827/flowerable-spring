@@ -1,30 +1,43 @@
 package com.flowerable.spring.service.admin;
 
+import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.constant.shop.ShopStatus;
 import com.flowerable.spring.dto.admin.AdminShopListRes;
 import com.flowerable.spring.dto.shop.ShopDetailRes;
 import com.flowerable.spring.entity.shop.Shop;
+import com.flowerable.spring.entity.user.User;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.exception.ShopNotFoundException;
+import com.flowerable.spring.exception.UserNotFoundException;
 import com.flowerable.spring.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminShopService {
     private final ShopRepository shopRepository;
 
+
     @Transactional(readOnly = true)
-    public Page<AdminShopListRes> getShopsByStatus(ShopStatus status, Pageable pageable) {
-        if (status == null) {
-            return shopRepository.findAllAdminShops(pageable);
-        }
-        return shopRepository.findAdminShopsByStatus(status, pageable);
+    public Page<AdminShopListRes> getShops(
+            ShopStatus shopStatus,
+            AccountStatus accountStatus,
+            Pageable pageable
+    ) {
+
+        log.info("shopStatus = " + shopStatus );
+        return shopRepository.findAdminShops(
+                shopStatus,
+                accountStatus,
+                pageable
+        );
     }
 
     @Transactional(readOnly = true)
@@ -39,9 +52,13 @@ public class AdminShopService {
     }
 
     @Transactional
-    public void changeStatus(Long shopId, ShopStatus targetStatus) {
+    public void changeShopStatus(Long shopId, ShopStatus targetStatus) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(ShopNotFoundException::new);
+
+        if(shop.getAccount().getStatus() == AccountStatus.DELETED) {
+            throw new CustomException(ErrorCode.DELETED_ACCOUNT);
+        }
 
         if (shop.getStatus() == targetStatus) {
             throw new CustomException(ErrorCode.INVALID_SHOP_STATUS);
@@ -55,6 +72,17 @@ public class AdminShopService {
         }
     }
 
+    @Transactional
+    public void changeStatus(Long shopId, AccountStatus targetStatus) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(UserNotFoundException::new);
+
+        switch (targetStatus){
+            case ACTIVE -> shop.getAccount().activate();
+            case SUSPENDED -> shop.getAccount().suspend();
+            default -> throw new CustomException(ErrorCode.INVALID_ACCOUNT_STATUS);
+        }
+    }
 
     @Transactional(readOnly = true)
     public ShopDetailRes getShopDetails(Long shopId){

@@ -4,6 +4,7 @@ import com.flowerable.spring.constant.notification.NotificationReceiverType;
 import com.flowerable.spring.constant.notification.NotificationType;
 import com.flowerable.spring.entity.notification.Notification;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 

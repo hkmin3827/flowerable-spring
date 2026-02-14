@@ -97,6 +97,8 @@ public class ShopOrderService {
         return OrderDetailRes.builder()
                 .orderId(order.getId())
                 .orderNumber(order.getOrderNumber())
+                .opponentTelnum(order.getUser().getAccount().getTelnum())
+                .shopAddress(order.getShop().getRegion().getDescription() + " " + order.getShop().getDistrict().getDescription() + " " + order.getShop().getAddress())
                 .status(order.getStatus())
                 .totalFlowerPrice(order.getTotalFlowerPrice())
                 .wrappingExtraPrice(order.getWrappingExtraPrice())

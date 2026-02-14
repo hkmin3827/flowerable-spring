@@ -12,16 +12,30 @@ import java.util.List;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     List<ChatMessage> findByChatRoomIdOrderBySentAtAsc(Long chatRoomId);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    /**
+     * 채팅방 ID로 메시지 목록 조회 (최근순)
+     */
     @Query("""
-        update ChatMessage m
-        set m.isRead = true
-        where m.chatRoom.id = :chatRoomId
-          and m.isRead = false
-          and m.senderId <> :readerId
+        SELECT cm FROM ChatMessage cm
+        WHERE cm.chatRoom.id = :chatRoomId
+        ORDER BY cm.sentAt ASC
     """)
-    int markMessagesAsRead(
+    List<ChatMessage> findByChatRoomId(@Param("chatRoomId") Long chatRoomId);
+
+    /**
+     * 채팅방의 상대방 메시지 읽음 처리
+     * (USER가 읽을 때는 SHOP 메시지를, SHOP이 읽을 때는 USER 메시지를 읽음 처리)
+     */
+    @Modifying
+    @Query("""
+        UPDATE ChatMessage cm
+        SET cm.isRead = true
+        WHERE cm.chatRoom.id = :chatRoomId
+        AND cm.senderType = :senderType
+        AND cm.isRead = false
+    """)
+    void markMessagesAsRead(
             @Param("chatRoomId") Long chatRoomId,
-            @Param("readerId") Long readerId
+            @Param("senderType") SenderType senderType
     );
 }

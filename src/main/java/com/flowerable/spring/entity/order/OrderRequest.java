@@ -47,7 +47,7 @@ public class OrderRequest {
 
     private String wrappingColorName;
 
-    private Integer wrappingExtraPrice;
+    private Integer wrappingExtraPrice = 0;
 
     @Column(nullable = true, length = 100)
     private String message;  // 요청 사항

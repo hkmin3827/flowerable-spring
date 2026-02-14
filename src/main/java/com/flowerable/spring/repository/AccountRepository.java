@@ -23,19 +23,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     boolean existsByEmailAndDeletedAtIsNull(String email);
     boolean existsByTelnumAndDeletedAtIsNull(String telnum);
 
-//    // 관리자 기능 추가
-//    Long countByRole(Role role);
-//    Page<Account> findByAccountStatus(AccountStatus status, Pageable pageable);
-//    Page<Account> findByRole(Role role, Pageable pageable);
-//
-//    @Query("SELECT a FROM Account a WHERE a.accountStatus = :status AND " +
-//            "(LOWER(a.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "LOWER(a.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "LOWER(a.telnum) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-//    Page<Account> findByAccountStatusAndSearchKeyword(
-//            @Param("status") AccountStatus status,
-//            @Param("keyword") String keyword,
-//            Pageable pageable
-//    );
-
 }

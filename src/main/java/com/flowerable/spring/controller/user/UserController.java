@@ -30,4 +30,12 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{userId}")
+    public UserDetailRes getUserDetail(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long userId){
+        return userService.getUserDetails(userId);
+
+    }
 }

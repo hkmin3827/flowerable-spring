@@ -36,6 +36,7 @@ public class ChatRoom {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    private String lastMessage;
     private LocalDateTime lastMessageAt;
 
     public static ChatRoom create(Long userId, Long shopId) {
@@ -48,6 +49,8 @@ public class ChatRoom {
     public void addMessage(ChatMessage message) {
         messages.add(message);
         message.assignRoom(this);
+        lastMessage = message.getContent();
         lastMessageAt = LocalDateTime.now();
     }
+
 }

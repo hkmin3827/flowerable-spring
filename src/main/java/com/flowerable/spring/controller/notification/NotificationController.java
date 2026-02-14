@@ -7,6 +7,7 @@ import com.flowerable.spring.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -43,6 +44,11 @@ public class NotificationController {
                 userDetails.getRole(),
                 pageable
         );
+    }
+
+    @GetMapping("/unread-count")
+    public Long getUnreadCount(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return notificationService.getUnreadCount(userDetails.getId(), userDetails.getRole());
     }
 
     /**
