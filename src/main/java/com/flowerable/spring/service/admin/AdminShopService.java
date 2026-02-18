@@ -94,6 +94,8 @@ public class AdminShopService {
                 .email(shop.getAccount().getEmail())
                 .address(shop.getAddress())
                 .registerAt(shop.getRegisterAt())
+                .regionDesc(shop.getRegion().getDescription())
+                .districtDesc(shop.getDistrict().getDescription())
                 .shopName(shop.getShopName())
                 .status(shop.getStatus())
                 .deletedAt(shop.getDeletedAt())

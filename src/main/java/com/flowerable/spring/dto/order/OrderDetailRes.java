@@ -1,5 +1,7 @@
 package com.flowerable.spring.dto.order;
 
+import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderCancelReason;
 import com.flowerable.spring.constant.order.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,4 +34,7 @@ public class OrderDetailRes {
 
     private final String shopName;
     private final String userName;
+
+    private final String cancelReason;
+    private final String cancelBy;
 }

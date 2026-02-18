@@ -21,6 +21,8 @@ public class AdminOrderDetailRes {
 
     private String shopName;
     private String userName;
+    private String shopTelnum;
+    private String userTelnum;
 
     private Integer totalFlowerPrice;
     private Integer totalPrice;
@@ -35,6 +37,6 @@ public class AdminOrderDetailRes {
 
     private String message;   // 요청 사항
 
-    private OrderCancelBy cancelBy;
-    private OrderCancelReason cancelReason;
+    private String cancelBy;
+    private String cancelReason;
 }

@@ -31,13 +31,16 @@ public class S3Service {
             "flower-images"
     );
 
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
+            ".jpg", ".jpeg", ".png", ".webp"
+    );
+
     public PresignedUpload createPresignedUpload(
             String folder,
             String originalFileName,
             String contentType
     ) {
         validateFolder(folder);
-        validateContentType(contentType);
 
         String extension = extractExtension(originalFileName);
         String key = folder + "/" + UUID.randomUUID() + extension;
@@ -68,25 +71,28 @@ public class S3Service {
         return "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/"
                 + folder + "/" + fileName;
     }
-    /* ================= 검증 로직 ================= */
 
     private void validateFolder(String folder) {
         if (!ALLOWED_FOLDERS.contains(folder)) {
             throw new CustomException(ErrorCode.INVALID_UPLOAD_FOLDER);
         }
     }
+
     private String extractExtension(String originalFileName) {
         int idx = originalFileName.lastIndexOf(".");
         if (idx == -1) {
             throw new CustomException(ErrorCode.INVALID_CONTENT_TYPE);
         }
-        return originalFileName.substring(idx);
-    }
-    private void validateContentType(String contentType) {
-        if (contentType == null || !contentType.startsWith("image/")) {
+
+        String ext = originalFileName.substring(idx).toLowerCase();
+
+        if (!ALLOWED_EXTENSIONS.contains(ext)) {
             throw new CustomException(ErrorCode.INVALID_CONTENT_TYPE);
         }
+
+        return ext;
     }
+
 
     private String getFileUrl(String key) {
         return "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" + key;

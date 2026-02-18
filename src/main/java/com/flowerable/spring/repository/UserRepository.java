@@ -43,6 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         from User u
         join u.account a
         where a.status in :statuses
+        and a.role = com.flowerable.spring.constant.auth.Role.ROLE_USER
     """)
     Page<AdminUserListRes> findAdminUsersByAccountStatuses(
             @Param("statuses") List<AccountStatus> statuses,

@@ -53,7 +53,9 @@
                                     "/api/flowers/**",
                                     "/api/notifications/**",
                                     "/api/chats/**",
-                                    "/api/shopimages/**"
+                                    "/api/shopimages/**",
+                                    "/api/s3/**",
+                                    "/api/payments/confirm"
                             ).authenticated()
                             .requestMatchers("/api/admin/**").hasRole("ADMIN")
                             .requestMatchers("/api/shopflowers/**",

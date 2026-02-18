@@ -2,6 +2,7 @@ package com.flowerable.spring.entity.order;
 
 import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.constant.order.OrderStatus;
+import com.flowerable.spring.entity.payment.Payment;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.entity.user.User;
 import com.flowerable.spring.exception.CustomException;
@@ -57,13 +58,16 @@ public class OrderRequest {
 
     private LocalDateTime canceledAt;
 
+    @OneToMany(mappedBy = "order")
+    private List<Payment> payments = new ArrayList<>();
+
     @OneToMany(mappedBy = "orderRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public static OrderRequest create(
             String orderNumber,
             User user,
-           Shop shop,
+            Shop shop,
             String wrappingColorName,
             Integer wrappingExtraPrice,
             List<OrderItem> orderItems,
@@ -72,7 +76,7 @@ public class OrderRequest {
         order.orderNumber = orderNumber;
         order.user = user;
         order.shop = shop;
-        order.status = OrderStatus.REQUESTED;
+        order.status = OrderStatus.CREATED;
         // 포장 옵션 (스냅샷)
         order.wrappingColorName = wrappingColorName;
         order.wrappingExtraPrice = wrappingExtraPrice;
@@ -96,6 +100,13 @@ public class OrderRequest {
         return order;
     }
 
+    public void markRequested() {
+        if (this.status != OrderStatus.CREATED) {
+            throw new IllegalStateException("결제 전 상태가 아닙니다.");
+        }
+        this.status = OrderStatus.REQUESTED;
+    }
+
 
     public void markCanceledAt() {
         this.canceledAt = LocalDateTime.now();
@@ -116,5 +127,9 @@ public class OrderRequest {
             if (this.status == s) return;
         }
         throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
+    }
+
+    public boolean isPaid() {
+        return this.status.isPaid();
     }
 }

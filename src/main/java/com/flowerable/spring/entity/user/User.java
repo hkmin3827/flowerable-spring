@@ -27,6 +27,7 @@ public class User {
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
 
+    // 커뮤니티 / 후기 등 확장 시 프로필이미지 기능 추가
     private String profileImageUrl;
 
     @Column(length = 30)

@@ -14,13 +14,17 @@ import com.flowerable.spring.entity.order.OrderRequest;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.repository.OrderCancelLogRepository;
 import com.flowerable.spring.repository.OrderRequestRepository;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,28 +36,57 @@ public class AdminOrderService {
     private final OrderCancelLogRepository orderCancelLogRepository;
 
     /**
-     * 관리자 주문 목록 조회 (검색 조건)
+     * 관리자 주문 목록 조회 (검색 조건), 동적 쿼리
      */
     @Transactional(readOnly = true)
     public Page<AdminOrderListRes> getOrders(AdminOrderSearchCond cond, Pageable pageable) {
+        Specification<OrderRequest> spec = (root, query, cb) -> {
 
-        // 검색 조건 추출
-        OrderStatus status = cond.getStatus() != null ? cond.getStatus() : null;
-        Long userId = cond.getUserId();
-        Long shopId = cond.getShopId();
-        LocalDateTime from = cond.getFrom();
-        LocalDateTime to = cond.getTo();
+            // fetch join (N+1 방지)
+            root.fetch("shop", JoinType.INNER);
+            root.fetch("user", JoinType.INNER);
 
-        // Repository에서 조회
-        Page<OrderRequest> orderPage = orderRequestRepository.findAdminOrders(
-                status, userId, shopId, from, to, pageable
-        );
+            List<Predicate> predicates = new ArrayList<>();
 
-        // DTO 변환
+            if (cond.getStatus() != null) {
+                predicates.add(cb.equal(root.get("status"), cond.getStatus()));
+            }
+
+            if (cond.getUserId() != null) {
+                predicates.add(cb.equal(root.get("user").get("id"), cond.getUserId()));
+            }
+
+            if (cond.getShopId() != null) {
+                predicates.add(cb.equal(root.get("shop").get("id"), cond.getShopId()));
+            }
+
+            if (cond.getFrom() != null) {
+                predicates.add(
+                        cb.greaterThanOrEqualTo(
+                                root.get("createdAt"),
+                                cond.getFrom()
+                        )
+                );
+            }
+
+            if (cond.getTo() != null) {
+                predicates.add(
+                        cb.lessThanOrEqualTo(
+                                root.get("createdAt"),
+                                cond.getTo()
+                        )
+                );
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<OrderRequest> orderPage =
+                orderRequestRepository.findAll(spec, pageable);
+
         return orderPage.map(order -> {
-            // CANCELED 상태일 때만 취소 로그 조회
+
             OrderCancelBy canceledBy = null;
-            String cancelReason = null;
 
             if (order.getStatus() == OrderStatus.CANCELED) {
                 Optional<OrderCancelLog> cancelLogOpt =
@@ -62,9 +95,6 @@ public class AdminOrderService {
                 if (cancelLogOpt.isPresent()) {
                     OrderCancelLog cancelLog = cancelLogOpt.get();
                     canceledBy = cancelLog.getCanceledBy();
-                    if (cancelLog.getCancelReason() != null) {
-                        cancelReason = cancelLog.getCancelReason().name();
-                    }
                 }
             }
 
@@ -94,17 +124,20 @@ public class AdminOrderService {
         }
 
         // 취소 로그 조회
-        OrderCancelBy canceledBy = null;
-        OrderCancelReason cancelReason = null;
+        String canceledBy = null;
+        String cancelReason = null;
 
         Optional<OrderCancelLog> cancelLogOpt =
                 orderCancelLogRepository.findByOrderRequestId(orderId);
 
         if (cancelLogOpt.isPresent()) {
             OrderCancelLog cancelLog = cancelLogOpt.get();
-            canceledBy = cancelLog.getCanceledBy();
-            if (cancelLog.getCancelReason() != null) {
-                cancelReason = cancelLog.getCancelReason();
+            if(cancelLog.getCanceledBy() == OrderCancelBy.SHOP) {
+                canceledBy = "가게";
+            } else {
+                canceledBy = "고객";
+            }            if (cancelLog.getCancelReason() != null) {
+                cancelReason = cancelLog.getCancelReason().getDescription();
             }
         }
 
@@ -117,6 +150,8 @@ public class AdminOrderService {
                 .orderNumber(order.getOrderNumber())
                 .userId(order.getUser().getId())
                 .shopId(order.getShop().getId())
+                .shopTelnum(order.getShop().getAccount().getTelnum())
+                .userTelnum(order.getUser().getAccount().getTelnum())
                 .shopName(order.getShop().getShopName())
                 .userName(order.getUser().getName())
                 .status(order.getStatus())

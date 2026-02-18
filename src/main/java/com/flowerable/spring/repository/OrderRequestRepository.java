@@ -6,14 +6,22 @@ import com.flowerable.spring.entity.order.OrderRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long> {
+public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long>, JpaSpecificationExecutor<OrderRequest> {
 
+    @Query("""
+            select o
+            from OrderRequest o
+            join fetch o.shop s
+            where o.orderNumber = :orderNumber
+            """)
+    Optional<OrderRequest> findByOrderNumber(@Param("orderNumber") String orderNumber);
 
     // 사용자 주문 취소용
     @Query("""
@@ -37,6 +45,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         where o.id = :orderId
           and o.canceledAt is null
           and s.id = :shopId
+          and o.status <> 'CREATED'
     """)
     Optional<OrderRequest> findDetailForStatusChange(@Param("orderId") Long orderId, @Param("shopId") Long shopId);
 
@@ -57,6 +66,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         join o.user u
     where s.id = :shopId
       and (:status is null or o.status = :status)
+      and o.status <> 'CREATED'
     group by o.id, o.orderNumber, o.status, o.totalPrice, o.createdAt, s.shopName, u.name
     order by o.createdAt desc
     """)
@@ -101,6 +111,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         join fetch sf.flower
         where s.id = :shopId
         and o.id = :orderId
+        and o.status <> 'CREATED'
     """)
     Optional<OrderRequest> findShopOrderDetails(
             @Param("shopId") Long shopId,
@@ -154,36 +165,14 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
 
 
     /**
-     * 관리자용 주문 조회 (동적 검색)
-     * status, userId, shopId, from, to 모두 optional
-     */
-    @Query("""
-    SELECT o FROM OrderRequest o
-        JOIN o.shop s
-        JOIN o.user u
-        WHERE (:status IS NULL OR o.status = :status)
-        AND (:userId IS NULL OR u.id = :userId)
-        AND (:shopId IS NULL OR s.id = :shopId)
-        AND (:from IS NULL OR o.createdAt >= :from)
-        AND (:to IS NULL OR o.createdAt <= :to)
-        ORDER BY o.createdAt DESC
-""")
-    Page<OrderRequest> findAdminOrders(
-            @Param("status") OrderStatus status,
-            @Param("userId") Long userId,
-            @Param("shopId") Long shopId,
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
-            Pageable pageable
-    );
-
-    /**
      * 주문 상세 조회 (OrderItems fetch join)
      */
     @Query("""
         SELECT DISTINCT o FROM OrderRequest o
-        join fetch o.shop s
-        join fetch o.user u
+        JOIN FETCH o.shop s
+        JOIN FETCH s.account sa
+        JOIN FETCH o.user u
+        JOIN FETCH u.account ua
         LEFT JOIN FETCH o.orderItems oi
         LEFT JOIN FETCH oi.shopFlower sf
         LEFT JOIN FETCH sf.flower

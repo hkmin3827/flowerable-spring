@@ -37,6 +37,7 @@ public class AdminFlowerService {
         return flowerRepository.save(flower).getId();
     }
 
+    @Transactional
     public void updateFlowerInfo(Long flowerId, FlowerUpdateInfoReq req){
         Flower flower = flowerRepository.findById(flowerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FLOWER_NOT_FOUND));
@@ -44,6 +45,7 @@ public class AdminFlowerService {
         flower.updateInfo(req);
     }
 
+    @Transactional
     public void deactivateFlower(Long flowerId) {
         Flower flower = flowerRepository.findById(flowerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FLOWER_NOT_FOUND));
@@ -53,6 +55,7 @@ public class AdminFlowerService {
         shopFlowerRepository.stopSaleByFlowerId(flower.getId());
     }
 
+    @Transactional
     public void activateFlower(Long flowerId) {
         Flower flower = flowerRepository.findById(flowerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FLOWER_NOT_FOUND));

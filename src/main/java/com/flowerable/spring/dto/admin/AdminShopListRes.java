@@ -15,11 +15,9 @@ public interface AdminShopListRes {
     AccountStatus getAccountStatus();
     String getShopName();
 
-    // JPQL에서 'region'으로 가져온 Enum 객체의 getDescription()을 호출
     @Value("#{target.region.description}")
     String getRegionDescription();
 
-    // JPQL에서 'district'로 가져온 Enum 객체의 getDescription()을 호출
     @Value("#{target.district.description}")
     String getDistrictDescription();
 

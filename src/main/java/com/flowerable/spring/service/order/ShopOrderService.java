@@ -4,17 +4,21 @@ import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.constant.notification.NotificationReceiverType;
 import com.flowerable.spring.constant.notification.NotificationType;
 import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderCancelReason;
 import com.flowerable.spring.constant.order.OrderStatus;
 import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.dto.order.*;
+import com.flowerable.spring.entity.order.OrderCancelLog;
 import com.flowerable.spring.entity.order.OrderRequest;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.exception.OrderNotFoundException;
 import com.flowerable.spring.exception.ShopNotFoundException;
+import com.flowerable.spring.repository.OrderCancelLogRepository;
 import com.flowerable.spring.repository.OrderRequestRepository;
 import com.flowerable.spring.repository.ShopRepository;
 import com.flowerable.spring.service.notification.NotificationService;
+import com.flowerable.spring.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,8 @@ public class ShopOrderService {
     private final ShopRepository shopRepository;
     private final OrderCancelLogService orderCancelLogService;
     private final NotificationService notificationService;
+    private final OrderCancelLogRepository orderCancelLogRepository;
+    private final PaymentService paymentService;
 
     @Transactional
     public void changeStatus(Long accountId, Long orderId, OrderStatusChangeReq req) {
@@ -49,6 +56,8 @@ public class ShopOrderService {
             if (req.cancelReason() == null) {
                 throw new CustomException(ErrorCode.CANCEL_REASON_REQUIRED);
             }
+
+            paymentService.cancelPayment(orderReq, req.cancelReason());
             orderReq.markCanceledAt();
             orderCancelLogService.recordCancel(orderReq.getId(), OrderCancelBy.SHOP, req.cancelReason());
             notifyUser(orderReq, orderReq.getUser().getId(), NotificationType.ORDER_CANCELED,  "취소 사유 : " + req.cancelReason().getDescription());
@@ -78,6 +87,24 @@ public class ShopOrderService {
 
         OrderRequest order = orderRequestRepository.findShopOrderDetails(shop.getId(), orderId)
                 .orElseThrow(OrderNotFoundException::new);
+
+        String canceledBy = null;
+        String cancelReason = null;
+
+        Optional<OrderCancelLog> cancelLogOpt =
+                orderCancelLogRepository.findByOrderRequestId(orderId);
+
+        if (cancelLogOpt.isPresent()) {
+            OrderCancelLog cancelLog = cancelLogOpt.get();
+            if(cancelLog.getCanceledBy() == OrderCancelBy.SHOP) {
+                canceledBy = "가게";
+            } else {
+                canceledBy = "고객";
+            }
+            if (cancelLog.getCancelReason() != null) {
+                cancelReason = cancelLog.getCancelReason().getDescription();
+            }
+        }
 
         List<OrderItemRes> items = order.getOrderItems().stream()
                 .map(i -> {
@@ -112,6 +139,8 @@ public class ShopOrderService {
                 .shopId(order.getShop().getId())
                 .shopName(order.getShop().getShopName())
                 .userName(order.getUser().getName())
+                .cancelBy(canceledBy)
+                .cancelReason(cancelReason)
                 .build();
     }
     /**

@@ -28,6 +28,7 @@ public class OrderItem {
     @Column(nullable = false)
     private Integer quantity;   // 개수
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Color flowerColor;
 

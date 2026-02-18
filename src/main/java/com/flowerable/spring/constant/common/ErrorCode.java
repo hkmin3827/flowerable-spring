@@ -64,7 +64,11 @@ public enum ErrorCode {
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."),
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니 항목을 찾을 수 없습니다."),
     SHOP_FLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "꽃을 찾을 수 없습니다."),
-    UNAUTHORIZED(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+    UNAUTHORIZED(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+    PAYMENT_KEY_NOT_FILLED(HttpStatus.BAD_REQUEST,"페이먼트 키가 입력되지 않았습니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 결제건이 존재하지 않습니다."),
+    ORDER_ALREADY_PAID(HttpStatus.CONFLICT, "이미 결제된 주문건입니다."),
+    PAYMENT_CANCEL_FAILED(HttpStatus.BAD_GATEWAY, "결제 취소 처리에 실패하였습니다. 잠시 후 다시 시도해주세요.");
 
     private final HttpStatus status;
     private final String message;

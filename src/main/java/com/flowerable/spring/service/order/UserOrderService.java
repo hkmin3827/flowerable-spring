@@ -4,22 +4,24 @@ import com.flowerable.spring.constant.common.ErrorCode;
 import com.flowerable.spring.constant.notification.NotificationReceiverType;
 import com.flowerable.spring.constant.notification.NotificationType;
 import com.flowerable.spring.constant.order.OrderCancelBy;
+import com.flowerable.spring.constant.order.OrderCancelReason;
 import com.flowerable.spring.constant.order.OrderStatus;
+import com.flowerable.spring.constant.payment.PaymentStatus;
 import com.flowerable.spring.dto.notification.NotificationCreateReq;
 import com.flowerable.spring.dto.order.*;
+import com.flowerable.spring.entity.order.OrderCancelLog;
 import com.flowerable.spring.entity.order.OrderItem;
 import com.flowerable.spring.entity.order.OrderRequest;
+import com.flowerable.spring.entity.payment.Payment;
 import com.flowerable.spring.entity.shop.Shop;
 import com.flowerable.spring.entity.shopflower.ShopFlower;
 import com.flowerable.spring.entity.user.User;
 import com.flowerable.spring.exception.CustomException;
 import com.flowerable.spring.exception.OrderNotFoundException;
 import com.flowerable.spring.exception.UserNotFoundException;
-import com.flowerable.spring.repository.OrderRequestRepository;
-import com.flowerable.spring.repository.ShopFlowerRepository;
-import com.flowerable.spring.repository.ShopRepository;
-import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.repository.*;
 import com.flowerable.spring.service.notification.NotificationService;
+import com.flowerable.spring.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +42,12 @@ public class UserOrderService {
     private final OrderCancelLogService orderCancelLogService;
     private final NotificationService notificationService;
     private final OrderNumberGenerator orderNumberGenerator;
+    private final OrderCancelLogRepository orderCancelLogRepository;
+    private final PaymentService paymentService;
 
     @Transactional
-    public Long createOrder(Long userId, Long shopId, OrderCreateReq req) {
-        User user = userRepository.findByIdAndDeletedAtIsNull(userId).
+    public OrderCreateRes createOrder(Long accountId, Long shopId, OrderCreateReq req) {
+        User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId).
                 orElseThrow(UserNotFoundException::new);
 
         Shop shop = shopRepository.findByIdAndDeletedAtIsNullAndIsActive(shopId)
@@ -81,14 +86,9 @@ public class UserOrderService {
 
         orderRequestRepository.save(order);
 
-        String content = order.getMessage() == null
-                ? "주문 확인 후 접수 또는 취소해주세요."
-                : "주문 확인 후 접수 또는 취소해주세요. (요청 사항 : " + order.getMessage()+ ")";
-        notifyShop(order, shop.getId(), NotificationType.ORDER_CREATED, content);
-        return order.getId();
+        return new OrderCreateRes(order.getId(), order.getOrderNumber(), order.getTotalPrice());
     }
 
-    @Transactional
     public void cancelOrder(Long accountId, Long orderId){
         User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId)
                 .orElseThrow(UserNotFoundException::new);
@@ -103,10 +103,29 @@ public class UserOrderService {
         if(order.getStatus() == OrderStatus.CANCELED) {
             throw new CustomException(ErrorCode.ORDER_ALREADY_CANCELED);
         }
-        order.cancel();
 
-        notifyShop(order, order.getShop().getId(), NotificationType.ORDER_CANCELED, "고객이 주문을 취소하였습니다.");
-        orderCancelLogService.recordCancel(order.getId(), OrderCancelBy.USER, null);
+        paymentService.cancelPayment(order, OrderCancelReason.CUSTOMER_REQUEST);
+
+        cancelOrderTransaction(order);
+    }
+
+    @Transactional
+    protected void cancelOrderTransaction(OrderRequest order) {
+
+        order.cancel();  // 주문 상태 CANCELED 변경
+
+        notifyShop(
+                order,
+                order.getShop().getId(),
+                NotificationType.ORDER_CANCELED,
+                "고객이 주문을 취소하였습니다."
+        );
+
+        orderCancelLogService.recordCancel(
+                order.getId(),
+                OrderCancelBy.USER,
+                null
+        );
     }
 
     @Transactional(readOnly = true)
@@ -124,6 +143,24 @@ public class UserOrderService {
 
         OrderRequest order = orderRequestRepository.findUserOrderDetails(user.getId(), orderId)
                 .orElseThrow(OrderNotFoundException::new);
+
+        String canceledBy = null;
+        String cancelReason = null;
+
+        Optional<OrderCancelLog> cancelLogOpt =
+                orderCancelLogRepository.findByOrderRequestId(orderId);
+
+        if (cancelLogOpt.isPresent()) {
+            OrderCancelLog cancelLog = cancelLogOpt.get();
+            if(cancelLog.getCanceledBy() == OrderCancelBy.SHOP) {
+                canceledBy = "가게";
+            } else {
+                canceledBy = "고객";
+            }
+            if (cancelLog.getCancelReason() != null) {
+                cancelReason = cancelLog.getCancelReason().getDescription();
+            }
+        }
 
         List<OrderItemRes> items = order.getOrderItems().stream()
                 .map(i -> {
@@ -157,6 +194,8 @@ public class UserOrderService {
                 .shopId(order.getShop().getId())
                 .shopName(order.getShop().getShopName())
                 .userName(order.getUser().getName())
+                .cancelReason(cancelReason)
+                .cancelBy(canceledBy)
                 .build();
     }
 

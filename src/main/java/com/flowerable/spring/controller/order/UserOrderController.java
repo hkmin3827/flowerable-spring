@@ -3,6 +3,7 @@ package com.flowerable.spring.controller.order;
 import com.flowerable.spring.constant.order.OrderStatus;
 import com.flowerable.spring.dto.common.PageResponse;
 import com.flowerable.spring.dto.order.OrderCreateReq;
+import com.flowerable.spring.dto.order.OrderCreateRes;
 import com.flowerable.spring.dto.order.OrderDetailRes;
 import com.flowerable.spring.dto.order.OrderListRes;
 import com.flowerable.spring.dto.wrappingoption.WrappingOptionRes;
@@ -23,18 +24,18 @@ public class UserOrderController {
     private final WrappingOptionService wrappingOptionService;
 
     @PostMapping("/{shopId}")
-    public ResponseEntity<Long> createOrder(
+    public ResponseEntity<OrderCreateRes> createOrder(
             @PathVariable Long shopId,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody OrderCreateReq req
     ) {
-            Long orderId = userOrderService.createOrder(
+            OrderCreateRes res= userOrderService.createOrder(
                 userDetails.getId(),
                 shopId,
                 req
         );
 
-        return ResponseEntity.ok(orderId);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/{shopId}/wrapping-options")
