@@ -1,5 +1,6 @@
 package com.flowerable.spring.dto.user;
 
+import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.constant.auth.Provider;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,4 +20,5 @@ public class UserDetailRes {
     private final LocalDateTime createdAt;
     private final LocalDateTime deletedAt;
     private final boolean active;
+    private final AccountStatus accountStatus;
 }

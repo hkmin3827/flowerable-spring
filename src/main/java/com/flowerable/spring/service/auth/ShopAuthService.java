@@ -57,7 +57,7 @@ public class ShopAuthService {
 
     @Transactional(readOnly = true)
     public AuthRes login(AuthReq.Login dto) {
-        Account account = accountRepository.findByEmailAndDeletedAtIsNull(dto.getEmail())
+        Account account = accountRepository.findByEmail(dto.getEmail())
                 .orElseThrow(ShopNotFoundException::new);
 
         if (account.getRole() != dto.getRole()) {
@@ -68,7 +68,10 @@ public class ShopAuthService {
             throw new CustomException(ErrorCode.INVALID_LOGIN_TYPE);
         }
 
-        if (account.getStatus() != AccountStatus.ACTIVE) {
+        if(account.getStatus() == AccountStatus.DELETED){
+            throw new CustomException(ErrorCode.DELETED_ACCOUNT);
+        }
+        if (account.getStatus() == AccountStatus.SUSPENDED) {
             throw new SuspendedAccountException();
         }
 
@@ -86,7 +89,7 @@ public class ShopAuthService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(ShopNotFoundException::new);
 
-        if (!"탈퇴".equals(dto.getConfirmText())) {
+        if (!"영구탈퇴임을 확인했습니다".equals(dto.getConfirmText())) {
             throw new IllegalArgumentException("입력하신 탈퇴 확인 문구가 틀립니다.");
         }
         if (!passwordEncoder.matches(dto.getPassword(), account.getPassword())) {

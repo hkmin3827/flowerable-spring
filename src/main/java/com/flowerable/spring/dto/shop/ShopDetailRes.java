@@ -1,5 +1,6 @@
 package com.flowerable.spring.dto.shop;
 
+import com.flowerable.spring.constant.auth.AccountStatus;
 import com.flowerable.spring.constant.region.District;
 import com.flowerable.spring.constant.region.Region;
 import com.flowerable.spring.constant.shop.ShopStatus;
@@ -31,5 +32,6 @@ public class ShopDetailRes {
     private final LocalDateTime deletedAt;
     private final LocalDateTime registerAt;
 
-    private List<ShopFlowerRes> shopFlowers;
+    private final List<ShopFlowerRes> shopFlowers;
+    private final AccountStatus accountStatus;
 }

@@ -93,6 +93,7 @@ public class ShopService {
                 .longitude(shop.getLongitude())
                 .description(shop.getDescription())
                 .shopFlowers(flowerResList)
+                .accountStatus(shop.getAccount().getStatus())
                 .build();
     }
 
@@ -133,6 +134,7 @@ public class ShopService {
                 .longitude(shop.getLongitude())
                 .description(shop.getDescription())
                 .shopFlowers(flowerResList)
+                .accountStatus(shop.getAccount().getStatus())
                 .build();
     }
 

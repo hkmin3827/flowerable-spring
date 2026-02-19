@@ -75,6 +75,7 @@ public class AdminUserService {
                 .active(user.isActive())
                 .provider(user.getAccount().getProvider())
                 .providerId(user.getAccount().getProviderId())
+                .accountStatus(user.getAccount().getStatus())
                 .build();
     }
 }

@@ -54,6 +54,7 @@ dependencies {
 	// WebSocket for real-time notifications
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+	implementation("com.google.genai:google-genai:1.8.0")
 }
 
 // spring -jcl에 포함됨. 충돌 방지 exclude

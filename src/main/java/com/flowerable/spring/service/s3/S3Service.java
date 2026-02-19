@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -26,9 +27,13 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    private static final String PREVIEW_FOLDER = "gemini-bouquet-expectation-images";
+
+
     private static final Set<String> ALLOWED_FOLDERS = Set.of(
             "shop-images",
-            "flower-images"
+            "flower-images",
+            PREVIEW_FOLDER
     );
 
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
@@ -133,5 +138,23 @@ public class S3Service {
         } catch (Exception e) {
             throw new RuntimeException("S3 업로드 실패", e);
         }
+    }
+
+    /**
+     * Gemini가 생성한 PNG 이미지 byte[] 를 S3에 업로드하고 접근 가능한 URL을 반환합니다.
+     */
+    public String uploadPreview(byte[] imageBytes) {
+        String key = PREVIEW_FOLDER + "/" + UUID.randomUUID() + ".png";
+
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .contentType("image/png")
+                .contentLength((long) imageBytes.length)
+                .build();
+
+        s3Client.putObject(request, RequestBody.fromBytes(imageBytes));
+
+        return getFileUrl(key);
     }
 }

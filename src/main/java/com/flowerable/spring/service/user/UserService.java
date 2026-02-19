@@ -22,7 +22,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserDetailRes  getMyDetails(Long accountId){
+    public UserDetailRes getMyDetails(Long accountId){
         User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -36,6 +36,7 @@ public class UserService {
                 .active(user.isActive())
                 .provider(user.getAccount().getProvider())
                 .providerId(user.getAccount().getProviderId())
+                .accountStatus(user.getAccount().getStatus())
                 .build();
     }
 
@@ -54,6 +55,7 @@ public class UserService {
                 .active(user.isActive())
                 .provider(user.getAccount().getProvider())
                 .providerId(user.getAccount().getProviderId())
+                .accountStatus(user.getAccount().getStatus())
                 .build();
     }
 }

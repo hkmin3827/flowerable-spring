@@ -1,6 +1,8 @@
 package com.flowerable.spring.controller.order;
 
 import com.flowerable.spring.constant.order.OrderStatus;
+import com.flowerable.spring.dto.buquet.BouquetPreviewReq;
+import com.flowerable.spring.dto.buquet.BouquetPreviewRes;
 import com.flowerable.spring.dto.common.PageResponse;
 import com.flowerable.spring.dto.order.OrderCreateReq;
 import com.flowerable.spring.dto.order.OrderCreateRes;
@@ -8,6 +10,7 @@ import com.flowerable.spring.dto.order.OrderDetailRes;
 import com.flowerable.spring.dto.order.OrderListRes;
 import com.flowerable.spring.dto.wrappingoption.WrappingOptionRes;
 import com.flowerable.spring.security.CustomUserDetails;
+import com.flowerable.spring.service.gemini.BouquetPreviewService;
 import com.flowerable.spring.service.order.UserOrderService;
 import com.flowerable.spring.service.wrappingoption.WrappingOptionService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserOrderController {
     private final UserOrderService userOrderService;
     private final WrappingOptionService wrappingOptionService;
+    private final BouquetPreviewService bouquetPreviewService;
 
     @PostMapping("/{shopId}")
     public ResponseEntity<OrderCreateRes> createOrder(
@@ -72,4 +76,15 @@ public class UserOrderController {
     ){
         return userOrderService.getOrderDetails(userDetails.getId(), orderId);
     }
+
+    @PostMapping("/{shopId}/bouquet-preview")
+    public ResponseEntity<BouquetPreviewRes> generateBouquetPreview(
+            @PathVariable Long shopId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody BouquetPreviewReq req
+    ) {
+        String imageUrl = bouquetPreviewService.generatePreviewFromReq(req);
+        return ResponseEntity.ok(new BouquetPreviewRes(imageUrl));
+    }
+
 }

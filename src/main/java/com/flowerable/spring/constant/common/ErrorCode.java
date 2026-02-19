@@ -16,7 +16,7 @@ public enum ErrorCode {
     DELETED_ACCOUNT(HttpStatus.CONFLICT, "회원 탈퇴한 계정입니다."),
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."),
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림을 찾을 수 없습니다."),
-    SUSPENDED_ACCOUNT(HttpStatus.FORBIDDEN,"접근 제한된 계정입니다."),
+    SUSPENDED_ACCOUNT(HttpStatus.FORBIDDEN,"접근 제한된 계정입니다. 관리자에게 문의해주세요."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효한 토큰이 아닙니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효한 REFRESH 토큰이 아닙니다."),

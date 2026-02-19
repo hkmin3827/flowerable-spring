@@ -60,7 +60,7 @@ public class UserAuthService {
 
     @Transactional(readOnly = true)
     public AuthRes login(AuthReq.Login dto){
-        Account account = accountRepository.findByEmailAndDeletedAtIsNull(dto.getEmail())
+        Account account = accountRepository.findByEmail(dto.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 
         if (account.getProvider() != Provider.LOCAL) {
@@ -70,7 +70,10 @@ public class UserAuthService {
         if (account.getRole() != dto.getRole()) {
             throw new CustomException(ErrorCode.LOGIN_ROLE_MISMATCH);
         }
-        if (account.getStatus() != AccountStatus.ACTIVE) {
+        if(account.getStatus() == AccountStatus.DELETED){
+            throw new CustomException(ErrorCode.DELETED_ACCOUNT);
+        }
+        if (account.getStatus() == AccountStatus.SUSPENDED) {
             throw new SuspendedAccountException();
         }
 
@@ -176,7 +179,7 @@ public class UserAuthService {
                 .orElseThrow(UserNotFoundException::new);
 
 
-        if (!"탈퇴".equals(dto.getConfirmText())) {
+        if (!"영구탈퇴임을 확인했습니다".equals(dto.getConfirmText())) {
             throw new IllegalArgumentException("입력하신 탈퇴 확인 문구가 틀립니다.");
         }
         if (account.getProvider() == Provider.LOCAL &&
