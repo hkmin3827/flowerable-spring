@@ -20,8 +20,8 @@
 - PostgreSQL
 - Redis (Refresh Token / Notification / SSE)
 - AWS S3 (이미지 업로드)
-- Docker Compose
-- AWS EC2 (배포)
+- Docker Compose (예정)
+- AWS EC2 (배포 (예정))
 
 ### Communication
 - REST API
@@ -84,6 +84,7 @@
 ### application.yml
 
 ```yaml
+spring:  
   jpa:
     hibernate:
       ddl-auto: update

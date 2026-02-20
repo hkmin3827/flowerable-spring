@@ -36,6 +36,8 @@
                                     "/api/auth/login",
                                     "/api/auth/oauth/**",
                                     "/api/auth/reissue",
+                                    "/api/auth/password/forgot",
+                                    "/api/auth/password/reset",
                                     "/oauth2/**",
                                     "/login/oauth2/**",
                                     "/api/auth/users/signup",

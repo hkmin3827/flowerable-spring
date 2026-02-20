@@ -2,10 +2,13 @@ package com.flowerable.spring.controller.auth;
 
 import com.flowerable.spring.dto.auth.AuthReq;
 import com.flowerable.spring.dto.auth.AuthRes;
+import com.flowerable.spring.dto.auth.PasswordForgotReq;
+import com.flowerable.spring.dto.auth.PasswordResetReq;
 import com.flowerable.spring.security.CustomUserDetails;
 import com.flowerable.spring.service.auth.AuthService;
 import com.flowerable.spring.service.auth.ShopAuthService;
 import com.flowerable.spring.service.auth.UserAuthService;
+import com.flowerable.spring.service.auth.password.PasswordResetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserAuthService userAuthService;
     private final ShopAuthService shopAuthService;
+    private final PasswordResetService passwordResetService;
 
     @PostMapping("/users/signup")
     public AuthRes userSignup(
@@ -59,5 +63,24 @@ public class AuthController {
     @PostMapping("/reissue")
     public AuthRes reissue(@RequestHeader("X-Refresh-Token") String refreshToken) {
         return authService.reissue(refreshToken);
+    }
+
+    @PostMapping("/password/forgot")
+    public ResponseEntity<Void> forgotPassword(
+            @RequestBody PasswordForgotReq req
+    ) {
+        passwordResetService.sendResetLink(req.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/password/reset")
+    public ResponseEntity<Void> resetPassword(
+            @RequestBody PasswordResetReq req
+    ) {
+        passwordResetService.resetPassword(
+                req.getToken(),
+                req.getNewPassword()
+        );
+        return ResponseEntity.ok().build();
     }
 }

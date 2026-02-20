@@ -83,7 +83,16 @@ public class PaymentService {
             notifyShop(order, order.getShop().getId(), NotificationType.ORDER_CREATED, content);
 
             return order.getId();
-        } catch(Exception e) {
+        } catch(WebClientResponseException e) {
+
+            String body = e.getResponseBodyAsString();
+
+            if (body.contains("ALREADY_PROCESSED_PAYMENT")) {
+                payment.markDone(req.getPaymentKey());
+                order.markRequested();
+                return order.getId();
+            }
+
             saveFailed(payment, e.getMessage());
 
             throw e;

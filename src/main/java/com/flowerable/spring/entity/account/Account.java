@@ -111,4 +111,8 @@ public class Account {
         this.status = AccountStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 }

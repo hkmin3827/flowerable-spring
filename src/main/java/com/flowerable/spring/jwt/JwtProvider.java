@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 
 @Component
@@ -25,11 +26,21 @@ public class JwtProvider {
 
     public String createAccessToken(Long accountId, Role role) {
 
+
         return createToken(
                 accountId,
                 TokenType.ACCESS,
                 role,
                 jwtProperties.getAccessExpiration()
+        );
+    }
+
+    public String createPasswordResetToken(Long accountId, Role role, Duration duration) {
+        return createToken(
+                accountId,
+                TokenType.PASSWORD_RESET,
+                role,
+                duration.toMillis()
         );
     }
 
