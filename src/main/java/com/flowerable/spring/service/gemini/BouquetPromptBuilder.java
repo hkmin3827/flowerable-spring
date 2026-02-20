@@ -1,7 +1,6 @@
 package com.flowerable.spring.service.gemini;
 
 import com.flowerable.spring.dto.buquet.BouquetPreviewReq;
-import com.flowerable.spring.entity.order.OrderItem;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

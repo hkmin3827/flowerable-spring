@@ -108,7 +108,7 @@ public class S3Service {
             String fileUrl
     ) {}
 
-    // presigned랑 별개로 서버에서 직접 올리는 방식
+    // 서버 직접 업로드
     public String uploadFile(MultipartFile file, String folder) {
         try {
             validateFolder(folder);
@@ -140,9 +140,6 @@ public class S3Service {
         }
     }
 
-    /**
-     * Gemini가 생성한 PNG 이미지 byte[] 를 S3에 업로드하고 접근 가능한 URL을 반환합니다.
-     */
     public String uploadPreview(byte[] imageBytes) {
         String key = PREVIEW_FOLDER + "/" + UUID.randomUUID() + ".png";
 

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,11 +20,7 @@ public class GeminiClient {
     private final ObjectMapper objectMapper;
     private final GeminiProperties geminiProperties;
 
-    /**
-     * Gemini 이미지 생성 모델을 호출하고 base64 인코딩된 PNG 이미지 데이터를 반환합니다.
-     */
     public String generateImage(String prompt) {
-        log.warn("🔥🔥 Gemini 실제 API 호출 시작");
         String apiKey = geminiProperties.getApi().getKey();
         String model = geminiProperties.getModels().getImage();
 
@@ -53,7 +48,7 @@ public class GeminiClient {
                 )
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(JsonNode.class)   // ✅ 여기 변경
+                .bodyToMono(JsonNode.class)
                 .doOnSuccess(r -> log.info("[Gemini] image generation success"))
                 .doOnError(e -> log.error("[Gemini] image generation failed", e))
                 .block();

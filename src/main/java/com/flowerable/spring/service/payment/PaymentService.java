@@ -75,7 +75,7 @@ public class PaymentService {
 
             payment.markDone(req.getPaymentKey());
 
-            order.markRequested(); // 결제 성공 → 샵 전달
+            order.markRequested();
 
             String content = order.getMessage() == null
                     ? "주문 확인 후 접수 또는 취소해주세요."
@@ -95,10 +95,6 @@ public class PaymentService {
         payment.markFailed(reason);
     }
 
-    /**
-     * Toss 결제 취소 요청
-     * 실패 시 RuntimeException 발생 → 상위 트랜잭션 롤백
-     */
     public void cancelPayment(OrderRequest order, OrderCancelReason cancelReason) {
 
         Payment payment = paymentRepository

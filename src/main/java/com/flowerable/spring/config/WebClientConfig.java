@@ -22,17 +22,6 @@ public class WebClientConfig {
     }
 
     @Bean
-    public WebClient kakaoMapWebClient(
-            WebClient.Builder builder,
-            @Value(("${KAKAO_MAP_REST_API_KEY")) String apiKey
-    ){
-        return builder
-                .baseUrl("https://dapi.kakao.com")
-                .defaultHeader("Authorization","KakaoAK" + apiKey)
-                .build();
-    }
-
-    @Bean
     public WebClient geminiWebClient() {
         return WebClient.builder()
                 .baseUrl("https://generativelanguage.googleapis.com")
