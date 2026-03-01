@@ -1,9 +1,9 @@
 package com.flowerable.spring.infra.sse;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.repository.ShopRepository;
-import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
+import com.flowerable.spring.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,6 +30,9 @@ public class SseEmitterManager {
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         userEmitters.put(userId, emitter);
         removeOnComplete(emitter, userId, userEmitters);
+
+        sendDummyData(emitter, "user-connect", userId);
+
         return emitter;
     }
 
@@ -55,8 +58,20 @@ public class SseEmitterManager {
             shopEmitters.remove(shopId);
             log.warn("[SSE] shop emitter error. shopId={}", shopId, e);
         });
-//        removeOnComplete(emitter, shopId, shopEmitters);
+        removeOnComplete(emitter, shopId, shopEmitters);
+
+        sendDummyData(emitter, "shop-connect", shopId);
         return emitter;
+    }
+
+    private void sendDummyData(SseEmitter emitter, String name, Long id) {
+        try {
+            emitter.send(SseEmitter.event()
+                    .name(name)
+                    .data("connected_id:" + id));
+        } catch (Exception e) {
+            log.error("SSE initial send error", e);
+        }
     }
 
     public void sendToUser(Long userId, Object data) {
@@ -74,9 +89,11 @@ public class SseEmitterManager {
         try {
             log.info("[SSE] send. sendToId={}", id);
             emitter.send(SseEmitter.event()
-                    .name("order")
+                    .name("notification")
+                    .id(String.valueOf(System.currentTimeMillis()))
                     .data(data));
         } catch (Exception e) {
+            log.warn("[SSE] send failed, removing emitter for id={}", id);
             emitters.remove(id);
         }
     }

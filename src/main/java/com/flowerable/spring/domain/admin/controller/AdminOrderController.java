@@ -1,10 +1,10 @@
-package com.flowerable.spring.controller.admin;
+package com.flowerable.spring.domain.admin.controller;
 
-import com.flowerable.spring.dto.admin.AdminOrderDetailRes;
-import com.flowerable.spring.dto.admin.AdminOrderListRes;
-import com.flowerable.spring.dto.admin.AdminOrderSearchCond;
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.service.admin.AdminOrderService;
+import com.flowerable.spring.domain.admin.dto.AdminOrderDetailRes;
+import com.flowerable.spring.domain.admin.dto.AdminOrderListRes;
+import com.flowerable.spring.domain.admin.dto.AdminOrderSearchCond;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.admin.service.AdminOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

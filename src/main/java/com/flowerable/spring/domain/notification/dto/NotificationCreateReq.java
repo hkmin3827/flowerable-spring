@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.notification;
+package com.flowerable.spring.domain.notification.dto;
 
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;

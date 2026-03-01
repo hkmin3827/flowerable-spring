@@ -1,18 +1,15 @@
-package com.flowerable.spring.dto.chat;
+package com.flowerable.spring.domain.chat.dto;
 
-import com.flowerable.spring.constant.chat.SenderType;
-import com.flowerable.spring.entity.chat.ChatMessage;
-import lombok.AllArgsConstructor;
+import com.flowerable.spring.domain.chat.constant.SenderType;
+import com.flowerable.spring.domain.chat.entity.ChatMessage;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
 public class ChatMessageRes {
-
     private final Long id;
     private final Long senderId;
     private final SenderType senderType;

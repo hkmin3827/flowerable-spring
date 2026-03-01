@@ -1,6 +1,6 @@
-package com.flowerable.spring.oauth2.userInfo;
+package com.flowerable.spring.domain.auth.oauth2.userInfo;
 
-import com.flowerable.spring.constant.auth.Provider;
+import com.flowerable.spring.domain.auth.constant.Provider;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public class NaverOAuth2UserInfo implements OAuth2UserInfo{
 
     @Override
     public String getProviderId() {
-        return attributes.get("id").toString(); // 네이버 고유 ID
+        return attributes.get("id").toString();
     }
 
     @Override

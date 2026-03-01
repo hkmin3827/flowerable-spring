@@ -1,19 +1,18 @@
-package com.flowerable.spring.service.admin;
+package com.flowerable.spring.domain.admin.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.constant.order.OrderCancelBy;
-import com.flowerable.spring.constant.order.OrderCancelReason;
-import com.flowerable.spring.constant.order.OrderStatus;
-import com.flowerable.spring.dto.admin.AdminOrderDetailRes;
-import com.flowerable.spring.dto.admin.AdminOrderItemRes;
-import com.flowerable.spring.dto.admin.AdminOrderListRes;
-import com.flowerable.spring.dto.admin.AdminOrderSearchCond;
-import com.flowerable.spring.entity.order.OrderCancelLog;
-import com.flowerable.spring.entity.order.OrderItem;
-import com.flowerable.spring.entity.order.OrderRequest;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.repository.OrderCancelLogRepository;
-import com.flowerable.spring.repository.OrderRequestRepository;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.order.constant.OrderCancelBy;
+import com.flowerable.spring.domain.order.constant.OrderStatus;
+import com.flowerable.spring.domain.admin.dto.AdminOrderDetailRes;
+import com.flowerable.spring.domain.admin.dto.AdminOrderItemRes;
+import com.flowerable.spring.domain.admin.dto.AdminOrderListRes;
+import com.flowerable.spring.domain.admin.dto.AdminOrderSearchCond;
+import com.flowerable.spring.domain.order.entity.OrderCancelLog;
+import com.flowerable.spring.domain.order.entity.OrderItem;
+import com.flowerable.spring.domain.order.entity.OrderRequest;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.domain.order.repository.OrderCancelLogRepository;
+import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,14 +33,11 @@ public class AdminOrderService {
     private final OrderRequestRepository orderRequestRepository;
     private final OrderCancelLogRepository orderCancelLogRepository;
 
-    /**
-     * 관리자 주문 목록 조회 (검색 조건), 동적 쿼리
-     */
     @Transactional(readOnly = true)
     public Page<AdminOrderListRes> getOrders(AdminOrderSearchCond cond, Pageable pageable) {
         Specification<OrderRequest> spec = (root, query, cb) -> {
 
-            // fetch join (N+1 방지)
+            // fetch join
             root.fetch("shop", JoinType.INNER);
             root.fetch("user", JoinType.INNER);
 
@@ -112,9 +107,6 @@ public class AdminOrderService {
         });
     }
 
-    /**
-     * 관리자 주문 상세 조회
-     */
     @Transactional(readOnly = true)
     public AdminOrderDetailRes getOrderDetail(Long orderId) {
         OrderRequest order = orderRequestRepository.findByIdWithItems(orderId);
@@ -123,7 +115,6 @@ public class AdminOrderService {
             throw new CustomException(ErrorCode.ORDER_NOT_FOUND);
         }
 
-        // 취소 로그 조회
         String canceledBy = null;
         String cancelReason = null;
 
@@ -167,9 +158,6 @@ public class AdminOrderService {
                 .build();
     }
 
-    /**
-     * OrderItem -> AdminOrderItemRes 변환
-     */
     private AdminOrderItemRes toAdminOrderItemRes(OrderItem orderItem) {
         String flowerName = null;
 

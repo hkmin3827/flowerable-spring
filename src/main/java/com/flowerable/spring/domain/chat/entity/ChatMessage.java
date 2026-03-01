@@ -1,7 +1,7 @@
-package com.flowerable.spring.entity.chat;
+package com.flowerable.spring.domain.chat.entity;
 
 
-import com.flowerable.spring.constant.chat.SenderType;
+import com.flowerable.spring.domain.chat.constant.SenderType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ChatMessage {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,9 +53,4 @@ public class ChatMessage {
         message.content = content;
         return message;
     }
-
-    public void markAsRead() {
-        this.isRead = true;
-    }
-
 }

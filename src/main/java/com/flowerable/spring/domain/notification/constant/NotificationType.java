@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant.notification;
+package com.flowerable.spring.domain.notification.constant;
 
 import lombok.Getter;
 

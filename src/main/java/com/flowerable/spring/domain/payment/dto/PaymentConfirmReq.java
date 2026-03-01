@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.payment;
+package com.flowerable.spring.domain.payment.dto;
 
 import lombok.Getter;
 

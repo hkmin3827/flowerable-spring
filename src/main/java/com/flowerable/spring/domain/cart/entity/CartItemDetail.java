@@ -1,7 +1,7 @@
-package com.flowerable.spring.entity.cart;
+package com.flowerable.spring.domain.cart.entity;
 
-import com.flowerable.spring.constant.shopflower.Color;
-import com.flowerable.spring.entity.shopflower.ShopFlower;
+import com.flowerable.spring.domain.shopflower.constant.Color;
+import com.flowerable.spring.domain.shopflower.entity.ShopFlower;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,10 +53,6 @@ public class CartItemDetail {
         this.cartItem = cartItem;
     }
     
-    public void updateQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public int calculatePrice() {
         return basePrice * quantity;
     }

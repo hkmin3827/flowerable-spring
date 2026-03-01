@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.common;
+package com.flowerable.spring.global.dto;
 
 import org.springframework.data.domain.Page;
 

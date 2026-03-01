@@ -1,6 +1,6 @@
 package com.flowerable.spring.global.config;
 
-import com.flowerable.spring.security.StompAuthChannelInterceptor;
+import com.flowerable.spring.global.security.StompAuthChannelInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -32,5 +32,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompAuthChannelInterceptor);
     }
-
 }

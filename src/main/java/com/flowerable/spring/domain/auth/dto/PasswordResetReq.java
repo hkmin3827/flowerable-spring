@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.auth;
+package com.flowerable.spring.domain.auth.dto;
 
 import lombok.Getter;
 

@@ -1,8 +1,8 @@
-package com.flowerable.spring.service.gemini;
+package com.flowerable.spring.domain.bouquet.service;
 
-import com.flowerable.spring.dto.buquet.BouquetPreviewReq;
+import com.flowerable.spring.domain.bouquet.dto.BouquetPreviewReq;
 import com.flowerable.spring.infra.gemini.GeminiClient;
-import com.flowerable.spring.service.s3.S3Service;
+import com.flowerable.spring.infra.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

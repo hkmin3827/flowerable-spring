@@ -1,7 +1,7 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.payment.repository;
 
-import com.flowerable.spring.constant.payment.PaymentStatus;
-import com.flowerable.spring.entity.payment.Payment;
+import com.flowerable.spring.domain.payment.constant.PaymentStatus;
+import com.flowerable.spring.domain.payment.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,19 +1,16 @@
-package com.flowerable.spring.controller.shopflower;
+package com.flowerable.spring.domain.shopflower.controller;
 
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.dto.shopflower.ShopFlowerOrderStatsRes;
-import com.flowerable.spring.dto.shopflower.ShopFlowerRegReq;
-import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
-import com.flowerable.spring.dto.shopflower.ShopFlowerUpdateReq;
-import com.flowerable.spring.security.CustomUserDetails;
-import com.flowerable.spring.service.shopflower.ShopFlowerService;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.shopflower.dto.ShopFlowerOrderStatsRes;
+import com.flowerable.spring.domain.shopflower.dto.ShopFlowerRegReq;
+import com.flowerable.spring.domain.shopflower.dto.ShopFlowerRes;
+import com.flowerable.spring.domain.shopflower.dto.ShopFlowerUpdateReq;
+import com.flowerable.spring.global.security.CustomUserDetails;
+import com.flowerable.spring.domain.shopflower.service.ShopFlowerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import okhttp3.Response;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

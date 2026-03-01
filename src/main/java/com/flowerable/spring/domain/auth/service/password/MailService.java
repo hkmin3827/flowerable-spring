@@ -1,4 +1,4 @@
-package com.flowerable.spring.service.auth.password;
+package com.flowerable.spring.domain.auth.service.password;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

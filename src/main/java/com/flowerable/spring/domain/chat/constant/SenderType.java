@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant.chat;
+package com.flowerable.spring.domain.chat.constant;
 
 public enum SenderType {
     USER,

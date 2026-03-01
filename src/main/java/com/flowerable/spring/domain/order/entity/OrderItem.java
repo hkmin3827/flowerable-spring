@@ -1,7 +1,7 @@
-package com.flowerable.spring.entity.order;
+package com.flowerable.spring.domain.order.entity;
 
-import com.flowerable.spring.constant.shopflower.Color;
-import com.flowerable.spring.entity.shopflower.ShopFlower;
+import com.flowerable.spring.domain.shopflower.constant.Color;
+import com.flowerable.spring.domain.shopflower.entity.ShopFlower;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +26,7 @@ public class OrderItem {
     private ShopFlower shopFlower;
 
     @Column(nullable = false)
-    private Integer quantity;   // 개수
+    private Integer quantity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

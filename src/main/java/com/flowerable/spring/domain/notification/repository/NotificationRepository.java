@@ -1,8 +1,8 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.notification.repository;
 
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;
-import com.flowerable.spring.entity.notification.Notification;
+import com.flowerable.spring.domain.notification.entity.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -51,9 +51,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             Long referenceId
     );
 
-    /**
-     * 미읽음 알림 개수 조회
-     */
     @Query("""
         SELECT COUNT(n) FROM Notification n
         WHERE n.receiverId = :receiverId

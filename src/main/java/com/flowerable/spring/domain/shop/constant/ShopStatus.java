@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant.shop;
+package com.flowerable.spring.domain.shop.constant;
 
 public enum ShopStatus {
     PENDING,   // 대기

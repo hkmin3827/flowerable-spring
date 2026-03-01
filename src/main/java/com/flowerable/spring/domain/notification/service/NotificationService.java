@@ -1,18 +1,18 @@
-package com.flowerable.spring.service.notification;
+package com.flowerable.spring.domain.notification.service;
 
 import com.flowerable.spring.domain.auth.constant.Role;
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;
-import com.flowerable.spring.dto.notification.NotificationCreateReq;
-import com.flowerable.spring.dto.notification.NotificationRes;
-import com.flowerable.spring.entity.notification.Notification;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.NotificationNotFoundException;
+import com.flowerable.spring.domain.notification.dto.NotificationCreateReq;
+import com.flowerable.spring.domain.notification.dto.NotificationRes;
+import com.flowerable.spring.domain.notification.entity.Notification;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.NotificationNotFoundException;
 import com.flowerable.spring.infra.sse.SseEmitterManager;
-import com.flowerable.spring.repository.NotificationRepository;
-import com.flowerable.spring.repository.ShopRepository;
-import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.domain.notification.repository.NotificationRepository;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
+import com.flowerable.spring.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,12 +28,10 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
 
-    // 로그인 시 sse로 실시간 전송
     @Transactional
     public Notification createNotification(
             NotificationCreateReq req
     ) {
-        // DB 저장
         Notification notification = Notification.create(req);
 
         notificationRepository.save(notification);
@@ -64,9 +62,8 @@ public class NotificationService {
             return;
         }
 
-        // 있으면 업데이트
         notification.updateContent(req.content());
-        notification.markAsUnread(); // 다시 안 읽음 처리
+        notification.markAsUnread();
         sendIfConnected(notification);
     }
 

@@ -1,15 +1,15 @@
-package com.flowerable.spring.service.shopflower;
+package com.flowerable.spring.domain.shopflower.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.shopflower.*;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.shopflower.dto.*;
 import com.flowerable.spring.domain.flower.entity.Flower;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.entity.shopflower.ShopFlower;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.ShopNotFoundException;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.domain.shopflower.entity.ShopFlower;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.ShopNotFoundException;
 import com.flowerable.spring.domain.flower.repository.FlowerRepository;
-import com.flowerable.spring.repository.ShopFlowerRepository;
-import com.flowerable.spring.repository.ShopRepository;
+import com.flowerable.spring.domain.shopflower.repository.ShopFlowerRepository;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,7 +40,6 @@ public class ShopFlowerService {
         Flower flower = flowerRepository.findByIdAndActiveTrue(req.getFlowerId())
                 .orElseThrow(() -> new CustomException(ErrorCode.FLOWER_NOT_ACTIVE));
 
-
         ShopFlower shopFlower = new ShopFlower(
                 shop,
                 flower,
@@ -66,7 +65,6 @@ public class ShopFlowerService {
 
         shopFlower.updateInfo(req.getPrice(), req.getColors());
     }
-
 
     @Transactional
     public void activate(Long accountId, Long shopFlowerId) {

@@ -1,6 +1,6 @@
-package com.flowerable.spring.controller.s3;
+package com.flowerable.spring.infra.s3.controller;
 
-import com.flowerable.spring.service.s3.S3Service;
+import com.flowerable.spring.infra.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

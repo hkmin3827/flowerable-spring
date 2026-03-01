@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant.auth;
+package com.flowerable.spring.domain.auth.constant;
 
 public enum Role {
     ROLE_ADMIN,

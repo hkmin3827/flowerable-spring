@@ -1,13 +1,13 @@
-package com.flowerable.spring.service.auth.password;
+package com.flowerable.spring.domain.auth.service.password;
 
-import com.flowerable.spring.constant.auth.TokenType;
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.entity.account.Account;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.UserNotFoundException;
-import com.flowerable.spring.jwt.JwtProvider;
-import com.flowerable.spring.jwt.RefreshTokenService;
-import com.flowerable.spring.repository.AccountRepository;
+import com.flowerable.spring.domain.auth.constant.TokenType;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.auth.entity.Account;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.UserNotFoundException;
+import com.flowerable.spring.global.jwt.JwtProvider;
+import com.flowerable.spring.global.jwt.RefreshTokenService;
+import com.flowerable.spring.domain.auth.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

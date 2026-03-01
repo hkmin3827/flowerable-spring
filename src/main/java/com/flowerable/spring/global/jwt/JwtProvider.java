@@ -1,4 +1,4 @@
-package com.flowerable.spring.jwt;
+package com.flowerable.spring.global.jwt;
 
 import com.flowerable.spring.domain.auth.constant.Role;
 import com.flowerable.spring.domain.auth.constant.TokenType;
@@ -23,10 +23,7 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-
     public String createAccessToken(Long accountId, Role role) {
-
-
         return createToken(
                 accountId,
                 TokenType.ACCESS,
@@ -53,7 +50,6 @@ public class JwtProvider {
         );
     }
 
-    // USER, SHOP 공용 Token 발급
     public String createToken(
             Long accountId,
             TokenType tokenType,
@@ -86,7 +82,6 @@ public class JwtProvider {
     public Long getId(String token) {
         return Long.valueOf(parseClaims(token).getSubject());
     }
-
 
     public TokenType getTokenType(String token) {
         return TokenType.valueOf(

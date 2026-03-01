@@ -1,6 +1,4 @@
-package com.flowerable.spring.dto.chat;
-
-import com.flowerable.spring.constant.chat.SenderType;
+package com.flowerable.spring.domain.chat.dto;
 
 public record ChatMessageSendReq(
         Long chatRoomId,

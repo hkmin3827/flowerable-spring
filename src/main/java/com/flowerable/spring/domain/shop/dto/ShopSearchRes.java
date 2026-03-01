@@ -1,7 +1,7 @@
-package com.flowerable.spring.dto.shop;
+package com.flowerable.spring.domain.shop.dto;
 
-import com.flowerable.spring.constant.region.District;
-import com.flowerable.spring.constant.region.Region;
+import com.flowerable.spring.domain.shop.constant.District;
+import com.flowerable.spring.domain.shop.constant.Region;
 import lombok.Getter;
 
 @Getter

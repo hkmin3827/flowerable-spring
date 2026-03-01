@@ -1,6 +1,6 @@
-package com.flowerable.spring.service.gemini;
+package com.flowerable.spring.domain.bouquet.service;
 
-import com.flowerable.spring.dto.buquet.BouquetPreviewReq;
+import com.flowerable.spring.domain.bouquet.dto.BouquetPreviewReq;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

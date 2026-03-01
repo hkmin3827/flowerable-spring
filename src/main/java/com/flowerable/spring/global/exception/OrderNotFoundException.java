@@ -1,6 +1,6 @@
-package com.flowerable.spring.exception;
+package com.flowerable.spring.global.exception;
 
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.global.constant.ErrorCode;
 
 public class OrderNotFoundException extends CustomException {
     public OrderNotFoundException(){

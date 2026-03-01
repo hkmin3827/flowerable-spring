@@ -1,4 +1,4 @@
-package com.flowerable.spring.controller;
+package com.flowerable.spring.infra.redis;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,10 @@
-package com.flowerable.spring.controller.shopimage;
+package com.flowerable.spring.domain.shop.controller;
 
 
-import com.flowerable.spring.dto.shopimage.ShopImageCreateReq;
-import com.flowerable.spring.dto.shopimage.ShopImageRes;
-import com.flowerable.spring.security.CustomUserDetails;
-import com.flowerable.spring.service.shopimage.ShopImageService;
+import com.flowerable.spring.domain.shop.dto.ShopImageCreateReq;
+import com.flowerable.spring.domain.shop.dto.ShopImageRes;
+import com.flowerable.spring.global.security.CustomUserDetails;
+import com.flowerable.spring.domain.shop.service.ShopImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,18 +1,18 @@
-package com.flowerable.spring.controller.order;
+package com.flowerable.spring.domain.order.controller;
 
 import com.flowerable.spring.domain.order.constant.OrderStatus;
 import com.flowerable.spring.domain.bouquet.dto.BouquetPreviewReq;
 import com.flowerable.spring.domain.bouquet.dto.BouquetPreviewRes;
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.dto.order.OrderCreateReq;
-import com.flowerable.spring.dto.order.OrderCreateRes;
-import com.flowerable.spring.dto.order.OrderDetailRes;
-import com.flowerable.spring.dto.order.OrderListRes;
-import com.flowerable.spring.dto.wrappingoption.WrappingOptionRes;
-import com.flowerable.spring.security.CustomUserDetails;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.order.dto.OrderCreateReq;
+import com.flowerable.spring.domain.order.dto.OrderCreateRes;
+import com.flowerable.spring.domain.order.dto.OrderDetailRes;
+import com.flowerable.spring.domain.order.dto.OrderListRes;
+import com.flowerable.spring.domain.wrappingoption.dto.WrappingOptionRes;
+import com.flowerable.spring.global.security.CustomUserDetails;
 import com.flowerable.spring.domain.bouquet.service.BouquetPreviewService;
-import com.flowerable.spring.service.order.UserOrderService;
-import com.flowerable.spring.service.wrappingoption.WrappingOptionService;
+import com.flowerable.spring.domain.order.service.UserOrderService;
+import com.flowerable.spring.domain.wrappingoption.service.WrappingOptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -86,5 +86,4 @@ public class UserOrderController {
         String imageUrl = bouquetPreviewService.generatePreviewFromReq(req);
         return ResponseEntity.ok(new BouquetPreviewRes(imageUrl));
     }
-
 }

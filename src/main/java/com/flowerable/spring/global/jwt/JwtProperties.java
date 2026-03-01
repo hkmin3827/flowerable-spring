@@ -1,4 +1,4 @@
-package com.flowerable.spring.jwt;
+package com.flowerable.spring.global.jwt;
 
 
 import lombok.Getter;

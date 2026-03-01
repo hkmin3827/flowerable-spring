@@ -1,28 +1,25 @@
-package com.flowerable.spring.service.admin;
+package com.flowerable.spring.domain.admin.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.admin.AdminFlowerListRes;
-import com.flowerable.spring.dto.flower.FlowerCreateReq;
-import com.flowerable.spring.dto.flower.FlowerUpdateInfoReq;
-import com.flowerable.spring.entity.flower.Flower;
-import com.flowerable.spring.entity.shopflower.ShopFlower;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.repository.FlowerRepository;
-import com.flowerable.spring.repository.ShopFlowerRepository;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.admin.dto.AdminFlowerListRes;
+import com.flowerable.spring.domain.flower.dto.FlowerCreateReq;
+import com.flowerable.spring.domain.flower.dto.FlowerUpdateInfoReq;
+import com.flowerable.spring.domain.flower.entity.Flower;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.domain.flower.repository.FlowerRepository;
+import com.flowerable.spring.domain.shopflower.repository.ShopFlowerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class AdminFlowerService {
     private final FlowerRepository flowerRepository;
     private final ShopFlowerRepository shopFlowerRepository;
-    // 모든 꽃 조회 (관리자용)
+
     @Transactional(readOnly = true)
     public Page<AdminFlowerListRes> getAllFlowers(Boolean active, Pageable pageable){
         return flowerRepository.findByActiveCondition(active, pageable);

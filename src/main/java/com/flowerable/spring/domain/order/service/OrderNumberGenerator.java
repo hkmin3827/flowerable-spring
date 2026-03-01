@@ -1,7 +1,7 @@
-package com.flowerable.spring.service.order;
+package com.flowerable.spring.domain.order.service;
 
-import com.flowerable.spring.entity.order.OrderNumberSequence;
-import com.flowerable.spring.repository.OrderNumberSequenceRepository;
+import com.flowerable.spring.domain.order.entity.OrderNumberSequence;
+import com.flowerable.spring.domain.order.repository.OrderNumberSequenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package com.flowerable.spring.entity.wrappingoption;
+package com.flowerable.spring.domain.wrappingoption.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

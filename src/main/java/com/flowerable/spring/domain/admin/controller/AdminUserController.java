@@ -1,10 +1,10 @@
-package com.flowerable.spring.controller.admin;
+package com.flowerable.spring.domain.admin.controller;
 
-import com.flowerable.spring.constant.auth.AccountStatus;
-import com.flowerable.spring.dto.admin.AdminUserListRes;
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.dto.user.UserDetailRes;
-import com.flowerable.spring.service.admin.AdminUserService;
+import com.flowerable.spring.domain.auth.constant.AccountStatus;
+import com.flowerable.spring.domain.admin.dto.AdminUserListRes;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.user.dto.UserDetailRes;
+import com.flowerable.spring.domain.admin.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

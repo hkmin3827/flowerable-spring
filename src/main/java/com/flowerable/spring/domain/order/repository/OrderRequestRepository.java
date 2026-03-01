@@ -1,8 +1,8 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.order.repository;
 
 import com.flowerable.spring.domain.order.constant.OrderStatus;
-import com.flowerable.spring.dto.order.OrderListRes;
-import com.flowerable.spring.entity.order.OrderRequest;
+import com.flowerable.spring.domain.order.dto.OrderListRes;
+import com.flowerable.spring.domain.order.entity.OrderRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,7 +49,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     Optional<OrderRequest> findDetailForStatusChange(@Param("orderId") Long orderId, @Param("shopId") Long shopId);
 
     @Query("""
-    select new com.flowerable.spring.dto.order.OrderListRes(
+    select new com.flowerable.spring.domain.order.dto.OrderListRes(
         o.id,
         o.orderNumber,
         o.status,
@@ -76,7 +76,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     );
 
     @Query("""
-    select new com.flowerable.spring.dto.order.OrderListRes(
+    select new com.flowerable.spring.domain.order.dto.OrderListRes(
         o.id,
         o.orderNumber,
         o.status,
@@ -134,11 +134,8 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
             @Param("orderId") Long orderId
     );
 
-    /**
-     * Shop 대시보드: REQUESTED 상태 최신 주문 조회
-     */
     @Query("""
-    select new com.flowerable.spring.dto.order.OrderListRes(
+    select new com.flowerable.spring.domain.order.dto.OrderListRes(
         o.id,
         o.orderNumber,
         o.status,
@@ -163,9 +160,6 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     );
 
 
-    /**
-     * 주문 상세 조회 (OrderItems fetch join)
-     */
     @Query("""
         SELECT DISTINCT o FROM OrderRequest o
         JOIN FETCH o.shop s

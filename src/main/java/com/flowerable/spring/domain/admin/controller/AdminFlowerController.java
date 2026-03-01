@@ -1,10 +1,10 @@
-package com.flowerable.spring.controller.admin;
+package com.flowerable.spring.domain.admin.controller;
 
-import com.flowerable.spring.dto.admin.AdminFlowerListRes;
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.dto.flower.FlowerCreateReq;
-import com.flowerable.spring.dto.flower.FlowerUpdateInfoReq;
-import com.flowerable.spring.service.admin.AdminFlowerService;
+import com.flowerable.spring.domain.admin.dto.AdminFlowerListRes;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.flower.dto.FlowerCreateReq;
+import com.flowerable.spring.domain.flower.dto.FlowerUpdateInfoReq;
+import com.flowerable.spring.domain.admin.service.AdminFlowerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

@@ -1,9 +1,9 @@
-package com.flowerable.spring.controller.user;
+package com.flowerable.spring.domain.user.controller;
 
-import com.flowerable.spring.dto.user.UserDetailRes;
-import com.flowerable.spring.dto.user.UserUpdateInfoReq;
-import com.flowerable.spring.security.CustomUserDetails;
-import com.flowerable.spring.service.user.UserService;
+import com.flowerable.spring.domain.user.dto.UserDetailRes;
+import com.flowerable.spring.domain.user.dto.UserUpdateInfoReq;
+import com.flowerable.spring.global.security.CustomUserDetails;
+import com.flowerable.spring.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

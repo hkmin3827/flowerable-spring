@@ -1,6 +1,6 @@
-package com.flowerable.spring.dto.shopflower;
+package com.flowerable.spring.domain.shopflower.dto;
 
-import com.flowerable.spring.constant.shopflower.Color;
+import com.flowerable.spring.domain.shopflower.constant.Color;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,12 +14,12 @@ import java.util.List;
 public class ShopFlowerRegReq {
 
     @NotNull
-    private Long flowerId;   // 선택한 꽃 종류
+    private Long flowerId;
 
     @NotEmpty
-    private List<Color> colors; // 보유 색상 목록
+    private List<Color> colors;
 
     @NotNull
     @Positive
-    private Integer price;   // 판매 가격
+    private Integer price;
 }

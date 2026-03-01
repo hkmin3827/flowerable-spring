@@ -1,14 +1,14 @@
-package com.flowerable.spring.controller.auth;
+package com.flowerable.spring.domain.auth.controller;
 
-import com.flowerable.spring.dto.auth.AuthReq;
-import com.flowerable.spring.dto.auth.AuthRes;
-import com.flowerable.spring.dto.auth.PasswordForgotReq;
-import com.flowerable.spring.dto.auth.PasswordResetReq;
-import com.flowerable.spring.security.CustomUserDetails;
-import com.flowerable.spring.service.auth.AuthService;
-import com.flowerable.spring.service.auth.ShopAuthService;
-import com.flowerable.spring.service.auth.UserAuthService;
-import com.flowerable.spring.service.auth.password.PasswordResetService;
+import com.flowerable.spring.domain.auth.dto.AuthReq;
+import com.flowerable.spring.domain.auth.dto.AuthRes;
+import com.flowerable.spring.domain.auth.dto.PasswordForgotReq;
+import com.flowerable.spring.domain.auth.dto.PasswordResetReq;
+import com.flowerable.spring.global.security.CustomUserDetails;
+import com.flowerable.spring.domain.auth.service.AuthService;
+import com.flowerable.spring.domain.auth.service.ShopAuthService;
+import com.flowerable.spring.domain.auth.service.UserAuthService;
+import com.flowerable.spring.domain.auth.service.password.PasswordResetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

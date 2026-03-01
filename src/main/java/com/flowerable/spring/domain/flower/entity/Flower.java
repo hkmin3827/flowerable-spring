@@ -1,8 +1,8 @@
-package com.flowerable.spring.entity.flower;
+package com.flowerable.spring.domain.flower.entity;
 
-import com.flowerable.spring.constant.flower.Season;
-import com.flowerable.spring.dto.flower.FlowerCreateReq;
-import com.flowerable.spring.dto.flower.FlowerUpdateInfoReq;
+import com.flowerable.spring.domain.flower.constant.Season;
+import com.flowerable.spring.domain.flower.dto.FlowerCreateReq;
+import com.flowerable.spring.domain.flower.dto.FlowerUpdateInfoReq;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +42,6 @@ public class Flower {
     public void onCreate(){
         this.createdAt = LocalDateTime.now();
     }
-
 
     public void deactivate() {
         this.active = false;

@@ -1,8 +1,8 @@
-package com.flowerable.spring.entity.notification;
+package com.flowerable.spring.domain.notification.entity;
 
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;
-import com.flowerable.spring.dto.notification.NotificationCreateReq;
+import com.flowerable.spring.domain.notification.dto.NotificationCreateReq;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,8 +38,6 @@ public class Notification {
 
     @Column(nullable = false)
     private Long referenceId; // orderId, chatRoomId
-
-//    private String message;
 
     @Column(nullable = false)
     private boolean isRead;

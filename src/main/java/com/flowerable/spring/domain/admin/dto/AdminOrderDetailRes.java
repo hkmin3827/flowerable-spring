@@ -1,8 +1,6 @@
-package com.flowerable.spring.dto.admin;
+package com.flowerable.spring.domain.admin.dto;
 
-import com.flowerable.spring.constant.order.OrderCancelBy;
-import com.flowerable.spring.constant.order.OrderCancelReason;
-import com.flowerable.spring.constant.order.OrderStatus;
+import com.flowerable.spring.domain.order.constant.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 

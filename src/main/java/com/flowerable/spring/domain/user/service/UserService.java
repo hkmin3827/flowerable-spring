@@ -1,10 +1,10 @@
-package com.flowerable.spring.service.user;
+package com.flowerable.spring.domain.user.service;
 
-import com.flowerable.spring.dto.user.UserDetailRes;
-import com.flowerable.spring.dto.user.UserUpdateInfoReq;
-import com.flowerable.spring.entity.user.User;
-import com.flowerable.spring.exception.UserNotFoundException;
-import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.domain.user.dto.UserDetailRes;
+import com.flowerable.spring.domain.user.dto.UserUpdateInfoReq;
+import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.global.exception.UserNotFoundException;
+import com.flowerable.spring.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

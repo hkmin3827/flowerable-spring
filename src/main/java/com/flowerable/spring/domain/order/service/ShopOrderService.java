@@ -1,23 +1,26 @@
-package com.flowerable.spring.service.order;
+package com.flowerable.spring.domain.order.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;
 import com.flowerable.spring.domain.order.constant.OrderCancelBy;
 import com.flowerable.spring.domain.order.constant.OrderStatus;
-import com.flowerable.spring.dto.notification.NotificationCreateReq;
-import com.flowerable.spring.dto.order.*;
-import com.flowerable.spring.entity.order.OrderCancelLog;
-import com.flowerable.spring.entity.order.OrderRequest;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.OrderNotFoundException;
-import com.flowerable.spring.exception.ShopNotFoundException;
-import com.flowerable.spring.repository.OrderCancelLogRepository;
-import com.flowerable.spring.repository.OrderRequestRepository;
-import com.flowerable.spring.repository.ShopRepository;
-import com.flowerable.spring.service.notification.NotificationService;
-import com.flowerable.spring.service.payment.PaymentService;
+import com.flowerable.spring.domain.notification.dto.NotificationCreateReq;
+import com.flowerable.spring.domain.order.dto.OrderDetailRes;
+import com.flowerable.spring.domain.order.dto.OrderItemRes;
+import com.flowerable.spring.domain.order.dto.OrderListRes;
+import com.flowerable.spring.domain.order.dto.OrderStatusChangeReq;
+import com.flowerable.spring.domain.order.entity.OrderCancelLog;
+import com.flowerable.spring.domain.order.entity.OrderRequest;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.OrderNotFoundException;
+import com.flowerable.spring.global.exception.ShopNotFoundException;
+import com.flowerable.spring.domain.order.repository.OrderCancelLogRepository;
+import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
+import com.flowerable.spring.domain.notification.service.NotificationService;
+import com.flowerable.spring.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -142,9 +145,8 @@ public class ShopOrderService {
                 .cancelReason(cancelReason)
                 .build();
     }
-    /**
-     * Shop 대시보드: REQUESTED 상태 최신 8개 주문 조회
-     */
+
+     // Shop 대시보드: REQUESTED 상태 최신 5개 주문 조회
     @Transactional(readOnly = true)
     public Page<OrderListRes> getRecentRequestedOrders(Long accountId, Pageable pageable) {
         Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
@@ -177,6 +179,7 @@ public class ShopOrderService {
             default -> throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
         }
     }
+
     private void notifyUser(OrderRequest order, Long receiverId, NotificationType type, String content) {
         notificationService.createNotification(
                 new NotificationCreateReq(
@@ -189,6 +192,4 @@ public class ShopOrderService {
                 )
         );
     }
-
-
 }

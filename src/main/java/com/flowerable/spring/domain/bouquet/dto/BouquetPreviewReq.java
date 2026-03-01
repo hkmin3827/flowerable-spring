@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.buquet;
+package com.flowerable.spring.domain.bouquet.dto;
 
 
 import lombok.Getter;

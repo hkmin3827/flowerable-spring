@@ -1,10 +1,10 @@
-package com.flowerable.spring.entity.account;
+package com.flowerable.spring.domain.auth.entity;
 
-import com.flowerable.spring.constant.auth.AccountStatus;
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.constant.auth.Provider;
-import com.flowerable.spring.constant.auth.Role;
-import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.domain.auth.constant.AccountStatus;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.auth.constant.Provider;
+import com.flowerable.spring.domain.auth.constant.Role;
+import com.flowerable.spring.global.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,7 +44,7 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AccountStatus status = AccountStatus.TEMP;   // 로그인 가능 여부 Status
+    private AccountStatus status = AccountStatus.TEMP;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

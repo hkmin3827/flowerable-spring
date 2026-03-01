@@ -1,13 +1,13 @@
-package com.flowerable.spring.service.admin;
+package com.flowerable.spring.domain.admin.service;
 
-import com.flowerable.spring.constant.auth.AccountStatus;
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.admin.AdminUserListRes;
-import com.flowerable.spring.dto.user.UserDetailRes;
-import com.flowerable.spring.entity.user.User;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.UserNotFoundException;
-import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.domain.auth.constant.AccountStatus;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.admin.dto.AdminUserListRes;
+import com.flowerable.spring.domain.user.dto.UserDetailRes;
+import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.UserNotFoundException;
+import com.flowerable.spring.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

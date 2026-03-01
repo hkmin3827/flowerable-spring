@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.shopflower;
+package com.flowerable.spring.domain.shopflower.dto;
 
 public record ShopFlowerOrderStatsRes(
         int rank,

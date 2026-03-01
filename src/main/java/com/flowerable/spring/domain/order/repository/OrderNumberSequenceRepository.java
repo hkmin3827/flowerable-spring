@@ -1,6 +1,6 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.order.repository;
 
-import com.flowerable.spring.entity.order.OrderNumberSequence;
+import com.flowerable.spring.domain.order.entity.OrderNumberSequence;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

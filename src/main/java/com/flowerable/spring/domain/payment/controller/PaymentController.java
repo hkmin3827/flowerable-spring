@@ -1,8 +1,7 @@
-package com.flowerable.spring.controller.payment;
+package com.flowerable.spring.domain.payment.controller;
 
-
-import com.flowerable.spring.dto.payment.PaymentConfirmReq;
-import com.flowerable.spring.service.payment.PaymentService;
+import com.flowerable.spring.domain.payment.dto.PaymentConfirmReq;
+import com.flowerable.spring.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

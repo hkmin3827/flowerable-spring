@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.wrappingoption;
+package com.flowerable.spring.domain.wrappingoption.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,11 +1,11 @@
-package com.flowerable.spring.oauth2.handler;
+package com.flowerable.spring.domain.auth.oauth2.handler;
 
-import com.flowerable.spring.constant.auth.Provider;
-import com.flowerable.spring.oauth2.userInfo.GoogleOAuth2UserInfo;
-import com.flowerable.spring.oauth2.userInfo.KakaoOAuth2UserInfo;
-import com.flowerable.spring.oauth2.userInfo.NaverOAuth2UserInfo;
-import com.flowerable.spring.oauth2.userInfo.OAuth2UserInfo;
-import com.flowerable.spring.service.auth.OAuthStateService;
+import com.flowerable.spring.domain.auth.constant.Provider;
+import com.flowerable.spring.domain.auth.oauth2.userInfo.GoogleOAuth2UserInfo;
+import com.flowerable.spring.domain.auth.oauth2.userInfo.KakaoOAuth2UserInfo;
+import com.flowerable.spring.domain.auth.oauth2.userInfo.NaverOAuth2UserInfo;
+import com.flowerable.spring.domain.auth.oauth2.userInfo.OAuth2UserInfo;
+import com.flowerable.spring.domain.auth.service.OAuthStateService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,6 @@ public class OAuth2LoginSuccessHandler
         String registrationId = token.getAuthorizedClientRegistrationId();
         Provider provider = Provider.valueOf(registrationId.toUpperCase());
 
-        // OAuth 제공자별 사용자 정보 추출
         OAuth2UserInfo userInfo = switch (provider) {
             case GOOGLE -> new GoogleOAuth2UserInfo(oauth2User.getAttributes());
             case KAKAO -> new KakaoOAuth2UserInfo(oauth2User.getAttributes());
@@ -55,7 +54,6 @@ public class OAuth2LoginSuccessHandler
                 userInfo.getProviderId()
         );
 
-        // 프론트엔드로 리다이렉트 (코드만 전달)
         String redirectUrl = String.format(
                 "%s/oauth/callback?code=%s&provider=%s",
                 frontBaseUrl,

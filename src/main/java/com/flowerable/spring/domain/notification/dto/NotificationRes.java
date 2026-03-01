@@ -1,8 +1,8 @@
-package com.flowerable.spring.dto.notification;
+package com.flowerable.spring.domain.notification.dto;
 
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;
-import com.flowerable.spring.entity.notification.Notification;
+import com.flowerable.spring.domain.notification.entity.Notification;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -19,6 +19,7 @@ public class NotificationRes {
     private final boolean read;
     private final LocalDateTime readAt;
     private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public NotificationRes(Notification noti){
         this.id = noti.getId();
@@ -31,5 +32,6 @@ public class NotificationRes {
         this.read = noti.isRead();
         this.readAt = noti.getReadAt();
         this.createdAt = noti.getCreatedAt();
+        this.updatedAt = noti.getUpdatedAt();
     }
 }

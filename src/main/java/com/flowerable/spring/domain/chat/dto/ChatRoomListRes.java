@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.chat;
+package com.flowerable.spring.domain.chat.dto;
 
 import java.time.LocalDateTime;
 

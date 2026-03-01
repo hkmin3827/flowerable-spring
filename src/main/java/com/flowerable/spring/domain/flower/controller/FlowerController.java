@@ -1,10 +1,10 @@
-package com.flowerable.spring.controller.flower;
+package com.flowerable.spring.domain.flower.controller;
 
 
-import com.flowerable.spring.constant.flower.Season;
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.dto.flower.FlowerRes;
-import com.flowerable.spring.service.flower.FlowerService;
+import com.flowerable.spring.domain.flower.constant.Season;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.flower.dto.FlowerRes;
+import com.flowerable.spring.domain.flower.service.FlowerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

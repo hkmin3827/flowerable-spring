@@ -1,9 +1,9 @@
-package com.flowerable.spring.dto.auth;
+package com.flowerable.spring.domain.auth.dto;
 
-import com.flowerable.spring.constant.auth.AccountStatus;
-import com.flowerable.spring.constant.auth.Provider;
-import com.flowerable.spring.constant.auth.Role;
-import com.flowerable.spring.constant.shop.ShopStatus;
+import com.flowerable.spring.domain.auth.constant.AccountStatus;
+import com.flowerable.spring.domain.auth.constant.Provider;
+import com.flowerable.spring.domain.auth.constant.Role;
+import com.flowerable.spring.domain.shop.constant.ShopStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -23,7 +23,7 @@ public class AuthRes {
     public static AuthRes requireEmailAndTelnum(Long accountId, Provider provider, AccountStatus status) {
         return AuthRes.builder()
                 .id(accountId)
-                .role(Role.ROLE_USER)     // 고정 or null 선택 가능
+                .role(Role.ROLE_USER)
                 .provider(provider)
                 .accessToken(null)
                 .refreshToken(null)

@@ -1,13 +1,13 @@
-package com.flowerable.spring.controller.chat;
+package com.flowerable.spring.domain.chat.controller;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.chat.ChatMessageRes;
-import com.flowerable.spring.dto.chat.ChatMessageSendReq;
-import com.flowerable.spring.dto.chat.ChatRoomListRes;
-import com.flowerable.spring.dto.chat.ChatRoomRes;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.security.CustomUserDetails;
-import com.flowerable.spring.service.chat.ChatService;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.chat.dto.ChatMessageRes;
+import com.flowerable.spring.domain.chat.dto.ChatMessageSendReq;
+import com.flowerable.spring.domain.chat.dto.ChatRoomListRes;
+import com.flowerable.spring.domain.chat.dto.ChatRoomRes;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.security.CustomUserDetails;
+import com.flowerable.spring.domain.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

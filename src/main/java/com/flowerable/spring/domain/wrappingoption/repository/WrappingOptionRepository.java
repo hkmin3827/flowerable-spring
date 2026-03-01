@@ -1,6 +1,6 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.wrappingoption.repository;
 
-import com.flowerable.spring.entity.wrappingoption.WrappingOption;
+import com.flowerable.spring.domain.wrappingoption.entity.WrappingOption;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

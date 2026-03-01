@@ -1,3 +1,3 @@
-package com.flowerable.spring.dto.buquet;
+package com.flowerable.spring.domain.bouquet.dto;
 
 public record BouquetPreviewRes(String imageUrl) {}

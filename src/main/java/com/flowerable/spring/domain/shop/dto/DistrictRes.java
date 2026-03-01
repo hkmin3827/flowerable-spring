@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.shop;
+package com.flowerable.spring.domain.shop.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,9 +1,9 @@
-package com.flowerable.spring.controller.region;
+package com.flowerable.spring.domain.shop.controller;
 
-import com.flowerable.spring.constant.region.District;
-import com.flowerable.spring.constant.region.Region;
-import com.flowerable.spring.dto.shop.DistrictRes;
-import com.flowerable.spring.dto.shop.RegionRes;
+import com.flowerable.spring.domain.shop.constant.District;
+import com.flowerable.spring.domain.shop.constant.Region;
+import com.flowerable.spring.domain.shop.dto.DistrictRes;
+import com.flowerable.spring.domain.shop.dto.RegionRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

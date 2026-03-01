@@ -1,14 +1,14 @@
-package com.flowerable.spring.controller.shop;
+package com.flowerable.spring.domain.shop.controller;
 
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.dto.shop.ShopDetailRes;
-import com.flowerable.spring.dto.shop.ShopSearchRes;
-import com.flowerable.spring.dto.shop.ShopUpdateInfoReq;
-import com.flowerable.spring.dto.shop.WrappingOptionReq;
-import com.flowerable.spring.dto.wrappingoption.WrappingOptionRes;
-import com.flowerable.spring.security.CustomUserDetails;
-import com.flowerable.spring.service.shop.ShopService;
-import com.flowerable.spring.service.wrappingoption.WrappingOptionService;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.shop.dto.ShopDetailRes;
+import com.flowerable.spring.domain.shop.dto.ShopSearchRes;
+import com.flowerable.spring.domain.shop.dto.ShopUpdateInfoReq;
+import com.flowerable.spring.domain.wrappingoption.dto.WrappingOptionReq;
+import com.flowerable.spring.domain.wrappingoption.dto.WrappingOptionRes;
+import com.flowerable.spring.global.security.CustomUserDetails;
+import com.flowerable.spring.domain.shop.service.ShopService;
+import com.flowerable.spring.domain.wrappingoption.service.WrappingOptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -65,8 +65,6 @@ public class ShopController {
 
         return ResponseEntity.ok(PageResponse.from(result));
     }
-
-
 
     @PutMapping("/wrapping-options")
     public ResponseEntity<Void> saveWrappingOptions(

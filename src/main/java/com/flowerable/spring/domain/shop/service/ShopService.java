@@ -1,17 +1,17 @@
-package com.flowerable.spring.service.shop;
+package com.flowerable.spring.domain.shop.service;
 
-import com.flowerable.spring.constant.region.District;
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.constant.region.Region;
-import com.flowerable.spring.dto.shop.ShopDetailRes;
-import com.flowerable.spring.dto.shop.ShopSearchRes;
-import com.flowerable.spring.dto.shop.ShopUpdateInfoReq;
-import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.entity.shopflower.ShopFlower;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.ShopNotFoundException;
-import com.flowerable.spring.repository.ShopRepository;
+import com.flowerable.spring.domain.shop.constant.District;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.shop.constant.Region;
+import com.flowerable.spring.domain.shop.dto.ShopDetailRes;
+import com.flowerable.spring.domain.shop.dto.ShopSearchRes;
+import com.flowerable.spring.domain.shop.dto.ShopUpdateInfoReq;
+import com.flowerable.spring.domain.shopflower.dto.ShopFlowerRes;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.domain.shopflower.entity.ShopFlower;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.ShopNotFoundException;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,7 +56,6 @@ public class ShopService {
         shop.updateInfo(req, region, district);
     }
 
-    // 사용자용
     @Transactional(readOnly = true)
     public ShopDetailRes getDetails(Long shopId){
         Shop shop = shopRepository. findDetailWithFlowers(shopId)

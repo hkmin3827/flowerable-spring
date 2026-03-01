@@ -1,32 +1,25 @@
-package com.flowerable.spring.service.auth;
+package com.flowerable.spring.domain.auth.service;
 
-import com.flowerable.spring.constant.auth.AccountStatus;
-import com.flowerable.spring.constant.auth.Provider;
-import com.flowerable.spring.constant.auth.Role;
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.auth.*;
-import com.flowerable.spring.entity.user.User;
-import com.flowerable.spring.entity.account.Account;
-import com.flowerable.spring.exception.AccountNotFoundException;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.SuspendedAccountException;
-import com.flowerable.spring.exception.UserNotFoundException;
+import com.flowerable.spring.domain.auth.constant.AccountStatus;
+import com.flowerable.spring.domain.auth.constant.Provider;
+import com.flowerable.spring.domain.auth.constant.Role;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.auth.dto.AuthReq;
+import com.flowerable.spring.domain.auth.dto.AuthRes;
+import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.domain.auth.entity.Account;
+import com.flowerable.spring.global.exception.AccountNotFoundException;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.SuspendedAccountException;
+import com.flowerable.spring.global.exception.UserNotFoundException;
 import com.flowerable.spring.infra.kakao.KakaoUnlinkClient;
-import com.flowerable.spring.jwt.JwtProvider;
-import com.flowerable.spring.jwt.RefreshTokenService;
-import com.flowerable.spring.oauth2.userInfo.GoogleOAuth2UserInfo;
-import com.flowerable.spring.oauth2.userInfo.KakaoOAuth2UserInfo;
-import com.flowerable.spring.oauth2.userInfo.NaverOAuth2UserInfo;
-import com.flowerable.spring.oauth2.userInfo.OAuth2UserInfo;
-import com.flowerable.spring.repository.AccountRepository;
-import com.flowerable.spring.repository.UserRepository;
+import com.flowerable.spring.global.jwt.JwtProvider;
+import com.flowerable.spring.global.jwt.RefreshTokenService;
+import com.flowerable.spring.domain.auth.repository.AccountRepository;
+import com.flowerable.spring.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,9 +81,6 @@ public class UserAuthService {
     }
 
 
-    /**
-     * OAuth 로그인 처리 (Provider와 ProviderId로)
-     */
     @Transactional
     public AuthRes processOAuthLogin(Provider provider, String providerId) {
 
@@ -153,7 +143,7 @@ public class UserAuthService {
             throw new CustomException(ErrorCode.INVALID_ACCOUNT_STATUS);
         }
 
-        validateEmailOrTelnumDuplicated(req.email(), req.telnum()); // 여기서 터지면 전체 롤백
+        validateEmailOrTelnumDuplicated(req.email(), req.telnum());
 
         User user = userRepository.findByAccountId(account.getId())
                 .orElseGet(() -> userRepository.save(User.create(account, req.name())));
@@ -178,7 +168,6 @@ public class UserAuthService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(UserNotFoundException::new);
 
-
         if (!"영구탈퇴임을 확인했습니다".equals(dto.getConfirmText())) {
             throw new IllegalArgumentException("입력하신 탈퇴 확인 문구가 틀립니다.");
         }
@@ -202,6 +191,7 @@ public class UserAuthService {
         refreshTokenService.deleteRefreshToken(accountId);
     }
 
+
     private AuthRes issue(Long accountId, Role role, String name, Provider provider, AccountStatus status, String profileImageUrl) {
         String accessToken =
                 jwtProvider.createAccessToken(accountId, role);
@@ -209,7 +199,6 @@ public class UserAuthService {
         String refreshToken =
                 jwtProvider.createRefreshToken(accountId, role);
 
-        // Redis에 Refresh Token 저장
         refreshTokenService.saveRefreshToken(accountId, refreshToken);
 
         return AuthRes.builder()
@@ -226,7 +215,6 @@ public class UserAuthService {
     }
 
     private void validateEmailOrTelnumDuplicated(String email, String telnum) {
-
         if (email != null &&
                 accountRepository.existsByEmailAndDeletedAtIsNull(email)) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);

@@ -1,9 +1,9 @@
-package com.flowerable.spring.dto.cart;
+package com.flowerable.spring.domain.cart.dto;
 
-import com.flowerable.spring.constant.shopflower.Color;
-import com.flowerable.spring.entity.cart.Cart;
-import com.flowerable.spring.entity.cart.CartItem;
-import com.flowerable.spring.entity.cart.CartItemDetail;
+import com.flowerable.spring.domain.shopflower.constant.Color;
+import com.flowerable.spring.domain.cart.entity.Cart;
+import com.flowerable.spring.domain.cart.entity.CartItem;
+import com.flowerable.spring.domain.cart.entity.CartItemDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,9 +51,6 @@ public class CartResponse {
         private Long cartItemId;
         private Long shopId;
         private String shopName;
-        private String wrappingColorName;
-        private Integer wrappingExtraPrice;
-        private String message;
         private List<FlowerDetailInfo> flowers;
         private Integer totalFlowerPrice;
         private Integer totalPrice;
@@ -68,19 +65,13 @@ public class CartResponse {
                     .mapToInt(FlowerDetailInfo::getTotalPrice)
                     .sum();
             
-            int wrappingPrice = cartItem.getWrappingExtraPrice() != null 
-                    ? cartItem.getWrappingExtraPrice() : 0;
-            
             return CartItemInfo.builder()
                     .cartItemId(cartItem.getId())
                     .shopId(cartItem.getShop().getId())
                     .shopName(cartItem.getShop().getShopName())
-                    .wrappingColorName(cartItem.getWrappingColorName())
-                    .wrappingExtraPrice(cartItem.getWrappingExtraPrice())
-                    .message(cartItem.getMessage())
                     .flowers(flowers)
                     .totalFlowerPrice(totalFlowerPrice)
-                    .totalPrice(totalFlowerPrice + wrappingPrice)
+                    .totalPrice(totalFlowerPrice)
                     .createdAt(cartItem.getCreatedAt())
                     .build();
         }

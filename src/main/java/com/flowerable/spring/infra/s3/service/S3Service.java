@@ -1,7 +1,7 @@
-package com.flowerable.spring.service.s3;
+package com.flowerable.spring.infra.s3.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

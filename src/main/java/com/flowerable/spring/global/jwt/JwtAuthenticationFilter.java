@@ -1,9 +1,9 @@
-package com.flowerable.spring.jwt;
+package com.flowerable.spring.global.jwt;
 
 import com.flowerable.spring.domain.auth.constant.Role;
 import com.flowerable.spring.domain.auth.constant.TokenType;
 
-import com.flowerable.spring.security.CustomUserDetails;
+import com.flowerable.spring.global.security.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -93,10 +94,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest req){
-        String header = req.getHeader("Authorization");
+        String bearerToken = req.getHeader("Authorization");
 
-        if(header != null && header.startsWith("Bearer ")){
-            return header.substring(7);
+        if(bearerToken != null && bearerToken.startsWith("Bearer ")){
+            return bearerToken.substring(7);
+        }
+
+        String tokenParam = req.getParameter("token");
+        if (StringUtils.hasText(tokenParam)) {
+            return tokenParam;
         }
         return null;
     }
@@ -114,9 +120,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             """);
     }
 
-    /**
-     * Authentication 객체 생성
-     */
     private UsernamePasswordAuthenticationToken createAuthentication(
             Long accountId,
             Role role,

@@ -1,4 +1,4 @@
-package com.flowerable.spring.entity.order;
+package com.flowerable.spring.domain.order.entity;
 
 import com.flowerable.spring.domain.order.constant.OrderCancelBy;
 import com.flowerable.spring.domain.order.constant.OrderCancelReason;
@@ -23,7 +23,7 @@ public class OrderCancelLog {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderCancelBy canceledBy; // USER or SHOP
+    private OrderCancelBy canceledBy;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

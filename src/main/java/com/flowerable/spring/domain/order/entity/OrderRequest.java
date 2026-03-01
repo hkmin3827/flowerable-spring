@@ -1,11 +1,11 @@
-package com.flowerable.spring.entity.order;
+package com.flowerable.spring.domain.order.entity;
 
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.order.constant.OrderStatus;
-import com.flowerable.spring.entity.payment.Payment;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.entity.user.User;
-import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.domain.payment.entity.Payment;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.global.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -77,7 +77,7 @@ public class OrderRequest {
         order.user = user;
         order.shop = shop;
         order.status = OrderStatus.CREATED;
-        // 포장 옵션 (스냅샷)
+
         order.wrappingColorName = wrappingColorName;
         order.wrappingExtraPrice = wrappingExtraPrice;
 
@@ -89,7 +89,6 @@ public class OrderRequest {
         }
         order.totalFlowerPrice = totalFlowerPrice;
 
-        // 총액 계산
         int wrappingPrice = order.wrappingExtraPrice != null
                 ? order.wrappingExtraPrice
                 : 0;
@@ -106,7 +105,6 @@ public class OrderRequest {
         }
         this.status = OrderStatus.REQUESTED;
     }
-
 
     public void markCanceledAt() {
         this.canceledAt = LocalDateTime.now();

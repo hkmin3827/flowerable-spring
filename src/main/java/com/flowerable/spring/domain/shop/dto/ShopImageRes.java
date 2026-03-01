@@ -1,7 +1,7 @@
-package com.flowerable.spring.dto.shopimage;
+package com.flowerable.spring.domain.shop.dto;
 
 
-import com.flowerable.spring.entity.shop.ShopImage;
+import com.flowerable.spring.domain.shop.entity.ShopImage;
 
 import java.time.LocalDateTime;
 

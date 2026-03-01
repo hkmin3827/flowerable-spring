@@ -1,13 +1,11 @@
-package com.flowerable.spring.service.wrappingoption;
+package com.flowerable.spring.domain.wrappingoption.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.wrappingoption.WrappingOptionRes;
-import com.flowerable.spring.entity.wrappingoption.WrappingOption;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.ShopNotFoundException;
-import com.flowerable.spring.repository.ShopRepository;
-import com.flowerable.spring.repository.WrappingOptionRepository;
+import com.flowerable.spring.domain.wrappingoption.dto.WrappingOptionRes;
+import com.flowerable.spring.domain.wrappingoption.entity.WrappingOption;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.global.exception.ShopNotFoundException;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
+import com.flowerable.spring.domain.wrappingoption.repository.WrappingOptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.order.repository;
 
-import com.flowerable.spring.entity.order.OrderCancelLog;
+import com.flowerable.spring.domain.order.entity.OrderCancelLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

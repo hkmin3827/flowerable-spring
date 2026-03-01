@@ -1,10 +1,10 @@
-package com.flowerable.spring.dto.shop;
+package com.flowerable.spring.domain.shop.dto;
 
 import com.flowerable.spring.domain.auth.constant.AccountStatus;
-import com.flowerable.spring.constant.region.District;
-import com.flowerable.spring.constant.region.Region;
-import com.flowerable.spring.constant.shop.ShopStatus;
-import com.flowerable.spring.dto.shopflower.ShopFlowerRes;
+import com.flowerable.spring.domain.shop.constant.District;
+import com.flowerable.spring.domain.shop.constant.Region;
+import com.flowerable.spring.domain.shop.constant.ShopStatus;
+import com.flowerable.spring.domain.shopflower.dto.ShopFlowerRes;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// shop 정보 조회(user) / shop profile
 @Builder
 @Getter @Setter
 public class ShopDetailRes {

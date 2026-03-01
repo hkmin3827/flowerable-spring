@@ -1,7 +1,6 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.shop.repository;
 
-import com.flowerable.spring.entity.shop.ShopImage;
-import org.springframework.data.domain.Pageable;
+import com.flowerable.spring.domain.shop.entity.ShopImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,8 +24,6 @@ public interface ShopImageRepository extends JpaRepository<ShopImage, Long> {
     // 대표 이미지 1개 (샵 목록)
     Optional<ShopImage> findByShopIdAndIsThumbnailTrue(Long shopId);
 
-
-    // 단건 조회 (삭제용)
     Optional<ShopImage> findByIdAndShopId(Long id, Long shopId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)

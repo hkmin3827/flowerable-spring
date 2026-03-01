@@ -1,12 +1,12 @@
-package com.flowerable.spring.controller.order;
+package com.flowerable.spring.domain.order.controller;
 
 import com.flowerable.spring.domain.order.constant.OrderStatus;
-import com.flowerable.spring.dto.common.PageResponse;
-import com.flowerable.spring.dto.order.OrderDetailRes;
-import com.flowerable.spring.dto.order.OrderListRes;
-import com.flowerable.spring.dto.order.OrderStatusChangeReq;
-import com.flowerable.spring.security.CustomUserDetails;
-import com.flowerable.spring.service.order.ShopOrderService;
+import com.flowerable.spring.global.dto.PageResponse;
+import com.flowerable.spring.domain.order.dto.OrderDetailRes;
+import com.flowerable.spring.domain.order.dto.OrderListRes;
+import com.flowerable.spring.domain.order.dto.OrderStatusChangeReq;
+import com.flowerable.spring.global.security.CustomUserDetails;
+import com.flowerable.spring.domain.order.service.ShopOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

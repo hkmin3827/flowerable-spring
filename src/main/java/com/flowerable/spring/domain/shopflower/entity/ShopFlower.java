@@ -1,10 +1,10 @@
-package com.flowerable.spring.entity.shopflower;
+package com.flowerable.spring.domain.shopflower.entity;
 
-import com.flowerable.spring.constant.shopflower.Color;
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.domain.shopflower.constant.Color;
+import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.flower.entity.Flower;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.global.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class ShopFlower {
     private Integer price;
 
     @Column(nullable = false)
-    private Boolean onSale = true; // 판매 여부
+    private Boolean onSale = true;
 
     @BatchSize(size = 20)
     @ElementCollection(fetch = FetchType.LAZY)
@@ -63,7 +63,7 @@ public class ShopFlower {
         if (price != null) {
             this.price = price;
         }
-        // 프론트에서 기존 색상 + 추가 색상 full로 내려줌
+
         if (colors != null) {
             this.colors = new HashSet<>(colors);
         }
@@ -75,11 +75,12 @@ public class ShopFlower {
         }
         this.onSale = true;
     }
+
     public void stopSale(){
         if(Boolean.FALSE.equals(this.onSale)){
             throw new CustomException(ErrorCode.SHOP_FLOWER_ALREADY_STOPSALE);
         }
         this.onSale = false;
-    }  // 숨김 처리
+    }
 
 }

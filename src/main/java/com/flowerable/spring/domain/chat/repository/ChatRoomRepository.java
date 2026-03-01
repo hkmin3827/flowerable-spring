@@ -1,20 +1,18 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.chat.repository;
 
-import com.flowerable.spring.dto.chat.ChatRoomListRes;
-import com.flowerable.spring.entity.chat.ChatRoom;
+import com.flowerable.spring.domain.chat.dto.ChatRoomListRes;
+import com.flowerable.spring.domain.chat.entity.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByUserIdAndShopId(Long userId, Long shopId);
 
-
     @Query("""
-    select new com.flowerable.spring.dto.chat.ChatRoomListRes(
+    select new com.flowerable.spring.domain.chat.dto.ChatRoomListRes(
         cr.id,
         cr.userId,
         cr.shopId,
@@ -25,7 +23,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             select count(cm)
             from ChatMessage cm
             where cm.chatRoom.id = cr.id
-              and cm.senderType = com.flowerable.spring.constant.chat.SenderType.SHOP
+              and cm.senderType = com.flowerable.spring.domain.chat.constant.SenderType.SHOP
               and cm.isRead = false
         )
     )
@@ -36,9 +34,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 """)
     List<ChatRoomListRes> findChatRoomsByUserId(Long userId);
 
-
     @Query("""
-    select new com.flowerable.spring.dto.chat.ChatRoomListRes(
+    select new com.flowerable.spring.domain.chat.dto.ChatRoomListRes(
         cr.id,
         cr.userId,
         cr.shopId,
@@ -49,7 +46,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             select count(cm)
             from ChatMessage cm
             where cm.chatRoom.id = cr.id
-              and cm.senderType = com.flowerable.spring.constant.chat.SenderType.USER
+              and cm.senderType = com.flowerable.spring.domain.chat.constant.SenderType.USER
               and cm.isRead = false
         )
     )

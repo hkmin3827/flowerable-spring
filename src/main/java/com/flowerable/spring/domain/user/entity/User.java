@@ -1,6 +1,6 @@
-package com.flowerable.spring.entity.user;
+package com.flowerable.spring.domain.user.entity;
 
-import com.flowerable.spring.dto.user.UserUpdateInfoReq;
+import com.flowerable.spring.domain.user.dto.UserUpdateInfoReq;
 import com.flowerable.spring.domain.auth.entity.Account;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -19,10 +19,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * Account와 1:1
-     * account_id는 전역 인증 PK를 가리킴
-     */
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
@@ -68,9 +64,11 @@ public class User {
         return new User(account, name);
     }
 
+    // 계정 suspend와 별개로 활동 정지 구현 시 확장
     public void deactivate() {
         this.active = false;
     }
+
     public void activate() {
         this.active = true;
     }

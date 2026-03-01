@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.user;
+package com.flowerable.spring.domain.user.dto;
 
 import com.flowerable.spring.domain.auth.constant.AccountStatus;
 import com.flowerable.spring.domain.auth.constant.Provider;

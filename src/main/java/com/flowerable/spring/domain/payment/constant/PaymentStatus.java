@@ -1,4 +1,4 @@
-package com.flowerable.spring.constant.payment;
+package com.flowerable.spring.domain.payment.constant;
 
 public enum PaymentStatus {
     READY,

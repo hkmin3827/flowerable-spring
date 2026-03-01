@@ -1,8 +1,8 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.flower.repository;
 
-import com.flowerable.spring.constant.flower.Season;
-import com.flowerable.spring.dto.admin.AdminFlowerListRes;
-import com.flowerable.spring.entity.flower.Flower;
+import com.flowerable.spring.domain.flower.constant.Season;
+import com.flowerable.spring.domain.admin.dto.AdminFlowerListRes;
+import com.flowerable.spring.domain.flower.entity.Flower;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,8 +15,8 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
     Optional<Flower> findByIdAndActiveTrue(Long id);
 
     boolean existsByName(String name);
+
     Page<Flower> findAll(Pageable pageable);
-    Page<Flower> findAllByActiveTrue(Pageable pageable);
 
     // 사용자용 조회 (category 기준, active = true)
     @Query("""
@@ -40,17 +40,4 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
             @Param("active") Boolean active,
             Pageable pageable
     );
-
-//    // 관리자 기능 추가
-//    Page<Flower> findByActive(Boolean active, Pageable pageable);
-//    Page<Flower> findByCategory(Season category, Pageable pageable);
-//    Page<Flower> findByActiveAndCategory(Boolean active, Season category, Pageable pageable);
-//
-//    @Query("SELECT f FROM Flower f WHERE f.active = :active AND " +
-//            "LOWER(f.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-//    Page<Flower> findByActiveAndSearchKeyword(
-//            @Param("active") Boolean active,
-//            @Param("keyword") String keyword,
-//            Pageable pageable
-//    );
 }

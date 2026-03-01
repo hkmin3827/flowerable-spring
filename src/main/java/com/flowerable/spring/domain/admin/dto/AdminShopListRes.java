@@ -1,9 +1,9 @@
-package com.flowerable.spring.dto.admin;
+package com.flowerable.spring.domain.admin.dto;
 
-import com.flowerable.spring.constant.auth.AccountStatus;
-import com.flowerable.spring.constant.region.District;
-import com.flowerable.spring.constant.region.Region;
-import com.flowerable.spring.constant.shop.ShopStatus;
+import com.flowerable.spring.domain.auth.constant.AccountStatus;
+import com.flowerable.spring.domain.shop.constant.District;
+import com.flowerable.spring.domain.shop.constant.Region;
+import com.flowerable.spring.domain.shop.constant.ShopStatus;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;

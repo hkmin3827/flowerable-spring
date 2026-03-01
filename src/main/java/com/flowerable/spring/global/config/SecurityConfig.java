@@ -1,6 +1,6 @@
     package com.flowerable.spring.global.config;
 
-    import com.flowerable.spring.jwt.JwtAuthenticationFilter;
+    import com.flowerable.spring.global.jwt.JwtAuthenticationFilter;
     import com.flowerable.spring.domain.auth.oauth2.handler.OAuth2LoginSuccessHandler;
     import lombok.RequiredArgsConstructor;
     import org.springframework.context.annotation.Bean;
@@ -85,9 +85,6 @@
                             jwtAuthenticationFilter,
                             UsernamePasswordAuthenticationFilter.class
                     )
-                    // Tomcat이 HTTP 세션 ID를 생성하기 위해 SecureRandom(SHA1PRNG) 초기화
-                    // 엔트로피 수집(특히 첫 초기화 시) 때문에 느리게 시작되는 경우가 흔함
-                    // => sessionManagement ~ : 세션 아예 비활성화
                     .sessionManagement(session ->
                             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     ).oauth2Login(oauth -> oauth

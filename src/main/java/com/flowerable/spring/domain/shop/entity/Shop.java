@@ -1,13 +1,13 @@
-package com.flowerable.spring.entity.shop;
+package com.flowerable.spring.domain.shop.entity;
 
-import com.flowerable.spring.constant.region.District;
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.constant.region.Region;
-import com.flowerable.spring.constant.shop.ShopStatus;
-import com.flowerable.spring.dto.shop.ShopUpdateInfoReq;
+import com.flowerable.spring.domain.shop.constant.District;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.shop.constant.Region;
+import com.flowerable.spring.domain.shop.constant.ShopStatus;
+import com.flowerable.spring.domain.shop.dto.ShopUpdateInfoReq;
 import com.flowerable.spring.domain.auth.entity.Account;
-import com.flowerable.spring.entity.shopflower.ShopFlower;
-import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.domain.shopflower.entity.ShopFlower;
+import com.flowerable.spring.global.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,9 +27,6 @@ public class Shop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * Account와 1:1
-     */
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
@@ -43,7 +40,7 @@ public class Shop {
     @Column(nullable = false, length = 100)
     private String address;  // 상세주소
 
-    // map 표시용
+    // 카카오 맵 지도 웹 UI 추가 시 확장용
     private Double latitude;
     private Double longitude;
 

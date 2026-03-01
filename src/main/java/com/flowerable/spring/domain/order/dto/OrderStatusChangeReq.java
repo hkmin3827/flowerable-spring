@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.order;
+package com.flowerable.spring.domain.order.dto;
 
 import com.flowerable.spring.domain.order.constant.OrderCancelReason;
 import com.flowerable.spring.domain.order.constant.OrderStatus;

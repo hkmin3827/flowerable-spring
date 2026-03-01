@@ -1,7 +1,7 @@
-package com.flowerable.spring.dto.auth;
+package com.flowerable.spring.domain.auth.dto;
 
-import com.flowerable.spring.constant.auth.Provider;
-import com.flowerable.spring.constant.auth.Role;
+import com.flowerable.spring.domain.auth.constant.Provider;
+import com.flowerable.spring.domain.auth.constant.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

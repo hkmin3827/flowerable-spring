@@ -1,25 +1,29 @@
-package com.flowerable.spring.service.chat;
+package com.flowerable.spring.domain.chat.service;
 
 
-import com.flowerable.spring.constant.auth.Role;
-import com.flowerable.spring.constant.chat.SenderType;
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.constant.notification.NotificationReceiverType;
-import com.flowerable.spring.constant.notification.NotificationType;
-import com.flowerable.spring.dto.chat.ChatMessageRes;
-import com.flowerable.spring.dto.chat.ChatMessageSendReq;
-import com.flowerable.spring.dto.chat.ChatRoomListRes;
-import com.flowerable.spring.dto.chat.ChatRoomRes;
-import com.flowerable.spring.dto.notification.NotificationCreateReq;
-import com.flowerable.spring.entity.chat.ChatMessage;
-import com.flowerable.spring.entity.chat.ChatRoom;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.entity.user.User;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.ShopNotFoundException;
-import com.flowerable.spring.exception.UserNotFoundException;
-import com.flowerable.spring.repository.*;
-import com.flowerable.spring.service.notification.NotificationService;
+import com.flowerable.spring.domain.auth.constant.Role;
+import com.flowerable.spring.domain.chat.constant.SenderType;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
+import com.flowerable.spring.domain.notification.constant.NotificationType;
+import com.flowerable.spring.domain.chat.dto.ChatMessageRes;
+import com.flowerable.spring.domain.chat.dto.ChatMessageSendReq;
+import com.flowerable.spring.domain.chat.dto.ChatRoomListRes;
+import com.flowerable.spring.domain.chat.dto.ChatRoomRes;
+import com.flowerable.spring.domain.chat.repository.ChatMessageRepository;
+import com.flowerable.spring.domain.chat.repository.ChatRoomRepository;
+import com.flowerable.spring.domain.notification.dto.NotificationCreateReq;
+import com.flowerable.spring.domain.chat.entity.ChatMessage;
+import com.flowerable.spring.domain.chat.entity.ChatRoom;
+import com.flowerable.spring.domain.notification.repository.NotificationRepository;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
+import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.domain.user.repository.UserRepository;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.ShopNotFoundException;
+import com.flowerable.spring.global.exception.UserNotFoundException;
+import com.flowerable.spring.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -133,7 +137,6 @@ public class ChatService {
 
     @Transactional
     public List<ChatMessageRes> getChatMessages(Long chatRoomId, Long accountId, Role role) {
-        // 채팅방 존재 확인
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
@@ -146,10 +149,8 @@ public class ChatService {
             throw new CustomException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
         }
 
-        // 메시지 목록 조회
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomId(chatRoomId);
 
-        // 상대방 메시지 읽음 처리
         SenderType opponentSender = role.equals("ROLE_USER")
                 ? SenderType.SHOP
                 : SenderType.USER;
@@ -224,7 +225,7 @@ public class ChatService {
 
         notificationRepository.markAsReadByTypeAndReceiverIdAndReferenceId(
                 NotificationType.MESSAGE_RECEIVED,
-                role == Role.ROLE_USER ? shopId : userId,
+                role == Role.ROLE_USER ? userId : shopId,
                 chatRoom.getId()
         );
 

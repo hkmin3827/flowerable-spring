@@ -1,4 +1,4 @@
-package com.flowerable.spring.entity.order;
+package com.flowerable.spring.domain.order.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

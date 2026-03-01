@@ -1,7 +1,7 @@
-package com.flowerable.spring.security;
+package com.flowerable.spring.global.security;
 
 import com.flowerable.spring.domain.auth.constant.Role;
-import com.flowerable.spring.jwt.JwtProvider;
+import com.flowerable.spring.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

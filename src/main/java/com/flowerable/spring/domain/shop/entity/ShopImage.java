@@ -1,7 +1,7 @@
-package com.flowerable.spring.entity.shop;
+package com.flowerable.spring.domain.shop.entity;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.exception.CustomException;
+import com.flowerable.spring.global.constant.ErrorCode;
+import com.flowerable.spring.global.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.order;
+package com.flowerable.spring.domain.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

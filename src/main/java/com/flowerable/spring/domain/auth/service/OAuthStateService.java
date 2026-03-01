@@ -1,4 +1,4 @@
-package com.flowerable.spring.service.auth;
+package com.flowerable.spring.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,12 +15,7 @@ public class OAuthStateService {
     private static final String OAUTH_CODE_PREFIX = "oauth:code:";
     private static final long EXPIRATION_MINUTES = 5;
 
-    /**
-     * OAuth 인증 코드 생성 및 저장
-     * @param provider OAuth 제공자 (google, kakao, naver)
-     * @param providerId OAuth에서 받은 사용자 ID
-     * @return 일회용 인증 코드
-     */
+    // OAuth 인증 코드 생성 및 저장
     public String createAuthCode(String provider, String providerId) {
         String code = UUID.randomUUID().toString();
         String key = OAUTH_CODE_PREFIX + code;
@@ -36,11 +31,7 @@ public class OAuthStateService {
         return code;
     }
 
-    /**
-     * 인증 코드 검증 및 정보 반환
-     * @param code 인증 코드
-     * @return [provider, providerId] 배열 또는 null
-     */
+     // 인증 코드 검증 및 정보 반환
     public String[] validateAndConsumeCode(String code) {
         String key = OAUTH_CODE_PREFIX + code;
         String value = redisTemplate.opsForValue().get(key);
@@ -49,7 +40,6 @@ public class OAuthStateService {
             return null;
         }
 
-        // 일회용이므로 즉시 삭제
         redisTemplate.delete(key);
 
         return value.split(":");

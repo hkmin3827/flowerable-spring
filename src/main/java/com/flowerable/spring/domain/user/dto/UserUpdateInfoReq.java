@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.user;
+package com.flowerable.spring.domain.user.dto;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;

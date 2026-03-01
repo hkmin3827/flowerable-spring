@@ -1,25 +1,29 @@
-package com.flowerable.spring.service.order;
+package com.flowerable.spring.domain.order.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;
 import com.flowerable.spring.domain.order.constant.OrderCancelBy;
 import com.flowerable.spring.domain.order.constant.OrderCancelReason;
 import com.flowerable.spring.domain.order.constant.OrderStatus;
-import com.flowerable.spring.dto.notification.NotificationCreateReq;
-import com.flowerable.spring.dto.order.*;
-import com.flowerable.spring.entity.order.OrderCancelLog;
-import com.flowerable.spring.entity.order.OrderItem;
-import com.flowerable.spring.entity.order.OrderRequest;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.entity.shopflower.ShopFlower;
-import com.flowerable.spring.entity.user.User;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.OrderNotFoundException;
-import com.flowerable.spring.exception.UserNotFoundException;
-import com.flowerable.spring.repository.*;
-import com.flowerable.spring.service.notification.NotificationService;
-import com.flowerable.spring.service.payment.PaymentService;
+import com.flowerable.spring.domain.notification.dto.NotificationCreateReq;
+import com.flowerable.spring.domain.order.dto.*;
+import com.flowerable.spring.domain.order.entity.OrderCancelLog;
+import com.flowerable.spring.domain.order.entity.OrderItem;
+import com.flowerable.spring.domain.order.entity.OrderRequest;
+import com.flowerable.spring.domain.order.repository.OrderCancelLogRepository;
+import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
+import com.flowerable.spring.domain.shopflower.entity.ShopFlower;
+import com.flowerable.spring.domain.shopflower.repository.ShopFlowerRepository;
+import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.domain.user.repository.UserRepository;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.OrderNotFoundException;
+import com.flowerable.spring.global.exception.UserNotFoundException;
+import com.flowerable.spring.domain.notification.service.NotificationService;
+import com.flowerable.spring.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,7 +73,6 @@ public class UserOrderService {
             orderItems.add(orderItem);
         }
 
-
         String orderNumber = orderNumberGenerator.generate();
 
         OrderRequest order = OrderRequest.create(
@@ -110,7 +113,7 @@ public class UserOrderService {
     @Transactional
     protected void cancelOrderTransaction(OrderRequest order) {
 
-        order.cancel();  // 주문 상태 CANCELED 변경
+        order.cancel();
 
         notifyShop(
                 order,

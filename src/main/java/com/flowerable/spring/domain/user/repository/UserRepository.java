@@ -1,8 +1,8 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.user.repository;
 
 import com.flowerable.spring.domain.auth.constant.AccountStatus;
 import com.flowerable.spring.domain.admin.dto.AdminUserListRes;
-import com.flowerable.spring.entity.user.User;
+import com.flowerable.spring.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,7 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         from User u
         join u.account a
         where a.status in :statuses
-        and a.role = com.flowerable.spring.constant.auth.Role.ROLE_USER
+        and a.role = com.flowerable.spring.domain.auth.constant.Role.ROLE_USER
     """)
     Page<AdminUserListRes> findAdminUsersByAccountStatuses(
             @Param("statuses") List<AccountStatus> statuses,
@@ -76,7 +76,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         where u.id = :id
     """)
     Optional<User> findDetailById(@Param("id") Long id);
-
 
     @Query("""
         select u

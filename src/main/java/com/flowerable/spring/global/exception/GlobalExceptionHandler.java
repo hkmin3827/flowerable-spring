@@ -1,6 +1,6 @@
-package com.flowerable.spring.exception;
+package com.flowerable.spring.global.exception;
 
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.global.constant.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

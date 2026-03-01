@@ -1,4 +1,4 @@
-package com.flowerable.spring.security;
+package com.flowerable.spring.global.security;
 
 import com.flowerable.spring.domain.auth.constant.Role;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,9 +1,8 @@
-package com.flowerable.spring.entity.chat;
+package com.flowerable.spring.domain.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -52,5 +51,4 @@ public class ChatRoom {
         lastMessage = message.getContent();
         lastMessageAt = LocalDateTime.now();
     }
-
 }

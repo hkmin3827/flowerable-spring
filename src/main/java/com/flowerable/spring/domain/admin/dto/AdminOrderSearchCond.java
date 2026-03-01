@@ -1,6 +1,6 @@
-package com.flowerable.spring.dto.admin;
+package com.flowerable.spring.domain.admin.dto;
 
-import com.flowerable.spring.constant.order.OrderStatus;
+import com.flowerable.spring.domain.order.constant.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +19,4 @@ public class AdminOrderSearchCond {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime to;
-
-//    from  → 이 시간 이후(>=)에 생성된 주문만 조회
-//    to    → 이 시간 이전(<=)에 생성된 주문만 조회
 }

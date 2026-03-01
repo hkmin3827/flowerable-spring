@@ -1,6 +1,6 @@
-package com.flowerable.spring.entity.cart;
+package com.flowerable.spring.domain.cart.entity;
 
-import com.flowerable.spring.entity.user.User;
+import com.flowerable.spring.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,19 +1,19 @@
-package com.flowerable.spring.service.payment;
+package com.flowerable.spring.domain.payment.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
+import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.constant.NotificationType;
 import com.flowerable.spring.domain.order.constant.OrderCancelReason;
-import com.flowerable.spring.constant.payment.PaymentStatus;
-import com.flowerable.spring.dto.notification.NotificationCreateReq;
-import com.flowerable.spring.dto.payment.PaymentConfirmReq;
-import com.flowerable.spring.entity.order.OrderRequest;
-import com.flowerable.spring.entity.payment.Payment;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.OrderNotFoundException;
-import com.flowerable.spring.repository.OrderRequestRepository;
-import com.flowerable.spring.repository.PaymentRepository;
-import com.flowerable.spring.service.notification.NotificationService;
+import com.flowerable.spring.domain.payment.constant.PaymentStatus;
+import com.flowerable.spring.domain.notification.dto.NotificationCreateReq;
+import com.flowerable.spring.domain.payment.dto.PaymentConfirmReq;
+import com.flowerable.spring.domain.order.entity.OrderRequest;
+import com.flowerable.spring.domain.payment.entity.Payment;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.OrderNotFoundException;
+import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
+import com.flowerable.spring.domain.payment.repository.PaymentRepository;
+import com.flowerable.spring.domain.notification.service.NotificationService;
 import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -134,7 +134,7 @@ public class PaymentService {
         } catch (WebClientResponseException e) {
 
             if (e.getResponseBodyAsString().contains("ALREADY_CANCELED_PAYMENT")) {
-                payment.markCanceled(cancelReason); // DB 동기화
+                payment.markCanceled(cancelReason);
                 return;
             }
             // Toss 취소 실패 → 롤백 유도

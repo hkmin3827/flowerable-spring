@@ -1,6 +1,6 @@
-package com.flowerable.spring.oauth2.userInfo;
+package com.flowerable.spring.domain.auth.oauth2.userInfo;
 
-import com.flowerable.spring.constant.auth.Provider;
+import com.flowerable.spring.domain.auth.constant.Provider;
 
 public interface OAuth2UserInfo {
     String getProviderId();

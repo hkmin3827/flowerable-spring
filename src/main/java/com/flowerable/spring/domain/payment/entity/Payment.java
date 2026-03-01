@@ -1,8 +1,8 @@
-package com.flowerable.spring.entity.payment;
+package com.flowerable.spring.domain.payment.entity;
 
 import com.flowerable.spring.domain.order.constant.OrderCancelReason;
-import com.flowerable.spring.constant.payment.PaymentStatus;
-import com.flowerable.spring.entity.order.OrderRequest;
+import com.flowerable.spring.domain.payment.constant.PaymentStatus;
+import com.flowerable.spring.domain.order.entity.OrderRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String paymentKey;      // Toss에서 발급
+    private String paymentKey;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -30,7 +30,7 @@ public class Payment {
     private Integer amount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status = PaymentStatus.READY; // READY, DONE, FAILED
+    private PaymentStatus status = PaymentStatus.READY;
 
     @Column(nullable = true)
     private String failReason;

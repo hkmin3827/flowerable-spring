@@ -1,6 +1,6 @@
-package com.flowerable.spring.dto.chat;
+package com.flowerable.spring.domain.chat.dto;
 
-import com.flowerable.spring.entity.chat.ChatRoom;
+import com.flowerable.spring.domain.chat.entity.ChatRoom;
 import lombok.Builder;
 import lombok.Getter;
 

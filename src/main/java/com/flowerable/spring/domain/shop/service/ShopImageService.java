@@ -1,22 +1,20 @@
-package com.flowerable.spring.service.shopimage;
+package com.flowerable.spring.domain.shop.service;
 
-import com.flowerable.spring.constant.common.ErrorCode;
-import com.flowerable.spring.dto.shopimage.ShopImageCreateReq;
-import com.flowerable.spring.dto.shopimage.ShopImageRes;
-import com.flowerable.spring.entity.shop.Shop;
-import com.flowerable.spring.entity.shop.ShopImage;
-import com.flowerable.spring.exception.CustomException;
-import com.flowerable.spring.exception.ShopNotFoundException;
-import com.flowerable.spring.repository.ShopImageRepository;
-import com.flowerable.spring.repository.ShopRepository;
+import com.flowerable.spring.domain.shop.dto.ShopImageCreateReq;
+import com.flowerable.spring.domain.shop.dto.ShopImageRes;
+import com.flowerable.spring.domain.shop.entity.Shop;
+import com.flowerable.spring.domain.shop.entity.ShopImage;
+import com.flowerable.spring.global.exception.CustomException;
+import com.flowerable.spring.global.exception.ShopNotFoundException;
+import com.flowerable.spring.domain.shop.repository.ShopImageRepository;
+import com.flowerable.spring.domain.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.flowerable.spring.constant.common.ErrorCode.*;
+import static com.flowerable.spring.global.constant.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -99,8 +97,6 @@ public class ShopImageService {
                 .toList();
     }
 
-    
-    // 샵 상세 (최신 이미지 5개)
     @Transactional(readOnly = true)
     public List<ShopImageRes> getLatestImages(Long shopId) {
         return shopImageRepository.findTop5ByShopIdOrderByCreatedAtDesc(shopId)
@@ -120,9 +116,6 @@ public class ShopImageService {
                 .toList();
     }
 
-    /**
-     * 대표 이미지 1개 (샵 목록)
-     */
     @Transactional(readOnly = true)
     public ShopImageRes getThumbnail(Long shopId) {
         return shopImageRepository

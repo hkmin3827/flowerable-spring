@@ -1,4 +1,4 @@
-package com.flowerable.spring.dto.order;
+package com.flowerable.spring.domain.order.dto;
 
 import com.flowerable.spring.domain.order.constant.OrderStatus;
 import lombok.AllArgsConstructor;
@@ -19,6 +19,6 @@ public class OrderListRes {
     private String shopName;
     private String userName;
 
-    private final long totalCount;  // 총수량
+    private final long totalCount;
 
 }

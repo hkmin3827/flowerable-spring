@@ -1,12 +1,12 @@
-package com.flowerable.spring.repository;
+package com.flowerable.spring.domain.shop.repository;
 
 import com.flowerable.spring.domain.auth.constant.AccountStatus;
-import com.flowerable.spring.constant.region.District;
-import com.flowerable.spring.constant.region.Region;
-import com.flowerable.spring.constant.shop.ShopStatus;
+import com.flowerable.spring.domain.shop.constant.District;
+import com.flowerable.spring.domain.shop.constant.Region;
+import com.flowerable.spring.domain.shop.constant.ShopStatus;
 import com.flowerable.spring.domain.admin.dto.AdminShopListRes;
-import com.flowerable.spring.dto.shop.ShopSearchRes;
-import com.flowerable.spring.entity.shop.Shop;
+import com.flowerable.spring.domain.shop.dto.ShopSearchRes;
+import com.flowerable.spring.domain.shop.entity.Shop;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,36 +22,36 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     @Query("select s from Shop s join fetch s.account a where s.id = :shopId")
     Optional<Shop> findById(@Param("shopId") Long shopId);
 
-
     @Query("""
             select s
             from Shop s
             where s.id = :shopId
-                and s.status = com.flowerable.spring.constant.shop.ShopStatus.ACTIVE
+                and s.status = com.flowerable.spring.domain.shop.constant.ShopStatus.ACTIVE
                 and s.deletedAt is null
             """)
     Optional<Shop> findByIdAndDeletedAtIsNullAndIsActive(@Param("shopId") Long shopId);
 
     Optional<Shop> findByAccountIdAndDeletedAtIsNull(Long accountId);
+
     // 사용자 꽃 + 지역 선택 후
     @Query("""
-    select new com.flowerable.spring.dto.shop.ShopSearchRes(
-        s.id,
-        s.shopName,
-        a.telnum,
-        s.description,
-        s.address,
-        s.region,
-        s.district
-    )
-    from Shop s
-    join s.account a
-    join s.shopFlowers sf
-    where sf.flower.name = :flowerName
-      and s.status = 'ACTIVE'
-      and (:region IS NULL OR s.region = :region)
-      and (:district IS NULL OR s.district = :district)
-""")
+    select new com.flowerable.spring.domain.shop.dto.ShopSearchRes(
+            s.id,
+            s.shopName,
+            a.telnum,
+            s.description,
+            s.address,
+            s.region,
+            s.district
+        )
+        from Shop s
+        join s.account a
+        join s.shopFlowers sf
+        where sf.flower.name = :flowerName
+          and s.status = 'ACTIVE'
+          and (:region IS NULL OR s.region = :region)
+          and (:district IS NULL OR s.district = :district)
+    """)
     Page<ShopSearchRes> findShopsByFilter(
             @Param("flowerName") String flowerName,
             @Param("region") Region region,
@@ -66,7 +66,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     left join fetch s.shopFlowers sf
     left join fetch sf.flower
     where s.id = :shopId
-            and s.status = com.flowerable.spring.constant.shop.ShopStatus.ACTIVE
+            and s.status = com.flowerable.spring.domain.shop.constant.ShopStatus.ACTIVE
             and s.deletedAt is null
     """)
     Optional<Shop> findDetailWithFlowers(@Param("shopId") Long shopId);
@@ -82,28 +82,27 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
 
     @Query("""
     select
-        s.id as id,
-        a.email as accountEmail,
-        a.telnum as accountTelnum,
-        a.status as accountStatus,
-        s.shopName as shopName,
-        s.region as region,
-        s.district as district,
-        s.address as address,
-        s.status as status,
-        s.registerAt as registerAt
-    from Shop s
-    join s.account a
-    where (:shopStatus is null or s.status = :shopStatus)
-      and (:accountStatus is null or a.status = :accountStatus)
-    order by s.id desc
-""")
+            s.id as id,
+            a.email as accountEmail,
+            a.telnum as accountTelnum,
+            a.status as accountStatus,
+            s.shopName as shopName,
+            s.region as region,
+            s.district as district,
+            s.address as address,
+            s.status as status,
+            s.registerAt as registerAt
+        from Shop s
+        join s.account a
+        where (:shopStatus is null or s.status = :shopStatus)
+          and (:accountStatus is null or a.status = :accountStatus)
+        order by s.id desc
+    """)
     Page<AdminShopListRes> findAdminShops(
             @Param("shopStatus") ShopStatus shopStatus,
             @Param("accountStatus") AccountStatus accountStatus,
             Pageable pageable
     );
-
 
     @Query("""
         select distinct s
@@ -115,9 +114,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     """)
     Optional<Shop> findMyDetail(@Param("accountId") Long accountId);
 
-    /**
-     * 관리자용 샵 검색 (샵명)
-     */
+    // 관리자용
     @Query("""
     select
         s.id as id,
