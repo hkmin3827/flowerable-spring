@@ -55,7 +55,8 @@ public class CartResponse {
         private Integer totalFlowerPrice;
         private Integer totalPrice;
         private LocalDateTime createdAt;
-        
+        private String shopAddress;
+
         public static CartItemInfo from(CartItem cartItem) {
             List<FlowerDetailInfo> flowers = cartItem.getDetails().stream()
                     .map(FlowerDetailInfo::from)
@@ -67,6 +68,7 @@ public class CartResponse {
             
             return CartItemInfo.builder()
                     .cartItemId(cartItem.getId())
+                    .shopAddress(cartItem.getShop().getRegion().getDescription() + " " + cartItem.getShop().getDistrict().getDescription() + " " + cartItem.getShop().getAddress())
                     .shopId(cartItem.getShop().getId())
                     .shopName(cartItem.getShop().getShopName())
                     .flowers(flowers)
