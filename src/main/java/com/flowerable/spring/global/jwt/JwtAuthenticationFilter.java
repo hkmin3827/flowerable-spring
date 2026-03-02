@@ -43,7 +43,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || uri.startsWith("/ws/")
                 || uri.endsWith(".html")
                 || uri.startsWith("/oauth2/")
-                || uri.startsWith("/login/oauth2/");
+                || uri.startsWith("/login/oauth2/")
+                || uri.equals("/favicon.ico")
+                || uri.equals("/error")
+                || uri.startsWith("/api/notifications/subscribe");
     }
 
     @Override

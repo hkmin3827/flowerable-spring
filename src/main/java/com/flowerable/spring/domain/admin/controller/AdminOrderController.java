@@ -17,10 +17,6 @@ public class AdminOrderController {
 
     private final AdminOrderService adminOrderService;
 
-    /**
-     * 관리자 주문 리스트(모니터링)
-     * 예: /api/admin/orders?status=CANCELLED&shopId=3&from=2026-02-01T00:00:00
-     */
     @GetMapping
     public PageResponse<AdminOrderListRes> getOrders(
             AdminOrderSearchCond cond,
@@ -29,9 +25,6 @@ public class AdminOrderController {
         return PageResponse.from(adminOrderService.getOrders(cond, pageable));
     }
 
-    /**
-     * 관리자 주문 상세(아이템 포함)
-     */
     @GetMapping("/{orderId}")
     public AdminOrderDetailRes getOrderDetail(@PathVariable Long orderId) {
         return adminOrderService.getOrderDetail(orderId);

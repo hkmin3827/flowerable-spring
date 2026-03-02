@@ -1,12 +1,15 @@
 package com.flowerable.spring.domain.notification.controller;
 
+import com.flowerable.spring.domain.auth.constant.Role;
 import com.flowerable.spring.domain.notification.dto.NotificationRes;
+import com.flowerable.spring.global.jwt.JwtProvider;
 import com.flowerable.spring.global.security.CustomUserDetails;
 import com.flowerable.spring.infra.sse.SseEmitterManager;
 import com.flowerable.spring.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -17,15 +20,35 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationController {
     private final SseEmitterManager sseEmitterManager;
     private final NotificationService notificationService;
+    private final JwtProvider jwtProvider;
     
+
     @GetMapping("/subscribe/user")
-    public SseEmitter subscribeUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return sseEmitterManager.connectUserByAccountId(userDetails.getId());
+    public SseEmitter subscribeUser(@RequestParam("token") String token) {
+        Long accountId = jwtProvider.getId(token);
+
+        return sseEmitterManager.connectUserByAccountId(accountId);
     }
 
     @GetMapping("/subscribe/shop")
-    public SseEmitter subscribeShop(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return sseEmitterManager.connectShopByAccountId(userDetails.getId());
+    public SseEmitter subscribeShop(@RequestParam("token") String token) {
+        Long accountId = jwtProvider.getId(token);
+
+        return sseEmitterManager.connectShopByAccountId(accountId);
+    }
+
+    @PostMapping("/disconnect")
+    public ResponseEntity<Void> disconnect(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long accountId = userDetails.getId();
+        Role role = userDetails.getRole();
+
+        if (role == Role.ROLE_SHOP) {
+            sseEmitterManager.disconnectShop(accountId);
+        } else {
+            sseEmitterManager.disconnectUser(accountId);
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/unread")

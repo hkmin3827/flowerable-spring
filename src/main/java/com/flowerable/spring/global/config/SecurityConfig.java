@@ -45,7 +45,10 @@
                                     "/api/regions/**",
                                     "/ws-test.html",
                                     "/ws/**",
-                                    "/sockjs/**"
+                                    "/sockjs/**",
+                                    "/error",
+                                    "/favicon.ico",
+                                    "/api/notifications/subscribe/**"
                             ).permitAll()
                             .requestMatchers(
                                     "/api/auth/withdraw",
@@ -71,7 +74,7 @@
                             ex.authenticationEntryPoint(
                                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                             ).accessDeniedHandler((request, response, accessDeniedException) -> {
-                                response.setStatus(HttpStatus.FORBIDDEN.value()); // 403
+                                response.setStatus(HttpStatus.FORBIDDEN.value());
                                 response.setContentType("application/json;charset=UTF-8");
                                 response.getWriter().write("""
                                 {

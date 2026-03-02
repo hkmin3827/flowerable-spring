@@ -13,11 +13,14 @@ import com.flowerable.spring.domain.order.entity.OrderRequest;
 import com.flowerable.spring.global.exception.CustomException;
 import com.flowerable.spring.domain.order.repository.OrderCancelLogRepository;
 import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
+import com.flowerable.spring.global.exception.OrderNotFoundException;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +39,6 @@ public class AdminOrderService {
     @Transactional(readOnly = true)
     public Page<AdminOrderListRes> getOrders(AdminOrderSearchCond cond, Pageable pageable) {
         Specification<OrderRequest> spec = (root, query, cb) -> {
-
-            // fetch join
-            root.fetch("shop", JoinType.INNER);
-            root.fetch("user", JoinType.INNER);
 
             List<Predicate> predicates = new ArrayList<>();
 
@@ -76,8 +75,14 @@ public class AdminOrderService {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("createdAt").descending() // 최신순 정렬 추가
+        );
+
         Page<OrderRequest> orderPage =
-                orderRequestRepository.findAll(spec, pageable);
+                orderRequestRepository.findAll(spec, sortedPageable);
 
         return orderPage.map(order -> {
 
@@ -109,7 +114,8 @@ public class AdminOrderService {
 
     @Transactional(readOnly = true)
     public AdminOrderDetailRes getOrderDetail(Long orderId) {
-        OrderRequest order = orderRequestRepository.findByIdWithItems(orderId);
+        OrderRequest order = orderRequestRepository.findByIdWithItems(orderId)
+                .orElseThrow(OrderNotFoundException::new);
 
         if (order == null) {
             throw new CustomException(ErrorCode.ORDER_NOT_FOUND);

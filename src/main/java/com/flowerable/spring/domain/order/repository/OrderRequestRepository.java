@@ -5,6 +5,8 @@ import com.flowerable.spring.domain.order.dto.OrderListRes;
 import com.flowerable.spring.domain.order.entity.OrderRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -171,5 +173,9 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
         LEFT JOIN FETCH sf.flower
         WHERE o.id = :orderId
     """)
-    OrderRequest findByIdWithItems(@Param("orderId") Long orderId);
+    Optional<OrderRequest> findByIdWithItems(@Param("orderId") Long orderId);
+
+    @Override
+    @EntityGraph(attributePaths = {"shop", "user"}) // 여기서 연관 관계를 미리 정의합니다.
+    Page<OrderRequest> findAll(Specification<OrderRequest> spec, Pageable pageable);
 }

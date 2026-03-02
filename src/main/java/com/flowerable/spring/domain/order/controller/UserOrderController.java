@@ -1,5 +1,6 @@
 package com.flowerable.spring.domain.order.controller;
 
+import com.flowerable.spring.domain.auth.constant.Role;
 import com.flowerable.spring.domain.order.constant.OrderStatus;
 import com.flowerable.spring.domain.bouquet.dto.BouquetPreviewReq;
 import com.flowerable.spring.domain.bouquet.dto.BouquetPreviewRes;
@@ -44,6 +45,7 @@ public class UserOrderController {
 
     @GetMapping("/{shopId}/wrapping-options")
     public ResponseEntity<WrappingOptionRes> getShopWrappingOptions(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long shopId
     ) {
         return ResponseEntity.ok(

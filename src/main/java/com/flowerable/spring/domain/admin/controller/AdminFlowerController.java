@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/flowers")
 @RequiredArgsConstructor
 public class AdminFlowerController {
+
     private final AdminFlowerService adminFlowerService;
 
     @PostMapping("/register")
