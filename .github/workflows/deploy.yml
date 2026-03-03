@@ -32,8 +32,8 @@ jobs:
 
       - name: Build & Push Docker Image
         run: |
-          docker build -t hakyungmin/floweable-backend:latest .
-          docker push hakyungmin/floweable-backend:latest
+          docker build -t hakyungmin/flowerable-backend:latest .
+          docker push hakyungmin/flowerable-backend:latest
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
