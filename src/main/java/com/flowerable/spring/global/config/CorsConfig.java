@@ -17,13 +17,10 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
-                "http://localhost:8080"
+                "https://flowerable-react.vercel.app"
         ));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-//        config.setAllowedMethods(List.of(
-//                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
-//        ));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

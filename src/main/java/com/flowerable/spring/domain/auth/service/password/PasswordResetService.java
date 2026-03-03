@@ -41,7 +41,7 @@ public class PasswordResetService {
         );
 
         String resetUrl =
-                "http://localhost:3000/reset-password?token=" + resetToken;
+                "https://flowerable-react.vercel.app/reset-password?token=" + resetToken;
 
         mailService.sendPasswordResetMail(email, resetUrl);
     }
