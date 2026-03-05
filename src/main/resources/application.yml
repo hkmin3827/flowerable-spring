@@ -2,7 +2,7 @@ spring:
   application:
     name: spring
   config:
-    import: aws-parameterstore:/prod/flowerable
+    import: aws-parameterstore:/prod/flowerable/
 
   datasource:
     url: ${RDS_URL}
@@ -132,8 +132,6 @@ gemini:
 logging:
   level:
     org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport: WARN
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
 #    com.zaxxer.hikari: TRACE
 #    org.hibernate.orm.jdbc.bind: TRACE
 
