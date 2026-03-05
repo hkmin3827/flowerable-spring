@@ -132,6 +132,8 @@ gemini:
 logging:
   level:
     org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport: WARN
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
 #    com.zaxxer.hikari: TRACE
 #    org.hibernate.orm.jdbc.bind: TRACE
 
