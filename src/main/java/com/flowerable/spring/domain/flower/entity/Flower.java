@@ -35,7 +35,7 @@ public class Flower {
     @Column(nullable = false)
     private Boolean active = true;
 
-    @Column(nullable = false, updatable = false, insertable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist

@@ -67,7 +67,7 @@ public class Shop {
         this.registerAt = LocalDateTime.now();
     }
 
-    private Shop(Account account, String shopName, String address, Region region, District district) {
+    public Shop(Account account, String shopName, String address, Region region, District district) {
         this.account = account;
         this.shopName = shopName;
         this.address = address;

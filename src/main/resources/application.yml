@@ -2,7 +2,7 @@ spring:
   application:
     name: spring
   config:
-    import: aws-parameterstore:/prod/flowerable/
+    import: aws-parameterstore:/prod/flowerable
 
   datasource:
     url: ${RDS_URL}

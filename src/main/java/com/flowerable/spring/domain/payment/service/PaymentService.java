@@ -36,6 +36,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRequestRepository orderRequestRepository;
     private final NotificationService notificationService;
+    private final WebClient.Builder webClientBuilder;
 
 
     @Transactional
@@ -59,7 +60,7 @@ public class PaymentService {
         paymentRepository.save(payment);
 
         try {
-            WebClient webClient = WebClient.builder()
+            WebClient webClient = webClientBuilder
                     .baseUrl("https://api.tosspayments.com")
                     .defaultHeader(HttpHeaders.AUTHORIZATION,
                             "Basic " + Base64.getEncoder()
