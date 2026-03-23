@@ -110,10 +110,10 @@ public class UserOrderService {
         cancelOrderTransaction(order);
     }
 
-    @Transactional
     protected void cancelOrderTransaction(OrderRequest order) {
 
         order.cancel();
+        orderRequestRepository.save(order);
 
         notifyShop(
                 order,
