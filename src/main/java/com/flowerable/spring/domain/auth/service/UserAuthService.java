@@ -35,9 +35,8 @@ public class UserAuthService {
     private final AccountRepository accountRepository;
 
     public AuthRes signup(AuthReq.UserSignup dto){
-        if (accountRepository.existsByEmail(dto.getEmail())) {
-            throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
-        }
+        validateEmailOrTelnumDuplicated(dto.getEmail(), dto.getTelnum());
+
         Account account = Account.createUserAccount(
                 dto.getEmail(),
                 passwordEncoder.encode(dto.getPassword()),
@@ -216,7 +215,7 @@ public class UserAuthService {
 
     private void validateEmailOrTelnumDuplicated(String email, String telnum) {
         if (email != null &&
-                accountRepository.existsByEmailAndDeletedAtIsNull(email)) {
+                accountRepository.existsByEmail(email)) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
         }
 

@@ -22,12 +22,13 @@ public class BouquetPromptBuilder {
         for (FlowerLine line : lines) {
             sb.append("- ")
                     .append(line.quantity())
+                    .append(" stems of ")
+                    .append(line.color())
                     .append(" ")
                     .append(line.flowerName())
-                    .append(" in ")
-                    .append(line.color())
                     .append("\n");
         }
+        sb.append("Please ensure the exact count of each flower is visually represented.\n");
     }
 
     private void appendWrappingAndStyle(StringBuilder sb, String wrappingColor) {

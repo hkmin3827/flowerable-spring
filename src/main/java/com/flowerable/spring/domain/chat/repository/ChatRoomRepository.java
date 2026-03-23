@@ -56,4 +56,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     order by cr.lastMessageAt desc
 """)
     List<ChatRoomListRes> findChatRoomsByShopId(Long shopId);
+
+    void deleteAllByUserId(Long userId);
 }

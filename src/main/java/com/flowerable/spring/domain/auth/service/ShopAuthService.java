@@ -34,9 +34,8 @@ public class ShopAuthService {
 
 
     public AuthRes signup(AuthReq.ShopSignup dto){
-        if (accountRepository.existsByEmail(dto.getEmail())) {
-            throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
-        }
+        validateEmailOrTelnumDuplicated(dto.getEmail(), dto.getTelnum());
+
         Region region = Region.fromCode(dto.getRegionCode());
         District district = District.fromCode(dto.getDistrictCode());
 
@@ -129,6 +128,18 @@ public class ShopAuthService {
 
         if(!District.findByRegion(region).contains(district)){
             throw new CustomException(ErrorCode.INVALID_LOCATION);
+        }
+    }
+
+    private void validateEmailOrTelnumDuplicated(String email, String telnum) {
+        if (email != null &&
+                accountRepository.existsByEmail(email)) {
+            throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
+        }
+
+        if (telnum != null &&
+                accountRepository.existsByTelnumAndDeletedAtIsNull(telnum)) {
+            throw new CustomException(ErrorCode.TELNUM_DUPLICATED);
         }
     }
 }

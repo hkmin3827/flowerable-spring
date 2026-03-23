@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
@@ -57,4 +58,24 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
         AND n.isRead = false
     """)
     Long countUnreadByUserId(@Param("receiverId") Long receiverId);
+
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        DELETE FROM Notification n
+        WHERE n.receiverType = :receiverType
+          AND n.receiverId = :receiverId
+    """)
+    int deleteByReceiverTypeAndReceiverId(
+            @Param("receiverType") NotificationReceiverType receiverType,
+            @Param("receiverId") Long receiverId
+    );
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        DELETE FROM Notification n
+        WHERE n.receiverType = com.flowerable.spring.domain.notification.constant.NotificationReceiverType.SHOP
+          AND n.referenceId IN :orderIds
+    """)
+    int deleteShopNotificationsByOrderIds(@Param("orderIds") List<Long> orderIds);
 }

@@ -15,8 +15,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByProviderAndProviderIdAndDeletedAtIsNull(Provider provider, String providerId);
 
-    boolean existsByEmailAndDeletedAtIsNull(String email);
-
     boolean existsByTelnumAndDeletedAtIsNull(String telnum);
 
 }

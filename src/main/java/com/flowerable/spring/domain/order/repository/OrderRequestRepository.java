@@ -6,12 +6,10 @@ import com.flowerable.spring.domain.order.entity.OrderRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long>, JpaSpecificationExecutor<OrderRequest> {
@@ -176,6 +174,15 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     Optional<OrderRequest> findByIdWithItems(@Param("orderId") Long orderId);
 
     @Override
-    @EntityGraph(attributePaths = {"shop", "user"}) // 여기서 연관 관계를 미리 정의합니다.
+    @EntityGraph(attributePaths = {"shop", "user"})
     Page<OrderRequest> findAll(Specification<OrderRequest> spec, Pageable pageable);
+
+
+
+    @Query("SELECT o.id FROM OrderRequest o WHERE o.user.id = :userId")
+    List<Long> findOrderIdsByUserId(@Param("userId") Long userId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM OrderRequest o WHERE o.user.id = :userId")
+    int deleteAllByUserId(@Param("userId") Long userId);
 }

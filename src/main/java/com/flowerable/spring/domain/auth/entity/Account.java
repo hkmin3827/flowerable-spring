@@ -49,7 +49,7 @@ public class Account {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(length = 20, unique = true)
+    @Column(length = 20)
     private String telnum;
 
     private LocalDateTime deletedAt;
@@ -110,6 +110,11 @@ public class Account {
     public void softDelete() {
         this.status = AccountStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void rollbackSoftDelete() {
+        this.status = AccountStatus.ACTIVE;
+        this.deletedAt = null;
     }
 
     public void updatePassword(String encodedPassword) {

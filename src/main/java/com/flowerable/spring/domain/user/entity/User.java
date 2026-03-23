@@ -77,4 +77,9 @@ public class User {
         this.deletedAt = LocalDateTime.now();
         this.active = false;
     }
+
+    public void rollbackSoftDelete() {
+        this.deletedAt = null;
+        this.active = true;
+    }
 }

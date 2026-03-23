@@ -5,8 +5,17 @@
 
 개발 형태 : 개인 프로젝트 (기획/설계/개발 전담)
 
----
 
+---
+[flowerable 구경하러 가기](https://flowerable-react.vercel.app/)
+
+테스트 계정 : test@flowerable.com
+
+테스트 비밀번호 : t12341234
+
+#### 매일 자정 테스트 계정 데이터 초기화
+
+---
 ## 📌 Tech Stack
 
 ### Backend
