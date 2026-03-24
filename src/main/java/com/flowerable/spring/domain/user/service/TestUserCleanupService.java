@@ -40,6 +40,7 @@ public class TestUserCleanupService {
     private final ChatRoomRepository chatRoomRepository;
 
 
+    @Transactional
     public void cleanupTestUser() {
         Account account = accountRepository.findByEmail(TEST_ACCOUNT_EMAIL)
                 .orElseThrow(AccountNotFoundException::new);
@@ -61,8 +62,6 @@ public class TestUserCleanupService {
         }
     }
 
-
-    @Transactional
     public void cleanup(Long userId) {
 
         notificationRepository.deleteByReceiverTypeAndReceiverId(
