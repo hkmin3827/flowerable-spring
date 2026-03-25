@@ -9,6 +9,7 @@ import com.flowerable.spring.domain.chat.repository.ChatRoomRepository;
 import com.flowerable.spring.domain.notification.constant.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.repository.NotificationRepository;
 import com.flowerable.spring.domain.order.repository.OrderCancelLogRepository;
+import com.flowerable.spring.domain.order.repository.OrderItemRepository;
 import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
 import com.flowerable.spring.domain.payment.repository.PaymentRepository;
 import com.flowerable.spring.domain.user.entity.User;
@@ -38,6 +39,7 @@ public class TestUserCleanupService {
     private final CartItemDetailRepository cartItemDetailRepository;
     private final CartItemRepository cartItemRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final OrderItemRepository orderItemRepository;
 
 
     @Transactional
@@ -80,6 +82,7 @@ public class TestUserCleanupService {
         if (!orderIds.isEmpty()) {
             orderCancelLogRepository.deleteAllByOrderRequestIds(orderIds);
             paymentRepository.deleteAllByOrderIds(orderIds);
+            orderItemRepository.deleteAllByOrderRequestIdIn(orderIds);
         }
 
         orderRequestRepository.deleteAllByUserId(userId);
