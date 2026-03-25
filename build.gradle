@@ -49,13 +49,12 @@ dependencies {
 	implementation "io.awspring.cloud:spring-cloud-aws-starter-parameter-store:3.1.1"
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	implementation("com.google.genai:google-genai:1.8.0")
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
-	implementation("com.google.genai:google-genai:1.8.0")
 
 	testImplementation 'com.h2database:h2'
 }
