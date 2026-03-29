@@ -1,7 +1,7 @@
 package com.flowerable.spring.domain.cart.repository;
 
 import com.flowerable.spring.domain.cart.entity.Cart;
-import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -103,7 +103,7 @@ spring:
 
 jwt:
   secret: ${jwt.secret}
-  access-expiration: 900000
+  access-expiration: 1800000
   refresh-expiration: 1209600000
 
 cloud:

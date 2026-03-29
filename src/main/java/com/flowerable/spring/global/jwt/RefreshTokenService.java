@@ -18,8 +18,8 @@ public class RefreshTokenService {
     @Value("${jwt.refresh-expiration}")
     private long refreshTokenExpirationMillis;
 
-    private static final String REFRESH_TOKEN_PREFIX = "RT:"; // RT:{userId}
-    private static final String BLACKLIST_PREFIX = "BL:";     // BL:{jti}
+    private static final String REFRESH_TOKEN_PREFIX = "RT:";
+    private static final String BLACKLIST_PREFIX = "BL:"; // BL:{jti}
 
     public void saveRefreshToken(Long userId, String refreshToken) {
         String key = REFRESH_TOKEN_PREFIX + userId;

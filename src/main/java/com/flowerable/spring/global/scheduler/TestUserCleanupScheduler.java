@@ -1,6 +1,6 @@
 package com.flowerable.spring.global.scheduler;
 
-import com.flowerable.spring.domain.user.service.TestUserCleanupService;
+import com.flowerable.spring.application.user.TestUserCleanupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

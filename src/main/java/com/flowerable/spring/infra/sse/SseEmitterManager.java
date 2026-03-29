@@ -2,8 +2,8 @@ package com.flowerable.spring.infra.sse;
 
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.global.exception.CustomException;
-import com.flowerable.spring.domain.shop.repository.ShopRepository;
-import com.flowerable.spring.domain.user.repository.UserRepository;
+import com.flowerable.spring.domain.shop.ShopRepository;
+import com.flowerable.spring.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

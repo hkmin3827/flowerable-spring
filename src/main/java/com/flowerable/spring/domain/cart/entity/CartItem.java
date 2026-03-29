@@ -1,8 +1,8 @@
 package com.flowerable.spring.domain.cart.entity;
 
-import com.flowerable.spring.domain.shopflower.constant.Color;
-import com.flowerable.spring.domain.shop.entity.Shop;
-import com.flowerable.spring.domain.shopflower.entity.ShopFlower;
+import com.flowerable.spring.domain.shopflower.Color;
+import com.flowerable.spring.domain.shop.Shop;
+import com.flowerable.spring.domain.shopflower.ShopFlower;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

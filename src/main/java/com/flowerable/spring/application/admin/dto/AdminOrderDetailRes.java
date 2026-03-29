@@ -1,0 +1,40 @@
+package com.flowerable.spring.application.admin.dto;
+
+import com.flowerable.spring.domain.order.constant.OrderStatus;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Getter
+@Builder
+public class AdminOrderDetailRes {
+    private Long orderId;
+    private OrderStatus status;
+    private String orderNumber;
+
+    private Long userId;
+    private Long shopId;
+
+    private String shopName;
+    private String userName;
+    private String shopTelnum;
+    private String userTelnum;
+
+    private Integer totalFlowerPrice;
+    private Integer totalPrice;
+
+    private String wrappingColorName;
+    private Integer wrappingExtraPrice;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime canceledAt;
+
+    private List<AdminOrderItemRes> items;
+
+    private String message;   // 요청 사항
+
+    private String cancelBy;
+    private String cancelReason;
+}

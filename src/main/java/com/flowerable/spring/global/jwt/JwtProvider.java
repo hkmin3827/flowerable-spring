@@ -93,7 +93,6 @@ public class JwtProvider {
         return Role.valueOf(parseClaims(token).get("role", String.class));
     }
 
-    // Redis 블랙리스트
     public String getJti(String token) {
         return parseClaims(token).getId();
     }

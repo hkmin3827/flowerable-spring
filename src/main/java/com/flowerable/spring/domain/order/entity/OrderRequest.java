@@ -2,9 +2,9 @@ package com.flowerable.spring.domain.order.entity;
 
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.order.constant.OrderStatus;
-import com.flowerable.spring.domain.payment.entity.Payment;
-import com.flowerable.spring.domain.shop.entity.Shop;
-import com.flowerable.spring.domain.user.entity.User;
+import com.flowerable.spring.domain.payment.Payment;
+import com.flowerable.spring.domain.shop.Shop;
+import com.flowerable.spring.domain.user.User;
 import com.flowerable.spring.global.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -108,6 +108,10 @@ public class OrderRequest {
 
     public void markCanceledAt() {
         this.canceledAt = LocalDateTime.now();
+    }
+
+    public void rollback() {
+        this.status = OrderStatus.CREATED;
     }
 
     public void cancel() {

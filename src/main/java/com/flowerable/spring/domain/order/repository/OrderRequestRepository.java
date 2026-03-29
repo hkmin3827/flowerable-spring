@@ -1,7 +1,7 @@
 package com.flowerable.spring.domain.order.repository;
 
 import com.flowerable.spring.domain.order.constant.OrderStatus;
-import com.flowerable.spring.domain.order.dto.OrderListRes;
+import com.flowerable.spring.application.order.dto.OrderListRes;
 import com.flowerable.spring.domain.order.entity.OrderRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +49,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     Optional<OrderRequest> findDetailForStatusChange(@Param("orderId") Long orderId, @Param("shopId") Long shopId);
 
     @Query("""
-    select new com.flowerable.spring.domain.order.dto.OrderListRes(
+    select new com.flowerable.spring.application.order.dto.OrderListRes(
         o.id,
         o.orderNumber,
         o.status,
@@ -76,7 +76,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     );
 
     @Query("""
-    select new com.flowerable.spring.domain.order.dto.OrderListRes(
+    select new com.flowerable.spring.application.order.dto.OrderListRes(
         o.id,
         o.orderNumber,
         o.status,
@@ -135,7 +135,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
     );
 
     @Query("""
-    select new com.flowerable.spring.domain.order.dto.OrderListRes(
+    select new com.flowerable.spring.application.order.dto.OrderListRes(
         o.id,
         o.orderNumber,
         o.status,

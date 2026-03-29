@@ -1,0 +1,85 @@
+package com.flowerable.spring.domain.user;
+
+import com.flowerable.spring.application.user.dto.UserUpdateInfoReq;
+import com.flowerable.spring.domain.auth.Account;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false, unique = true)
+    private Account account;
+
+    // 커뮤니티 / 후기 등 확장 시 프로필이미지 기능 추가
+    private String profileImageUrl;
+
+    @Column(length = 30)
+    private String name;
+
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    private LocalDateTime deletedAt;
+
+    @PrePersist
+    void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    private User(Account account, String name) {
+        this.account = account;
+        this.name = name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void update(UserUpdateInfoReq req){
+        if(req.getName() != null){
+            this.name = req.getName();
+        }
+        if(req.getTelnum() != null){
+            this.account.setTelnum(req.getTelnum());
+        }
+    }
+
+    public static User create(Account account, String name) {
+        return new User(account, name);
+    }
+
+    // 계정 suspend와 별개로 활동 정지 구현 시 확장
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void activate() {
+        this.active = true;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+        this.active = false;
+    }
+
+    public void rollbackSoftDelete() {
+        this.deletedAt = null;
+        this.active = true;
+    }
+}

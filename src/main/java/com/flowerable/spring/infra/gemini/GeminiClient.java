@@ -1,6 +1,5 @@
 package com.flowerable.spring.infra.gemini;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

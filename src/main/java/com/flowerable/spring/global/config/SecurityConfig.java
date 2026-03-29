@@ -1,7 +1,7 @@
     package com.flowerable.spring.global.config;
 
     import com.flowerable.spring.global.jwt.JwtAuthenticationFilter;
-    import com.flowerable.spring.domain.auth.oauth2.handler.OAuth2LoginSuccessHandler;
+    import com.flowerable.spring.handler.OAuth2LoginSuccessHandler;
     import lombok.RequiredArgsConstructor;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
