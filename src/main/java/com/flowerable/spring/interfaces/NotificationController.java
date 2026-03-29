@@ -7,6 +7,7 @@ import com.flowerable.spring.global.security.CustomUserDetails;
 import com.flowerable.spring.infra.sse.SseEmitterManager;
 import com.flowerable.spring.application.notification.NotificationService;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,10 @@ public class NotificationController {
     
 
     @GetMapping("/subscribe/user")
-    public SseEmitter subscribeUser(@RequestParam("token") String token) {
+    public SseEmitter subscribeUser(@RequestParam("token") String token, HttpServletResponse res) {
+        res.setHeader("Access-Control-Allow-Origin", "https://flowerable-react.vercel.app");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("X-Accel-Buffering", "no");
         try {
             Long accountId = jwtProvider.getId(token);
             return sseEmitterManager.connectUserByAccountId(accountId);
@@ -38,7 +42,10 @@ public class NotificationController {
     }
 
     @GetMapping("/subscribe/shop")
-    public SseEmitter subscribeShop(@RequestParam("token") String token) {
+    public SseEmitter subscribeShop(@RequestParam("token") String token, HttpServletResponse res) {
+        res.setHeader("Access-Control-Allow-Origin", "https://flowerable-react.vercel.app");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("X-Accel-Buffering", "no");
         try{
             Long accountId = jwtProvider.getId(token);
             return sseEmitterManager.connectShopByAccountId(accountId);
