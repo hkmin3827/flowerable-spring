@@ -6,12 +6,15 @@ import com.flowerable.spring.global.jwt.JwtProvider;
 import com.flowerable.spring.global.security.CustomUserDetails;
 import com.flowerable.spring.infra.sse.SseEmitterManager;
 import com.flowerable.spring.domain.notification.service.NotificationService;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
@@ -25,16 +28,23 @@ public class NotificationController {
 
     @GetMapping("/subscribe/user")
     public SseEmitter subscribeUser(@RequestParam("token") String token) {
-        Long accountId = jwtProvider.getId(token);
+        try {
+            Long accountId = jwtProvider.getId(token);
+            return sseEmitterManager.connectUserByAccountId(accountId);
+        } catch (ExpiredJwtException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "SSE Token Expired");
+        }
 
-        return sseEmitterManager.connectUserByAccountId(accountId);
     }
 
     @GetMapping("/subscribe/shop")
     public SseEmitter subscribeShop(@RequestParam("token") String token) {
-        Long accountId = jwtProvider.getId(token);
-
-        return sseEmitterManager.connectShopByAccountId(accountId);
+        try{
+            Long accountId = jwtProvider.getId(token);
+            return sseEmitterManager.connectShopByAccountId(accountId);
+        } catch (ExpiredJwtException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "SSE Token Expired");
+        }
     }
 
     @PostMapping("/disconnect")
