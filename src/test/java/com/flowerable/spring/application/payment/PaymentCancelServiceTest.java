@@ -40,7 +40,7 @@ class PaymentCancelServiceTest {
     private PaymentRepository paymentRepository;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private WebClient tossWebClient;
+    private WebClient tossClient;
 
     @Test
     @DisplayName("정상 취소 - Toss 성공 후 Payment CANCELED 마킹")
@@ -70,7 +70,7 @@ class PaymentCancelServiceTest {
                 .extracting(e -> ((CustomException) e).getErrorCode())
                 .isEqualTo(ErrorCode.PAYMENT_NOT_FOUND);
 
-        verifyNoInteractions(tossWebClient);
+        verifyNoInteractions(tossClient);
     }
 
     @Test
@@ -158,7 +158,7 @@ class PaymentCancelServiceTest {
     }
 
     private void stubTossCancel_success(String paymentKey) {
-        given(tossWebClient.post()
+        given(tossClient.post()
                 .uri("/v1/payments/" + paymentKey + "/cancel")
                 .bodyValue(anyMap())
                 .retrieve()
@@ -174,7 +174,7 @@ class PaymentCancelServiceTest {
         lenient().when(ex.getResponseBodyAsString()).thenReturn("{\"code\":\"" + errorCode + "\"}");
         lenient().when(ex.getStatusCode()).thenReturn(HttpStatus.valueOf(httpStatus));
 
-        given(tossWebClient.post()
+        given(tossClient.post()
                 .uri("/v1/payments/" + paymentKey + "/cancel")
                 .bodyValue(anyMap())
                 .retrieve()

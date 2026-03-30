@@ -25,7 +25,7 @@ public class PaymentCancelService {
     @Value("${toss.api.timeout}")
     private long cancelTimeoutSeconds;
 
-    private final WebClient tossWebClient;
+    private final WebClient tossClient;
 
     private final PaymentRepository paymentRepository;
 
@@ -44,7 +44,7 @@ public class PaymentCancelService {
 
     private void callTossCancel(String paymentKey, String cancelReason) {
         try {
-            tossWebClient.post()
+            tossClient.post()
                     .uri("/v1/payments/" + paymentKey + "/cancel")
                     .bodyValue(Map.of("cancelReason", cancelReason))
                     .retrieve()

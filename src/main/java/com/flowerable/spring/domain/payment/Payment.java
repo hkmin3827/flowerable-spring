@@ -39,7 +39,7 @@ public class Payment {
     @Column(nullable = true)
     private String failReason;
 
-    @Column
+    @Column(length = 255)
     private String cancelReason;
 
     @CreationTimestamp

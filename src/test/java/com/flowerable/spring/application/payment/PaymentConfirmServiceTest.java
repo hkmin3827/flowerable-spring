@@ -62,7 +62,7 @@ class PaymentConfirmServiceTest {
     private RLock rLock;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private WebClient tossWebClient;
+    private WebClient tossClient;
 
     @BeforeEach
     void setUp() throws InterruptedException {
@@ -231,7 +231,7 @@ class PaymentConfirmServiceTest {
     }
 
     private void stubTossSuccess() {
-        given(tossWebClient.mutate()
+        given(tossClient.mutate()
                 .defaultHeader(anyString(), anyString())
                 .build()
                 .post()
@@ -250,7 +250,7 @@ class PaymentConfirmServiceTest {
         lenient().when(ex.getResponseBodyAsString()).thenReturn("{\"code\":\"" + errorCode + "\"}");
         lenient().when(ex.getStatusCode()).thenReturn(HttpStatus.valueOf(httpStatus));
 
-        given(tossWebClient.mutate()
+        given(tossClient.mutate()
                 .defaultHeader(anyString(), anyString())
                 .build()
                 .post()

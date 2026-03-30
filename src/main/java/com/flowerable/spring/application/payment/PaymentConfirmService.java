@@ -37,7 +37,7 @@ public class PaymentConfirmService {
     private long idempotencyExpirationMillis;
 
     private final OrderRequestRepository orderRequestRepository;
-    private final WebClient tossWebClient;
+    private final WebClient tossClient;
     private final StringRedisTemplate redisTemplate;
     private final RedissonClient redissonClient;
     private final PaymentWriter paymentWriter;
@@ -114,7 +114,7 @@ public class PaymentConfirmService {
     }
 
     private void callTossConfirm(PaymentConfirmReq req, String idempotencyKey) {
-        tossWebClient.mutate()
+        tossClient.mutate()
                 .defaultHeader("Idempotency-Key", idempotencyKey)
                 .build()
                 .post()
