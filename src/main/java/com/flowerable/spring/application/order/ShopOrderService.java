@@ -1,5 +1,6 @@
 package com.flowerable.spring.application.order;
 
+import com.flowerable.spring.application.payment.PaymentCancelService;
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.notification.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.NotificationType;
@@ -20,7 +21,7 @@ import com.flowerable.spring.domain.order.repository.OrderCancelLogRepository;
 import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
 import com.flowerable.spring.domain.shop.ShopRepository;
 import com.flowerable.spring.application.notification.NotificationService;
-import com.flowerable.spring.application.payment.PaymentService;
+import com.flowerable.spring.application.payment.PaymentConfirmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +40,7 @@ public class ShopOrderService {
     private final OrderCancelLogService orderCancelLogService;
     private final NotificationService notificationService;
     private final OrderCancelLogRepository orderCancelLogRepository;
-    private final PaymentService paymentService;
+    private final PaymentCancelService paymentCancelService;
 
     @Transactional
     public void changeStatus(Long accountId, Long orderId, OrderStatusChangeReq req) {
@@ -59,7 +60,7 @@ public class ShopOrderService {
                 throw new CustomException(ErrorCode.CANCEL_REASON_REQUIRED);
             }
 
-            paymentService.cancelPayment(orderReq, req.cancelReason());
+            paymentCancelService.cancelPayment(orderReq, req.cancelReason());
             orderReq.markCanceledAt();
             orderCancelLogService.recordCancel(orderReq.getId(), OrderCancelBy.SHOP, req.cancelReason());
             notifyUser(orderReq, orderReq.getUser().getId(), NotificationType.ORDER_CANCELED,  "취소 사유 : " + req.cancelReason().getDescription());

@@ -2,7 +2,7 @@ package com.flowerable.spring.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flowerable.spring.application.payment.dto.PaymentConfirmReq;
-import com.flowerable.spring.application.payment.PaymentService;
+import com.flowerable.spring.application.payment.PaymentConfirmService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +48,14 @@ class PaymentControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private PaymentService paymentService;
+    private PaymentConfirmService paymentConfirmService;
 
     @Test
     @DisplayName("POST /api/payments/confirm - 결제 승인 요청 성공 (200)")
     void confirmPayment_success_returns200() throws Exception {
         PaymentConfirmReq req = new PaymentConfirmReq(11000, "ORD-123", "paymentKey123");
 
-        given(paymentService.confirm(any(PaymentConfirmReq.class))).willReturn(1L);
+        given(paymentConfirmService.processPay(any(PaymentConfirmReq.class))).willReturn(1L);
 
         mockMvc.perform(post("/api/payments/confirm")
                         .contentType(MediaType.APPLICATION_JSON)

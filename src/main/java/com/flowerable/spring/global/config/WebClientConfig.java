@@ -7,6 +7,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 @Configuration
 public class WebClientConfig {
 
@@ -30,6 +33,14 @@ public class WebClientConfig {
                         configurer.defaultCodecs()
                                 .maxInMemorySize(10 * 1024 * 1024) // 10MB
                 )
+                .build();
+    }
+
+    @Bean
+    public WebClient tossClient(@Value("${toss.secret-key}") String secretKey) {
+        return WebClient.builder()
+                .defaultHeader("https://api.tosspayments.com")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8)))
                 .build();
     }
 }

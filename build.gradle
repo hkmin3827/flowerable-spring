@@ -57,6 +57,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	testImplementation 'com.h2database:h2'
+
+	implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
 }
 
 // spring -jcl에 포함됨. 충돌 방지 exclude

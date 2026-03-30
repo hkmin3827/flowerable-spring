@@ -110,10 +110,6 @@ public class OrderRequest {
         this.canceledAt = LocalDateTime.now();
     }
 
-    public void rollback() {
-        this.status = OrderStatus.CREATED;
-    }
-
     public void cancel() {
         validateStatus(OrderStatus.REQUESTED);
         this.status = OrderStatus.CANCELED;

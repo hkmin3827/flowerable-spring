@@ -1,6 +1,7 @@
 package com.flowerable.spring.application.notification;
 
 import com.flowerable.spring.domain.auth.constant.Role;
+import com.flowerable.spring.domain.order.entity.OrderRequest;
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.notification.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.NotificationType;
@@ -147,5 +148,18 @@ public class NotificationService {
             return NotificationReceiverType.SHOP;
         }
         throw new CustomException(ErrorCode.INVALID_RECEIVER_TYPE);
+    }
+
+    public void notifyShopOrderRequested(OrderRequest order, Long receiverId, NotificationType type, String content) {
+        createNotification(
+            new NotificationCreateReq(
+                    NotificationReceiverType.SHOP,
+                    receiverId,
+                    type,
+                    order.getOrderNumber() + " : " + type.getTitle(),
+                    content,
+                    order.getId()
+            )
+        );
     }
 }

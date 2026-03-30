@@ -65,10 +65,15 @@ public enum ErrorCode {
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니 항목을 찾을 수 없습니다."),
     SHOP_FLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "꽃을 찾을 수 없습니다."),
     UNAUTHORIZED(HttpStatus.FORBIDDEN, "권한이 없습니다."),
-    PAYMENT_KEY_NOT_FILLED(HttpStatus.BAD_REQUEST,"페이먼트 키가 입력되지 않았습니다."),
+    PAYMENT_KEY_NOT_FILLED(HttpStatus.BAD_REQUEST,"페이먼트 키가 입력되지 않았습니다. 관리자에게 문의해주세요."),
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 결제건이 존재하지 않습니다."),
     ORDER_ALREADY_PAID(HttpStatus.CONFLICT, "이미 결제된 주문건입니다."),
-    PAYMENT_CANCEL_FAILED(HttpStatus.BAD_GATEWAY, "결제 취소 처리에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+    PAYMENT_CANCEL_FAILED(HttpStatus.BAD_GATEWAY, "결제 취소 처리에 실패하였습니다. 잠시 후 다시 시도해주세요."),
+    PAYMENT_AMOUNT_BAD_REQUEST(HttpStatus.BAD_REQUEST, "주문 금액과 결제 금액이 불일치하니 재시도 해주세요."),
+    PAYMENT_ALREADY_DONE(HttpStatus.CONFLICT, "이미 결제된 주문건입니다."),
+    PAYMENT_CONCURRENT_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "결제 요청이 처리 중입니다. 잠시 후 다시 시도해주세요."),
+    PAYMENT_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제는 완료됐으나 내부 저장에 실패했습니다. 잠시 후 주문 내역을 확인하거나 고객센터에 문의해주세요."),
+    PAYMENT_TOSS_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "결제 서버 응답이 지연되고 있습니다. 잠시 후 주문 내역을 확인하거나 고객센터에 문의해주세요.");
 
     private final HttpStatus status;
     private final String message;

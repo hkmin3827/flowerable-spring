@@ -10,7 +10,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "payments",
+        indexes = {
+                @Index(name = "idx_payment_order_id_status", columnList = "order_id, status"),
+                @Index(name = "idx_payment_payment_key", columnList = "payment_key", unique = true)
+        }
+)
 @Getter
 @NoArgsConstructor
 public class Payment {
@@ -34,12 +39,17 @@ public class Payment {
     @Column(nullable = true)
     private String failReason;
 
+    @Column
+    private String cancelReason;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public void markDone(String paymentKey) {
+    private LocalDateTime approvedAt;
+
+    public void markDone() {
         this.status = PaymentStatus.DONE;
-        this.paymentKey = paymentKey;
+        this.approvedAt = LocalDateTime.now();
     }
 
     public void markFailed(String message){
@@ -47,16 +57,17 @@ public class Payment {
         this.failReason = message;
     }
 
-    public static Payment createReady(OrderRequest order, Integer amount){
+    public static Payment createReady(OrderRequest order, Integer amount, String paymentKey) {
         Payment payment = new Payment();
         payment.status = PaymentStatus.READY;
         payment.order = order;
         payment.amount = amount;
+        payment.paymentKey = paymentKey;
         return payment;
     }
 
-    public void markCanceled(OrderCancelReason reason) {
+    public void markCanceled(OrderCancelReason cancelReason) {
         this.status = PaymentStatus.CANCELED;
-        this.failReason = reason.getDescription();
+        this.cancelReason = cancelReason.getDescription();
     }
 }

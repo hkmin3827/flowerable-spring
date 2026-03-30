@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum NotificationType {
 
-    ORDER_CREATED("새 주문이 접수되었습니다"),
+    ORDER_REQUESTED("새 주문이 접수되었습니다"),
     ORDER_ACCEPTED("주문이 승인되었습니다"),
     ORDER_READY("주문이 준비되었습니다"),
     ORDER_CANCELED("주문이 취소되었습니다"),

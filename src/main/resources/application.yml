@@ -106,6 +106,10 @@ jwt:
   access-expiration: 1800000
   refresh-expiration: 1209600000
 
+tosspayment:
+  idempotency:
+    expiration: 1209600000
+
 cloud:
   aws:
 #    credentials:
@@ -118,6 +122,8 @@ cloud:
 
 toss:
   secret-key: ${toss.secret-key}
+  api:
+    timeout: 15
 
 gemini:
   api:

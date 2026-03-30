@@ -4,13 +4,10 @@ import com.flowerable.spring.domain.auth.Account;
 import com.flowerable.spring.domain.flower.Season;
 import com.flowerable.spring.application.flower.dto.FlowerCreateReq;
 import com.flowerable.spring.domain.flower.Flower;
-import com.flowerable.spring.application.notification.NotificationService;
 import com.flowerable.spring.domain.order.constant.OrderStatus;
 import com.flowerable.spring.application.order.dto.*;
 import com.flowerable.spring.domain.order.entity.OrderRequest;
-import com.flowerable.spring.domain.order.repository.OrderCancelLogRepository;
 import com.flowerable.spring.domain.order.repository.OrderRequestRepository;
-import com.flowerable.spring.application.payment.PaymentService;
 import com.flowerable.spring.domain.shop.constant.District;
 import com.flowerable.spring.domain.shop.constant.Region;
 import com.flowerable.spring.domain.shop.Shop;
@@ -68,19 +65,7 @@ class UserOrderServiceTest {
     private ShopFlowerRepository shopFlowerRepository;
 
     @Mock
-    private OrderCancelLogService orderCancelLogService;
-
-    @Mock
-    private NotificationService notificationService;
-
-    @Mock
     private OrderNumberGenerator orderNumberGenerator;
-
-    @Mock
-    private OrderCancelLogRepository orderCancelLogRepository;
-
-    @Mock
-    private PaymentService paymentService;
 
     private Account userAccount;
     private User user;
@@ -137,7 +122,7 @@ class UserOrderServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getOrderNumber()).isEqualTo("ORD-20240101-001");
-        assertThat(result.getTotalPrice()).isEqualTo(11000); // 5000 * 2 + 1000
+        assertThat(result.getTotalPrice()).isEqualTo(11000);
 
         verify(orderRequestRepository).save(any(OrderRequest.class));
     }
@@ -244,5 +229,4 @@ class UserOrderServiceTest {
         assertThatThrownBy(() -> userOrderService.cancelOrder(1L, 999L))
                 .isInstanceOf(OrderNotFoundException.class);
     }
-
 }

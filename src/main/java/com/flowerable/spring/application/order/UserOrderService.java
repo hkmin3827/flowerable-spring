@@ -1,5 +1,6 @@
 package com.flowerable.spring.application.order;
 
+import com.flowerable.spring.application.payment.PaymentCancelService;
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.notification.NotificationReceiverType;
 import com.flowerable.spring.domain.notification.NotificationType;
@@ -23,7 +24,7 @@ import com.flowerable.spring.global.exception.CustomException;
 import com.flowerable.spring.global.exception.OrderNotFoundException;
 import com.flowerable.spring.global.exception.UserNotFoundException;
 import com.flowerable.spring.application.notification.NotificationService;
-import com.flowerable.spring.application.payment.PaymentService;
+import com.flowerable.spring.application.payment.PaymentConfirmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +46,7 @@ public class UserOrderService {
     private final NotificationService notificationService;
     private final OrderNumberGenerator orderNumberGenerator;
     private final OrderCancelLogRepository orderCancelLogRepository;
-    private final PaymentService paymentService;
+    private final PaymentCancelService paymentCancelService;
 
     @Transactional
     public OrderCreateRes createOrder(Long accountId, Long shopId, OrderCreateReq req) {
@@ -90,6 +91,7 @@ public class UserOrderService {
         return new OrderCreateRes(order.getId(), order.getOrderNumber(), order.getTotalPrice());
     }
 
+    @Transactional
     public void cancelOrder(Long accountId, Long orderId){
         User user = userRepository.findByAccountIdAndDeletedAtIsNull(accountId)
                 .orElseThrow(UserNotFoundException::new);
@@ -105,14 +107,10 @@ public class UserOrderService {
             throw new CustomException(ErrorCode.ORDER_ALREADY_CANCELED);
         }
 
-        paymentService.cancelPayment(order, OrderCancelReason.CUSTOMER_REQUEST);
-
-        cancelOrderTransaction(order);
-    }
-
-    protected void cancelOrderTransaction(OrderRequest order) {
+        paymentCancelService.cancelPayment(order, OrderCancelReason.CUSTOMER_REQUEST);
 
         order.cancel();
+
         orderRequestRepository.save(order);
 
         notifyShop(
