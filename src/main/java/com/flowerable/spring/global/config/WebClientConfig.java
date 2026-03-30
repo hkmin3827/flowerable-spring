@@ -40,7 +40,9 @@ public class WebClientConfig {
     public WebClient tossClient(@Value("${toss.secret-key}") String secretKey) {
         return WebClient.builder()
                 .baseUrl("https://api.tosspayments.com")
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8)))
+                .defaultHeader(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64.getEncoder()
+                                .encodeToString((secretKey + ":").getBytes()))
                 .build();
     }
 }
