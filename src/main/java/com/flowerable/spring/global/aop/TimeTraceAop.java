@@ -14,14 +14,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Slf4j
 public class TimeTraceAop {
 
-    @Around("execution(* com.flowerable.spring.application..*(..))")
+    @Around("execution(* com.flowerable.spring..*(..)) && !execution(* com.flowerable.spring.global..*(..))")
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-
+        HttpServletRequest request = null;
         StringBuilder sb = null;
 
         if(attributes != null) {
-            HttpServletRequest request = attributes.getRequest();
+            request = attributes.getRequest();
             sb = (StringBuilder) request.getAttribute("sb");
         }
 
@@ -32,12 +32,24 @@ public class TimeTraceAop {
              long finish = System.currentTimeMillis();
              long timeMs  = finish - start;
 
-             if (sb != null) {
-                 sb.append("\nExecute method : ").append(joinPoint.getSignature().getName())
-                         .append(", Execute time : ").append(timeMs + "ms\n");
-             }
+             if (request != null) {
+                 StringBuilder timeSb = (StringBuilder) request.getAttribute("timeSb");
+                 if (timeSb == null) {
+                     timeSb = new StringBuilder();
+                     request.setAttribute("timeSb", timeSb);
+                 }
 
-             log.info(sb.toString());
+                 String className = joinPoint.getTarget().getClass().getSimpleName();
+
+                 timeSb.append("\nExecute method : ").append(joinPoint.getSignature().getName())
+                         .append(", Execute time : ").append(timeMs + "ms\n");
+
+                 if (className.endsWith("Controller")) {
+                     String baseInfo = (sb != null) ? sb.toString() : "";
+                     String finalLog = baseInfo + timeSb.toString();
+                     log.info(finalLog);
+                 }
+             }
         }
     }
 }

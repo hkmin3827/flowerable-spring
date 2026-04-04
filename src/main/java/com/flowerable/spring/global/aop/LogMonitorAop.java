@@ -79,7 +79,6 @@ public class LogMonitorAop {
     private boolean isExceptionHandlerMethod(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        // 메서드에 @ExceptionHandler 어노테이션이 있는지 확인
         return method.isAnnotationPresent(org.springframework.web.bind.annotation.ExceptionHandler.class);
     }
 
