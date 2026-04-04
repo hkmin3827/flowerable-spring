@@ -7,15 +7,6 @@
 
 
 ---
-[flowerable 구경하러 가기](https://flowerable-react.vercel.app/login)
-
-테스트 계정 : test@flowerable.com
-
-테스트 비밀번호 : t12341234
-
-#### 매일 자정 테스트 계정 데이터 초기화
-
----
 ## 📌 Tech Stack
 
 ### Backend
