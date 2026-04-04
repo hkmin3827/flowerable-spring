@@ -73,10 +73,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 Long accountId = jwtProvider.getId(token);
                 Role role = jwtProvider.getRole(token);
+                String email = jwtProvider.getEmail(token);
 
 
                 UsernamePasswordAuthenticationToken authentication =
-                        createAuthentication(accountId, role, req);
+                        createAuthentication(accountId, role, email, req);
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
@@ -127,10 +128,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken createAuthentication(
             Long accountId,
             Role role,
+            String email,
             HttpServletRequest request
     ) {
         CustomUserDetails userDetails =
-                new CustomUserDetails(accountId, role);
+                new CustomUserDetails(accountId, role, email);
 
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(

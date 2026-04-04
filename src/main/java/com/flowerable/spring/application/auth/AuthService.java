@@ -76,6 +76,7 @@ public class AuthService {
 
         Long accountId = jwtProvider.getId(refreshToken);
         Role role = jwtProvider.getRole(refreshToken);
+        String email = jwtProvider.getEmail(refreshToken);
 
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(AccountNotFoundException::new);
@@ -89,10 +90,10 @@ public class AuthService {
         }
 
         String newAccessToken =
-                jwtProvider.createAccessToken(accountId, role);
+                jwtProvider.createAccessToken(accountId, role, email);
 
         String newRefreshToken =
-                jwtProvider.createRefreshToken(accountId, role);
+                jwtProvider.createRefreshToken(accountId, role, email);
 
         refreshTokenService.saveRefreshToken(accountId, newRefreshToken);
 

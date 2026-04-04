@@ -47,7 +47,7 @@ public class UserAuthService {
         User user = User.create(account, dto.getName());
         userRepository.save(user);
 
-        return issue(account.getId(), Role.ROLE_USER, user.getName(), Provider.LOCAL, account.getStatus(), null);
+        return issue(account.getId(), Role.ROLE_USER, user.getName(), account.getEmail(), Provider.LOCAL, account.getStatus(), null);
     }
 
     @Transactional(readOnly = true)
@@ -76,7 +76,7 @@ public class UserAuthService {
         User user = userRepository.findByAccountIdAndDeletedAtIsNull(account.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        return issue(account.getId(), account.getRole(), user.getName(), Provider.LOCAL, account.getStatus(), user.getProfileImageUrl());
+        return issue(account.getId(), account.getRole(), user.getName(), account.getEmail(), Provider.LOCAL, account.getStatus(), user.getProfileImageUrl());
     }
 
 
@@ -114,6 +114,7 @@ public class UserAuthService {
                 account.getId(),
                 account.getRole(),
                 user.getName(),
+                account.getEmail(),
                 account.getProvider(),
                 account.getStatus(),
                 user.getProfileImageUrl()
@@ -156,6 +157,7 @@ public class UserAuthService {
                 account.getId(),
                 account.getRole(),
                 user.getName(),
+                account.getEmail(),
                 account.getProvider(),
                 account.getStatus(),
                 null
@@ -191,12 +193,12 @@ public class UserAuthService {
     }
 
 
-    private AuthRes issue(Long accountId, Role role, String name, Provider provider, AccountStatus status, String profileImageUrl) {
+    private AuthRes issue(Long accountId, Role role, String name, String email, Provider provider, AccountStatus status, String profileImageUrl) {
         String accessToken =
-                jwtProvider.createAccessToken(accountId, role);
+                jwtProvider.createAccessToken(accountId, role, email);
 
         String refreshToken =
-                jwtProvider.createRefreshToken(accountId, role);
+                jwtProvider.createRefreshToken(accountId, role, email);
 
         refreshTokenService.saveRefreshToken(accountId, refreshToken);
 

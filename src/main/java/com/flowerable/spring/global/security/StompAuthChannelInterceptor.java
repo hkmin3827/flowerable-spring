@@ -32,9 +32,10 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
 
                 Long id = jwtProvider.getId(token);
                 Role role = jwtProvider.getRole(token);
+                String email = jwtProvider.getEmail(token);
 
                 CustomUserDetails userDetails =
-                        new CustomUserDetails(id, role);
+                        new CustomUserDetails(id, role, email);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(

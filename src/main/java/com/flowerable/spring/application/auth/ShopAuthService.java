@@ -50,7 +50,7 @@ public class ShopAuthService {
 
         Shop shop = Shop.create(account, dto.getShopName(), dto.getAddress(), region, district);
         shopRepository.save(shop);
-        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus(), shop.getStatus());
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), account.getEmail(), Provider.LOCAL, account.getStatus(), shop.getStatus());
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +79,7 @@ public class ShopAuthService {
         Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(account.getId())
                 .orElseThrow(ShopNotFoundException::new);
 
-        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), Provider.LOCAL, account.getStatus(), shop.getStatus());
+        return issue(account.getId(), Role.ROLE_SHOP, shop.getShopName(), account.getEmail(), Provider.LOCAL, account.getStatus(), shop.getStatus());
     }
 
     @Transactional
@@ -100,12 +100,12 @@ public class ShopAuthService {
         refreshTokenService.deleteRefreshToken(accountId);
     }
 
-    private AuthRes issue(Long accountId, Role role, String shopName, Provider provider, AccountStatus status, ShopStatus shopStatus) {
+    private AuthRes issue(Long accountId, Role role, String shopName, String email, Provider provider, AccountStatus status, ShopStatus shopStatus) {
         String accessToken =
-                jwtProvider.createAccessToken(accountId, role);
+                jwtProvider.createAccessToken(accountId, role, email);
 
         String refreshToken =
-                jwtProvider.createRefreshToken(accountId, role);
+                jwtProvider.createRefreshToken(accountId, role, email);
 
         refreshTokenService.saveRefreshToken(accountId, refreshToken);
 

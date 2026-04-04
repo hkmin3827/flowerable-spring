@@ -27,3 +27,9 @@ cloud:
       static: ap-northeast-2
     credentials:
       instance-profile: false
+
+logging:
+  slack:
+    config: classpath:logback-spring.xml
+    execution-time-log-webhook-uri: http://dummy-url.com
+    error-log-webhook-uri: http://dummy-url.com

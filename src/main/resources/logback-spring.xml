@@ -1,0 +1,52 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProperty name="SLACK_EXECUTION_TIME_LOG_WEBHOOK_URI" source="logging.slack.execution-time-log-webhook-uri"/>
+    <springProperty name="SLACK_ERROR_LOG_WEBHOOK_URI" source="logging.slack.error-log-webhook-uri"/>
+
+    <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
+        <webhookUri>${SLACK_ERROR_LOG_WEBHOOK_URI}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n</pattern>
+        </layout>
+        <username>hakyung's monitor</username>
+        <iconEmoji>:face_with_symbols_on_mouth:</iconEmoji>
+        <colorCoding>true</colorCoding>
+    </appender>
+
+    <appender name="SLACK_TIME" class="com.github.maricn.logback.SlackAppender">
+        <webhookUri>${SLACK_EXECUTION_TIME_LOG_WEBHOOK_URI}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss} %msg %n</pattern>
+        </layout>
+        <username>Time Tracer</username>
+        <iconEmoji>:stopwatch:</iconEmoji>
+        <colorCoding>false</colorCoding>
+    </appender>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d %-5level %logger{35} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_SLACK" class="ch.qos.logback.classic.AsyncAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <appender-ref ref="SLACK"/>
+    </appender>
+
+    <appender name="ASYNC_SLACK_TIME" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="SLACK_TIME"/>
+    </appender>
+
+    <logger name="com.flowerable.spring.global.aop.TimeTraceAop" level="INFO" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="ASYNC_SLACK_TIME"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="ASYNC_SLACK"/>
+    </root>
+</configuration>

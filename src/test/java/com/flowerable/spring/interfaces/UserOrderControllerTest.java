@@ -81,7 +81,7 @@ class UserOrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        userDetails = new CustomUserDetails(1L, Role.ROLE_USER);
+        userDetails = new CustomUserDetails(1L, Role.ROLE_USER, "test@test.com");
     }
 
     @Test

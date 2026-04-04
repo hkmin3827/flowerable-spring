@@ -37,6 +37,7 @@ public class PasswordResetService {
         String resetToken = jwtProvider.createPasswordResetToken(
                 account.getId(),
                 account.getRole(),
+                account.getEmail(),
                 Duration.ofMinutes(10)
         );
 

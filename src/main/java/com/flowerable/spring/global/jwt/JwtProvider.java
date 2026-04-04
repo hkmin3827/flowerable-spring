@@ -23,29 +23,32 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createAccessToken(Long accountId, Role role) {
+    public String createAccessToken(Long accountId, Role role, String email) {
         return createToken(
                 accountId,
                 TokenType.ACCESS,
                 role,
+                email,
                 jwtProperties.getAccessExpiration()
         );
     }
 
-    public String createPasswordResetToken(Long accountId, Role role, Duration duration) {
+    public String createPasswordResetToken(Long accountId, Role role, String email, Duration duration) {
         return createToken(
                 accountId,
                 TokenType.PASSWORD_RESET,
                 role,
+                email,
                 duration.toMillis()
         );
     }
 
-    public String createRefreshToken(Long accountId,Role role) {
+    public String createRefreshToken(Long accountId,Role role, String email) {
         return createToken(
                 accountId,
                 TokenType.REFRESH,
                 role,
+                email,
                 jwtProperties.getRefreshExpiration()
         );
     }
@@ -54,6 +57,7 @@ public class JwtProvider {
             Long accountId,
             TokenType tokenType,
             Role role,
+            String email,
             long expiration
             ) {
         long now = System.currentTimeMillis();
@@ -63,6 +67,7 @@ public class JwtProvider {
                 .setSubject(String.valueOf(accountId))
                 .claim("role", role.name())
                 .claim("tokenType", tokenType.name())
+                .claim("email", email)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + expiration));
 
@@ -88,6 +93,7 @@ public class JwtProvider {
                 parseClaims(token).get("tokenType", String.class)
         );
     }
+    public String getEmail(String token) { return parseClaims(token).get("email", String.class); }
 
     public Role getRole(String token) {
         return Role.valueOf(parseClaims(token).get("role", String.class));

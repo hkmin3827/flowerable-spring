@@ -11,10 +11,12 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
     private final Long accountId;
     private final Role role;
+    private final String email;
 
-    public CustomUserDetails(Long accountId, Role role) {
+    public CustomUserDetails(Long accountId, Role role, String email) {
         this.accountId = accountId;
         this.role = role;
+        this.email = email;
     }
 
     @Override
@@ -28,6 +30,7 @@ public class CustomUserDetails implements UserDetails {
     public Role getRole() {
         return role;
     }
+    public String getEmail() {return email;}
 
     @Override public String getPassword() { return null; }
     @Override public String getUsername() { return accountId.toString(); }
