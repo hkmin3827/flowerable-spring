@@ -117,6 +117,10 @@ toss:
   api:
     timeout: 15
 
+ai:
+  server:
+    url: http://localhost:8000
+
 gemini:
   api:
     key: ${GEMINI_API_KEY}

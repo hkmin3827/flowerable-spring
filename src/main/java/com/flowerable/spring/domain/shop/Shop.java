@@ -20,7 +20,13 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "shops")
+@Table(
+        name = "shops",
+        indexes = {
+                @Index(name = "idx_shops_district_status", columnList = "district, status"),
+                @Index(name = "idx_shops_region_status",   columnList = "region, status")
+        }
+)
 public class Shop {
 
     @Id

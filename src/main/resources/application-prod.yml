@@ -123,6 +123,10 @@ toss:
   api:
     timeout: 15
 
+ai:
+  server:
+    url: ${AI_SERVER_URL}
+
 gemini:
   api:
     key: ${GEMINI_API_KEY}

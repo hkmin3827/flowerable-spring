@@ -73,7 +73,10 @@ public enum ErrorCode {
     PAYMENT_ALREADY_DONE(HttpStatus.CONFLICT, "이미 결제된 주문건입니다."),
     PAYMENT_CONCURRENT_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "결제 요청이 처리 중입니다. 잠시 후 다시 시도해주세요."),
     PAYMENT_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제는 완료됐으나 내부 저장에 실패했습니다. 잠시 후 주문 내역을 확인하거나 고객센터에 문의해주세요."),
-    PAYMENT_TOSS_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "결제 서버 응답이 지연되고 있습니다. 잠시 후 주문 내역을 확인하거나 고객센터에 문의해주세요.");
+    PAYMENT_TOSS_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "결제 서버 응답이 지연되고 있습니다. 잠시 후 주문 내역을 확인하거나 고객센터에 문의해주세요."),
+
+    AI_SERVER_ERROR(HttpStatus.BAD_GATEWAY, "AI 추천 서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요."),
+    AI_SERVER_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "AI 추천 서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.");
 
     private final HttpStatus status;
     private final String message;

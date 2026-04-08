@@ -48,7 +48,8 @@
                                     "/sockjs/**",
                                     "/error",
                                     "/favicon.ico",
-                                    "/api/notifications/subscribe/**"
+                                    "/api/notifications/subscribe/**",
+                                    "/api/v1/ai/**"
                             ).permitAll()
                             .requestMatchers(
                                     "/api/auth/withdraw",
