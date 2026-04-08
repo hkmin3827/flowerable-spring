@@ -17,6 +17,11 @@ public class TimeTraceAop {
     @Around("execution(* com.flowerable.spring..*(..)) && !execution(* com.flowerable.spring.global..*(..))")
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        if (attributes == null) {
+            return joinPoint.proceed();
+        }
+
         HttpServletRequest request = null;
         StringBuilder sb = null;
 
