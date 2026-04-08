@@ -15,7 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "shop_flowers")
+@Table(
+        name = "shop_flowers",
+        indexes = {
+                @Index(name = "idx_shop_flowers_shop_on_sale", columnList = "shop_id, on_sale")
+        }
+)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

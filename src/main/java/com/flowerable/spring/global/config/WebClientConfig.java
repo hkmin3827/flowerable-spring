@@ -10,7 +10,6 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Configuration
@@ -58,13 +57,12 @@ public class WebClientConfig {
                 .codecs(config -> {
                     config.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder());
                     config.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder());
-                    // AI 응답이 길 수 있으므로 버퍼 2MB로 확장
                     config.defaultCodecs().maxInMemorySize(2 * 1024 * 1024);
                 })
                 .build();
 
         return WebClient.builder()
-                .baseUrl(aiServerUrl)
+                .baseUrl("http://localhost:8001")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .exchangeStrategies(strategies)

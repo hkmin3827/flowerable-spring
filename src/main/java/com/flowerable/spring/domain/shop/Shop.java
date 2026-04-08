@@ -23,8 +23,8 @@ import java.util.List;
 @Table(
         name = "shops",
         indexes = {
-                @Index(name = "idx_shops_district_status", columnList = "district, status"),
-                @Index(name = "idx_shops_region_status",   columnList = "region, status")
+                @Index(name = "idx_shops_district_status", columnList = "district, status, deleted_at"),
+                @Index(name = "idx_shops_region_status",   columnList = "region, status, deleted_at")
         }
 )
 public class Shop {

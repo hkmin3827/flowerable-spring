@@ -4,25 +4,25 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record FlowerRecommendResponse(
+public record ChatBotRecommendRes(
 
+        String phase,
         String recommendation,
-
         List<FlowerItem> flowers,
-
         List<ShopItem> shops,
+        String message
 
-        String phase
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record FlowerItem(
             String name,
             String floralLang,
-            String role   // 메인, 베스트, 서브
+            String role
     ) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record ShopItem(
+            Long shopId,
             String shopName,
             String address,
             String district,

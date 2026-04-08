@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "flowers")
+@Table(name = "flowers", indexes = {@Index(name="idx_flowers_name", columnList = "name")})
 @Getter @NoArgsConstructor
 @AllArgsConstructor
 public class Flower {

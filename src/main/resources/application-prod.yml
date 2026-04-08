@@ -125,7 +125,7 @@ toss:
 
 ai:
   server:
-    url: ${AI_SERVER_URL}
+    url: ${PYTHON_SERVER_URL}
 
 gemini:
   api:
