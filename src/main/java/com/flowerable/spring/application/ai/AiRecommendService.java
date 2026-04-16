@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
 @RequiredArgsConstructor
 public class AiRecommendService {
 
-    private static final Duration AI_TIMEOUT = Duration.ofSeconds(20);
+    private static final Duration AI_TIMEOUT = Duration.ofSeconds(40);
 
     private final WebClient chatBotWebClient;
 
