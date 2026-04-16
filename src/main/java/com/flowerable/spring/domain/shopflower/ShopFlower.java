@@ -18,7 +18,8 @@ import java.util.Set;
 @Table(
         name = "shop_flowers",
         indexes = {
-                @Index(name = "idx_shop_flowers_shop_on_sale", columnList = "shop_id, on_sale")
+                @Index(name = "idx_shop_flowers_shop_on_sale", columnList = "shop_id, on_sale"),
+                @Index(name = "idx_shop_flowers_flower_on_sale", columnList = "flower_id, on_sale")
         }
 )
 @Getter

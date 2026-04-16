@@ -1,5 +1,6 @@
 package com.flowerable.spring.application.auth;
 
+import com.flowerable.spring.application.common.ShopCacheService;
 import com.flowerable.spring.domain.auth.constant.AccountStatus;
 import com.flowerable.spring.domain.auth.constant.Provider;
 import com.flowerable.spring.domain.auth.constant.Role;
@@ -31,6 +32,7 @@ public class ShopAuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private final ShopCacheService shopCacheService;
 
 
     public AuthRes signup(AuthReq.ShopSignup dto){
@@ -94,7 +96,10 @@ public class ShopAuthService {
             throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
-        shopRepository.findByAccountIdAndDeletedAtIsNull(accountId).ifPresent(Shop::softDelete);
+        shopRepository.findByAccountIdAndDeletedAtIsNull(accountId).ifPresent(shop -> {
+            shopCacheService.evictByRegion(shop.getRegion());
+            shop.softDelete();
+        });
         account.softDelete();
 
         refreshTokenService.deleteRefreshToken(accountId);

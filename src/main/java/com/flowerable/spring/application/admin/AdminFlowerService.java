@@ -1,5 +1,6 @@
 package com.flowerable.spring.application.admin;
 
+import com.flowerable.spring.application.common.ShopCacheService;
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.application.admin.dto.AdminFlowerListRes;
 import com.flowerable.spring.application.flower.dto.FlowerCreateReq;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminFlowerService {
     private final FlowerRepository flowerRepository;
     private final ShopFlowerRepository shopFlowerRepository;
+    private final ShopCacheService shopCacheService;
 
     @Transactional(readOnly = true)
     public Page<AdminFlowerListRes> getAllFlowers(Boolean active, Pageable pageable){
@@ -50,6 +52,7 @@ public class AdminFlowerService {
         flower.deactivate();
 
         shopFlowerRepository.stopSaleByFlowerId(flower.getId());
+        shopCacheService.evictByFlowerName(flower.getName());
     }
 
     @Transactional

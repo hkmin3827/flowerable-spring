@@ -1,5 +1,6 @@
 package com.flowerable.spring.application.shop;
 
+import com.flowerable.spring.application.common.ShopCacheService;
 import com.flowerable.spring.domain.shop.constant.District;
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.shop.constant.Region;
@@ -25,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShopService {
     private final ShopRepository shopRepository;
+    private final ShopCacheService shopCacheService;
 
     @Transactional(readOnly = true)
     public Page<ShopSearchRes> searchShops(
@@ -50,10 +52,23 @@ public class ShopService {
         Shop shop = shopRepository.findByAccountIdAndDeletedAtIsNull(accountId)
                 .orElseThrow(ShopNotFoundException::new);
 
-    Region region = Region.fromCode(req.getRegionCode());
-    District district = District.fromCode(req.getDistrictCode());
+        Region oldRegion = shop.getRegion();
+        District oldDistrict = shop.getDistrict();
+
+        Region region = Region.fromCode(req.getRegionCode());
+        District district = District.fromCode(req.getDistrictCode());
 
         shop.updateInfo(req, region, district);
+
+        boolean regionChanged = !oldRegion.equals(region);
+        boolean districtChanged = !oldDistrict.equals(district);
+
+        if (regionChanged) {
+            shopCacheService.evictByRegion(oldRegion);
+            shopCacheService.evictByRegion(region);
+        } else if (districtChanged) {
+            shopCacheService.evictByRegion(region);
+        }
     }
 
     @Transactional(readOnly = true)

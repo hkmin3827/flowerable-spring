@@ -1,5 +1,6 @@
 package com.flowerable.spring.application.shopflower;
 
+import com.flowerable.spring.application.common.ShopCacheService;
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.application.shopflower.dto.*;
 import com.flowerable.spring.domain.flower.Flower;
@@ -27,6 +28,7 @@ public class ShopFlowerService {
     private final ShopFlowerRepository shopFlowerRepository;
     private final ShopRepository shopRepository;
     private final FlowerRepository flowerRepository;
+    private final ShopCacheService shopCacheService;
 
     @Transactional
     public void register(Long accountId, ShopFlowerRegReq req) {
@@ -48,6 +50,7 @@ public class ShopFlowerService {
         );
 
         shopFlowerRepository.save(shopFlower);
+        shopCacheService.evictByRegion(shop.getRegion());
     }
 
     @Transactional
@@ -80,6 +83,7 @@ public class ShopFlowerService {
         }
 
         shopFlower.startSale();
+        shopCacheService.evictByRegion(shop.getRegion());
     }
 
     @Transactional
@@ -92,6 +96,7 @@ public class ShopFlowerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.SHOP_FLOWER_NOT_REGISTER));
 
         shopFlower.stopSale();
+        shopCacheService.evictByRegion(shop.getRegion());
     }
 
     @Transactional(readOnly = true)

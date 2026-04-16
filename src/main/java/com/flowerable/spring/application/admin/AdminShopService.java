@@ -1,5 +1,6 @@
 package com.flowerable.spring.application.admin;
 
+import com.flowerable.spring.application.common.ShopCacheService;
 import com.flowerable.spring.domain.auth.constant.AccountStatus;
 import com.flowerable.spring.global.constant.ErrorCode;
 import com.flowerable.spring.domain.shop.constant.ShopStatus;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminShopService {
     private final ShopRepository shopRepository;
+    private final ShopCacheService shopCacheService;
 
 
     @Transactional(readOnly = true)
@@ -65,7 +67,10 @@ public class AdminShopService {
 
         switch (targetStatus) {
             case ACTIVE -> shop.activate();
-            case SUSPENDED -> shop.suspend();
+            case SUSPENDED -> {
+                shop.suspend();
+                shopCacheService.evictByRegion(shop.getRegion());
+            }
             case REJECTED -> shop.reject();
             default -> throw new CustomException(ErrorCode.INVALID_SHOP_STATUS);
         }
@@ -77,8 +82,14 @@ public class AdminShopService {
                 .orElseThrow(UserNotFoundException::new);
 
         switch (targetStatus){
-            case ACTIVE -> shop.getAccount().activate();
-            case SUSPENDED -> shop.getAccount().suspend();
+            case ACTIVE -> {
+                shop.getAccount().activate();
+                shopCacheService.evictByRegion(shop.getRegion());
+            }
+            case SUSPENDED -> {
+                shop.getAccount().suspend();
+                shopCacheService.evictByRegion(shop.getRegion());
+            }
             default -> throw new CustomException(ErrorCode.INVALID_ACCOUNT_STATUS);
         }
     }
