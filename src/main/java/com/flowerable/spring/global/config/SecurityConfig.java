@@ -51,6 +51,12 @@
                                     "/api/notifications/subscribe/**",
                                     "/api/v1/ai/**"
                             ).permitAll()
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                            .requestMatchers("/api/shopflowers/**",
+                                    "/api/orders/shops/**",
+                                    "/api/my-shop/images/**").hasRole("SHOP")
+                            .requestMatchers("/api/orders/users/**",
+                                    "/api/cart/**").hasRole("USER")
                             .requestMatchers(
                                     "/api/auth/withdraw",
                                     "/api/auth/logout",
@@ -63,12 +69,6 @@
                                     "/api/s3/**",
                                     "/api/payments/confirm"
                             ).authenticated()
-                            .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                            .requestMatchers("/api/shopflowers/**",
-                                    "/api/orders/shops/**",
-                                    "/api/my-shop/images/**").hasRole("SHOP")
-                            .requestMatchers("/api/orders/users/**",
-                                    "/api/cart/**").hasRole("USER")
                             .anyRequest().authenticated()
                     )
                     .exceptionHandling(ex ->

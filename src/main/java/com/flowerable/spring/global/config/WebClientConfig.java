@@ -62,7 +62,7 @@ public class WebClientConfig {
                 .build();
 
         return WebClient.builder()
-                .baseUrl("http://localhost:8001")
+                .baseUrl(aiServerUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .exchangeStrategies(strategies)
