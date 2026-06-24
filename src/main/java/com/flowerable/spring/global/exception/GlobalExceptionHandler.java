@@ -1,6 +1,7 @@
 package com.flowerable.spring.global.exception;
 
 import com.flowerable.spring.global.constant.ErrorCode;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,20 +15,6 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    static class ErrorResponse {
-        private final int status;
-        private final String code;
-        private final String message;
-
-        public ErrorResponse(ErrorCode errorCode){
-            this.status = errorCode.getStatus().value();
-            this.code = errorCode.name();
-            this.message = errorCode.getMessage();
-        }
-        public int getStatus() {return status;}
-        public String getCode() {return code;}
-        public String getMessage() {return message;}
-    }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex){
@@ -73,5 +60,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(Map.of("message", message));
+    }
+
+
+    @Getter
+    static class ErrorResponse {
+        private final int status;
+        private final String code;
+        private final String message;
+
+        public ErrorResponse(ErrorCode errorCode){
+            this.status = errorCode.getStatus().value();
+            this.code = errorCode.name();
+            this.message = errorCode.getMessage();
+        }
     }
 }

@@ -204,8 +204,9 @@ SSE Push
 
 ## 이후 개발경험 향상을 위한 코드 개선 필요 사항 기록
 
-- SecurityConfig : exceptionHandler HttpStatusEntryPoint(응답 바디 X) -> response.setStatue()/setContentType....과 같은 커스텀 람다로 변경
-- CorsConfig : config.addAllowedHeader("*") -> Authorization/Content-Type/Accept 으로 제한 (ws, sockJS 등 정상 연결 확인 필요)
-- StompAuthChannelInterceptor : SUBSCRIBE/SEND 커맨드에서 "destination에 대한 접근 권한" 체크를 inbound 인터셉터(또는 별도 MessageMapping 내부 로직)에 추가 / CONNECT도 보강
-
+- SecurityConfig.java : exceptionHandler HttpStatusEntryPoint(응답 바디 X) -> response.setStatue()/setContentType....과 같은 커스텀 람다로 변경
+- CorsConfig.java : config.addAllowedHeader("*") -> Authorization/Content-Type/Accept 으로 제한 (ws, sockJS 등 정상 연결 확인 필요)
+- StompAuthChannelInterceptor.java : SUBSCRIBE/SEND 커맨드에서 "destination에 대한 접근 권한" 체크를 inbound 인터셉터(또는 별도 MessageMapping 내부 로직)에 추가 / CONNECT도 보강
+- GlobalExceptionHandler.java : ErrorResponse 필드명 - status, code 의미 기존 관례와 어긋나게 사용됨(뒤집힘)
+- 
 - 
