@@ -55,6 +55,10 @@ public class UserAuthService {
         Account account = accountRepository.findByEmail(dto.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 
+        if (!passwordEncoder.matches(dto.getPassword(), account.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+
         if (account.getProvider() != Provider.LOCAL) {
             throw new CustomException(ErrorCode.INVALID_LOGIN_TYPE);
         }
@@ -67,10 +71,6 @@ public class UserAuthService {
         }
         if (account.getStatus() == AccountStatus.SUSPENDED) {
             throw new SuspendedAccountException();
-        }
-
-        if (!passwordEncoder.matches(dto.getPassword(), account.getPassword())) {
-            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
         User user = userRepository.findByAccountIdAndDeletedAtIsNull(account.getId())

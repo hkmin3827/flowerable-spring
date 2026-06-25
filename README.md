@@ -208,5 +208,7 @@ SSE Push
 - CorsConfig.java : config.addAllowedHeader("*") -> Authorization/Content-Type/Accept 으로 제한 (ws, sockJS 등 정상 연결 확인 필요)
 - StompAuthChannelInterceptor.java : SUBSCRIBE/SEND 커맨드에서 "destination에 대한 접근 권한" 체크를 inbound 인터셉터(또는 별도 MessageMapping 내부 로직)에 추가 / CONNECT도 보강
 - GlobalExceptionHandler.java : ErrorResponse 필드명 - status, code 의미 기존 관례와 어긋나게 사용됨(뒤집힘)
-- 
-- 
+- NotificationController.java : subscribe 시 JwtException, MalformedJwtException도 catch 하도록 추가 필요
+- AuthService.java : reissue() 내부 profileImgUrl 조회 제거 -> 불필요한 DB 조회 감축
+- Account.java : password 필드명 rename -> encodedPassword
+- ShopFlower.java : onSale 필드 타입 Boolean -> boolean 으로 단순화

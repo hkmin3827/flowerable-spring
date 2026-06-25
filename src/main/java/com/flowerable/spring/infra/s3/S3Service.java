@@ -72,10 +72,6 @@ public class S3Service {
         );
     }
 
-    public String getFileUrl(String folder, String fileName) {
-        return "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/"
-                + folder + "/" + fileName;
-    }
 
     private void validateFolder(String folder) {
         if (!ALLOWED_FOLDERS.contains(folder)) {
@@ -138,6 +134,11 @@ public class S3Service {
         } catch (Exception e) {
             throw new RuntimeException("S3 업로드 실패", e);
         }
+    }
+
+    public String getFileUrl(String folder, String fileName) {
+        return "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/"
+                + folder + "/" + fileName;
     }
 
     public String uploadPreview(byte[] imageBytes) {
